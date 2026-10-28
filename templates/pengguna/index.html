@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Pengguna - KartuTa{% endblock %}
+{% block page_title %}Dashboard Pengguna{% endblock %}
+
+{% block content %}
+<!-- Profile Summary Card (Matching ThesisEdu Style) -->
+<div class="dashboard-card">
+    <div class="profile-summary-card">
+        <div class="profile-avatar-wrap">
+            {% if photo %}
+                <img src="{{ photo.url }}" alt="Profile Photo" class="profile-avatar-img">
+            {% else %}
+                <div class="profile-avatar-placeholder">
+                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-info-body">
+            <div class="profile-subheading">Selamat Datang</div>
+            <h1 class="profile-name">{{ request.user.first_name|default:request.user.username }}</h1>
+
+            <div class="profile-details-grid">
+                <div class="profile-field-item">
+                    <div class="field-label-micro">EMAIL</div>
+                    <div class="field-value-text">{{ userdetail.email }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">NO. TELEPON / WHATSAPP</div>
+                    <div class="field-value-text">{{ userdetail.telp|default:"-" }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">JENIS KELAMIN</div>
+                    <div class="field-value-text">{{ userdetail.gender|default:"-" }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">PROVINSI DOMISILI</div>
+                    <div class="field-value-text">{{ userdetail.provinsi_anggota.nama_provinsi|default:"-" }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">ALAMAT DOMISILI / PENGIRIMAN</div>
+                    <div class="field-value-text">{{ userdetail.alamat|default:"-" }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">MEMBERSHIP TIER</div>
+                    <div class="field-value-text">
+                        <span class="badge-tag badge-unlocked" style="font-size: 11px;">
+                            {{ userdetail.membership_tier|default:"Basic" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'app:profile_pengguna' %}" class="btn-edit-profile">
+                <span>✏️</span>
+                <span>Edit Profil</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Virtual Binder Section -->
+<div class="dashboard-card">
+    <div class="card-title-bar">Koleksi Virtual Binder & Status Pembelian</div>
+    
+    {% if binders %}
+        <div class="binder-grid">
+            {% for item in binders %}
+                <div class="binder-card">
+                    <div class="img-box">
+                        {% if item.product.image_utama %}
+                            <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            Slot #{{ item.slot_number }}
+                        {% endif %}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ item.product.name }}
+                    </div>
+                    <div style="font-size: 10px; color: #94A3B8; text-transform: uppercase; margin-top: 2px;">
+                        {{ item.era_album_template }}
+                    </div>
+                    <span class="badge-tag badge-unlocked" style="margin-top: 6px;">Ready Stock</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 36px 16px; background: #222834; border-radius: 8px; border: 1px dashed #2a3346;">
+            <div style="font-size: 28px; margin-bottom: 6px;">🎴</div>
+            <div style="font-size: 13px; font-weight: 600; color: #FFFFFF;">Virtual Binder Masih Kosong</div>
+            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">Slot kartu digital otomatis terisi dan berwarna saat pembelian photocard official terkonfirmasi.</div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Riwayat Pesanan Section -->
+<div class="dashboard-card">
+    <div class="card-title-bar">Riwayat Transaksi & Pengiriman</div>
+
+    {% if payments %}
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Produk Photocard</th>
+                        <th>Nominal</th>
+                        <th>Metode</th>
+                        <th>No. Resi Kurir (AWB)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payments %}
+                        <tr>
+                            <td><strong>{{ p.invoice_number }}</strong></td>
+                            <td>{{ p.product.name }}</td>
+                            <td>Rp{{ p.amount|floatformat:0 }}</td>
+                            <td>{{ p.payment_method }}</td>
+                            <td style="font-family: monospace; color: #8B5CF6;">{{ p.tracking_number_awb|default:"-" }}</td>
+                            <td>
+                                <span class="badge-tag {% if p.status == 'Completed' %}badge-unlocked{% else %}badge-urgent{% endif %}">
+                                    {{ p.status }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 24px 16px; color: #94A3B8; font-size: 12px;">
+            Belum ada riwayat transaksi.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

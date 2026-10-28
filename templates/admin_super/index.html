@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Administrator - KartuTa{% endblock %}
+{% block page_title %}Dashboard Administrator{% endblock %}
+
+{% block content %}
+<!-- Admin Profile Summary Card -->
+<div class="dashboard-card">
+    <div class="profile-summary-card">
+        <div class="profile-avatar-wrap">
+            {% if photo %}
+                <img src="{{ photo.url }}" alt="Profile Photo" class="profile-avatar-img" style="border-color: #0f172a;">
+            {% else %}
+                <div class="profile-avatar-placeholder" style="background: #0f172a; color: #ffffff; border-color: #0f172a;">
+                    🛡️
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-info-body">
+            <div class="profile-subheading">Staff Operasional KartuTa</div>
+            <h1 class="profile-name">{{ request.user.first_name|default:request.user.username }}</h1>
+
+            <div class="profile-details-grid">
+                <div class="profile-field-item">
+                    <div class="field-label-micro">EMAIL STAF</div>
+                    <div class="field-value-text">{{ userdetail.email }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">DIVISI OPERASIONAL</div>
+                    <div class="field-value-text">
+                        <span class="badge-tag" style="background: #0f172a; color: #fff;">
+                            {{ userdetail.role_divisi|default:"Operations & QC" }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">NO. KONTAK / WHATSAPP</div>
+                    <div class="field-value-text">{{ userdetail.telp|default:"-" }}</div>
+                </div>
+
+                <div class="profile-field-item">
+                    <div class="field-label-micro">HAK AKSES / PERMISSION</div>
+                    <div class="field-value-text">Super Administrator & QC Manager</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'app:profile_admin' %}" class="btn-edit-profile">
+                    <span>✏️</span>
+                    <span>Edit Profil Admin</span>
+                </a>
+                <a href="/admin/" target="_blank" class="btn-edit-profile" style="background: #0084c7;">
+                    <span>⚙️</span>
+                    <span>Django Admin</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="dashboard-card" style="padding: 20px 24px;">
+    <div class="card-title-bar" style="margin-bottom: 14px;">Metrik Operasional Toko</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+            <div class="field-label-micro">TOTAL PELANGGAN</div>
+            <div style="font-size: 24px; font-weight: 800; color: #8B5CF6; margin-top: 4px;">{{ stats.total_clients }}</div>
+        </div>
+        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+            <div class="field-label-micro">KATALOG PRODUK</div>
+            <div style="font-size: 24px; font-weight: 800; color: #10B981; margin-top: 4px;">{{ stats.total_products }}</div>
+        </div>
+        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+            <div class="field-label-micro">KATEGORI</div>
+            <div style="font-size: 24px; font-weight: 800; color: #EC4899; margin-top: 4px;">{{ stats.total_categories }}</div>
+        </div>
+        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+            <div class="field-label-micro">TOTAL TRANSAKSI</div>
+            <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-top: 4px;">{{ stats.total_orders }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Registered Clients Table -->
+<div class="dashboard-card">
+    <div class="card-title-bar">Data Pelanggan Terdaftar</div>
+    {% if clients %}
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>No. Telepon / WA</th>
+                        <th>Membership Tier</th>
+                        <th>Alamat Domisili</th>
+                        <th>Tanggal Terdaftar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in clients %}
+                        <tr>
+                            <td><strong>{{ c.username }}</strong></td>
+                            <td>{{ c.email }}</td>
+                            <td style="font-family: monospace;">{{ c.telp|default:"-" }}</td>
+                            <td>
+                                <span class="badge-tag badge-unlocked">{{ c.membership_tier }}</span>
+                            </td>
+                            <td>{{ c.alamat|default:"-"|truncatechars:35 }}</td>
+                            <td style="color: #6b7280;">{{ c.date_joined|date:"d M Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 24px; color: #9ca3af; font-size: 12px;">
+            Belum ada pelanggan terdaftar.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

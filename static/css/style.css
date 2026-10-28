@@ -1,0 +1,758 @@
+/* ==========================================================================
+   KartuTa E-Commerce - Dark Palette (Cyber K-Pop Theme)
+   ========================================================================== */
+
+:root {
+  /* Latar Belakang (Background & Surface) */
+  --canvas-bg: #0B0E14;        /* Hitam Kebiruan Gelap (Main Background) */
+  --surface: #161B26;          /* Biru Navy Gelap (Cards & Sidebar & Topbar) */
+  --surface-alt: #1c2230;      /* Slightly elevated surface */
+  --input-bg: #222834;         /* Biru Keabu-abuan (Inputs/Inactive/Disabled) */
+  --border-dark: #222834;      /* Border default */
+  --border-light: #2a3346;     /* Elevated border divider */
+
+  /* Warna Aksen (Accents & Badges) */
+  --primary: #8B5CF6;          /* Ungu Terang (Primary Focus) */
+  --primary-hover: #7C3AED;    /* Ungu Terang Hover */
+  --primary-purple-dark: #4C1D95; /* Ungu Gelap (Labels/Badges) */
+  --emerald: #10B981;          /* Hijau Zamrud (Status Unlocked / Ready Stock) */
+  --emerald-dark: #065F46;     /* Hijau Gelap (Trust Badge / Banner BG) */
+  --amber: #F59E0B;            /* Kuning Ambar (Rating & Urgency) */
+  --magenta: #EC4899;          /* Magenta (Notifikasi / Aksen Tag) */
+  --danger: #b91c1c;           /* Danger / Logout */
+  --danger-hover: #dc2626;
+
+  /* Tipografi (Text) */
+  --text-main: #FFFFFF;        /* Putih Murni (Teks informasi utama) */
+  --text-secondary: #94A3B8;   /* Abu-abu Terang (Teks sekunder / label) */
+  --text-muted: #64748B;       /* Abu-abu Redup (Micro hint) */
+
+  /* Radius */
+  --radius-card: 14px;
+  --radius-input: 8px;
+  --radius-btn: 8px;
+  --sidebar-w: 240px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--canvas-bg);
+  color: var(--text-main);
+  line-height: 1.5;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------------------
+   App Layout (Sidebar + Topbar + Content)
+   -------------------------------------------------------------------------- */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+}
+
+.sidebar-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-brand {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 800;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: -0.5px;
+}
+
+.sidebar-brand span.logo-box {
+  background: linear-gradient(135deg, var(--primary), var(--magenta));
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+}
+
+.sidebar-brand span.tag {
+  color: var(--magenta);
+}
+
+.sidebar-brand .badge-store {
+  font-size: 10px;
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  padding: 20px 12px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+  border-radius: var(--radius-btn);
+  transition: all 0.15s ease;
+}
+
+.sidebar-menu li a .icon {
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-menu li a:hover {
+  background: var(--input-bg);
+  color: var(--text-main);
+}
+
+.sidebar-menu li a.active {
+  background: linear-gradient(90deg, var(--primary), #6D28D9);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35);
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  background: rgba(185, 28, 28, 0.15);
+  border: 1px solid rgba(185, 28, 28, 0.4);
+  color: #f87171;
+  text-decoration: none;
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-logout:hover {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.sidebar-version {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Main Area */
+.main-wrapper {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-dark);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-toggle {
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 16px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.topbar-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notif-badge-pill {
+  background: var(--magenta);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--magenta));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+.topbar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-canvas {
+  padding: 24px;
+  flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Cards (Biru Navy Gelap #161B26)
+   -------------------------------------------------------------------------- */
+.dashboard-card {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  margin-bottom: 22px;
+}
+
+.card-title-bar {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Profile Summary Card */
+.profile-summary-card {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.profile-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.profile-avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+
+.profile-avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--input-bg);
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 800;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.profile-info-body {
+  flex: 1;
+}
+
+.profile-subheading {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 18px;
+  letter-spacing: -0.5px;
+}
+
+.profile-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 28px;
+  margin-bottom: 20px;
+}
+
+.profile-field-item {
+  border-bottom: 1px dotted var(--border-light);
+  padding-bottom: 8px;
+}
+
+.field-label-micro {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.6px;
+  margin-bottom: 3px;
+}
+
+.field-value-text {
+  font-size: 13px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.btn-edit-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-btn);
+  transition: all 0.15s ease;
+}
+
+.btn-edit-profile:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Alerts & Banners
+   -------------------------------------------------------------------------- */
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius-card);
+  margin-bottom: 20px;
+}
+
+.status-banner.success {
+  background: rgba(6, 95, 70, 0.25);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  border-left: 4px solid var(--emerald);
+}
+
+.status-banner.warning {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-left: 4px solid var(--amber);
+}
+
+.status-banner.danger {
+  background: rgba(185, 28, 28, 0.18);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  border-left: 4px solid var(--danger);
+}
+
+.banner-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.status-banner.success .banner-icon {
+  background: var(--emerald-dark);
+  color: var(--emerald);
+}
+
+.status-banner.warning .banner-icon {
+  background: rgba(245, 158, 11, 0.3);
+  color: var(--amber);
+}
+
+.status-banner.danger .banner-icon {
+  background: rgba(185, 28, 28, 0.3);
+  color: #f87171;
+}
+
+.banner-text-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status-banner.success .banner-text-title { color: var(--emerald); }
+.status-banner.warning .banner-text-title { color: var(--amber); }
+.status-banner.danger .banner-text-title { color: #f87171; }
+
+.banner-text-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Forms (Inputs Biru Keabu-abuan #222834)
+   -------------------------------------------------------------------------- */
+.form-section-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-dark);
+  margin-bottom: 16px;
+  margin-top: 12px;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.form-label .req {
+  color: var(--magenta);
+  margin-left: 2px;
+}
+
+.form-control, .form-select, select, input[type="text"], input[type="email"], input[type="password"], textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 13px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-input);
+  background: var(--input-bg);
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+
+.form-control::placeholder, input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-control:focus, .form-select:focus, select:focus, input:focus, textarea:focus {
+  outline: none;
+  background: #28303f;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+}
+
+.form-control:disabled, input:disabled {
+  background: #191e28;
+  border-color: #1f2533;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.btn-primary-save {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35);
+  transition: all 0.15s;
+}
+
+.btn-primary-save:hover {
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-secondary:hover {
+  background: #2a3346;
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Badges (Ungu Gelap, Hijau Zamrud, Kuning Ambar)
+   -------------------------------------------------------------------------- */
+.badge-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-unlocked, .badge-ready {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--emerald);
+}
+
+.badge-official {
+  background: var(--emerald-dark);
+  color: #a7f3d0;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-catalog {
+  background: var(--primary-purple-dark);
+  color: #e9d5ff;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.badge-urgent {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--amber);
+}
+
+/* --------------------------------------------------------------------------
+   Virtual Binder & Store Cards
+   -------------------------------------------------------------------------- */
+.binder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 16px;
+}
+
+.binder-card {
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.binder-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.25);
+}
+
+.binder-card .img-box {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: #161B26;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-dark);
+}
+
+.binder-card .img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tables */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-custom {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.table-custom th {
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-dark);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.table-custom td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border-dark);
+  color: var(--text-main);
+}
+
+.table-custom tr:hover td {
+  background: rgba(34, 40, 52, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   Auth Center Card (Login & Register)
+   -------------------------------------------------------------------------- */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at top, #1a2030, var(--canvas-bg));
+}
+
+.auth-card {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-light);
+  padding: 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  .main-wrapper {
+    margin-left: 0;
+  }
+  .profile-summary-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .profile-details-grid, .form-grid-3, .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

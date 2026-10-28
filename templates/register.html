@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Daftar Akun Kolektor - KartuTa{% endblock %}
+
+{% block auth_content %}
+<div class="auth-card" style="max-width: 460px;">
+    <div style="text-align: center; margin-bottom: 24px;">
+        <h1 style="font-size: 26px; font-weight: 800; color: #FFFFFF;"><span class="logo-box" style="margin-right: 6px;">KT</span>Kartu<span style="color: #EC4899;">Ta</span></h1>
+        <p style="font-size: 13px; color: #94A3B8; margin-top: 6px;">Pendaftaran Akun Kolektor Baru</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="status-banner {% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}warning{% endif %}" style="padding: 10px 14px; margin-bottom: 16px;">
+                <div class="banner-text-desc" style="font-size: 12px;">{{ message }}</div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" name="first_name" class="form-control" placeholder="Nama lengkap Anda" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Konfirmasi Password</label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-primary-save" style="width: 100%; margin-top: 10px; padding: 10px;">
+            Daftar Akun
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px; font-size: 13px; color: #94A3B8;">
+        Sudah memiliki akun? 
+        <a href="{% url 'login' %}" style="color: #8B5CF6; font-weight: 600; text-decoration: none;">Masuk disini</a>
+    </div>
+</div>
+{% endblock %}

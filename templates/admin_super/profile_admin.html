@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Profil Admin - KartuTa{% endblock %}
+{% block page_title %}Profil Administrator{% endblock %}
+
+{% block content %}
+<div class="dashboard-card">
+    <div class="card-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Pengaturan Akun & Divisi Staf</span>
+        <span class="badge-tag" style="background: #0f172a; color: #fff;">Staff Internal</span>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Section 1: Informasi Akun -->
+        <div class="form-section-header">Informasi Akun Admin</div>
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">Username Admin</label>
+                <input type="text" value="{{ useradmin.username }}" disabled class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Staf</label>
+                <input type="email" value="{{ useradmin.email }}" disabled class="form-control">
+            </div>
+        </div>
+
+        <!-- Section 2: Data Divisi & Kontak -->
+        <div class="form-section-header" style="margin-top: 24px;">Divisi & Kontak Operasional</div>
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">Divisi Operasional <span class="req">*</span></label>
+                {{ form.role_divisi }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nomor Kontak Staf</label>
+                {{ form.telp }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Jenis Kelamin</label>
+                {{ form.gender }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Foto ID / Avatar Staf</label>
+                {{ form.photo }}
+                {% if photo %}
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                        <img src="{{ photo.url }}" alt="Admin Photo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
+                        <span style="font-size: 11px; color: #6b7280;">Foto aktif staf terpasang.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+            <a href="{% url 'app:dashboard' %}" class="btn-secondary">
+                &larr; Kembali ke Dashboard
+            </a>
+            <button type="submit" class="btn-primary-save" style="background: #0f172a;">
+                Simpan Profil Admin
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

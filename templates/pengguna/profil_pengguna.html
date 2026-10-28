@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Profil Pengguna - KartuTa{% endblock %}
+{% block page_title %}Profil Pengguna KartuTa{% endblock %}
+
+{% block content %}
+
+<!-- Status Banner (Matching ThesisEdu Style) -->
+{% if userpengguna.telp and userpengguna.alamat and userpengguna.gender %}
+    <div class="status-banner success">
+        <div class="banner-icon">✓</div>
+        <div>
+            <div class="banner-text-title">Profil Pengguna Telah Lengkap</div>
+            <div class="banner-text-desc">Informasi profil Anda tersimpan dengan baik di database KartuTa. Anda dapat memperbarui informasi kapan saja.</div>
+        </div>
+    </div>
+{% else %}
+    <div class="status-banner warning">
+        <div class="banner-icon">!</div>
+        <div>
+            <div class="banner-text-title">Profil Belum Lengkap</div>
+            <div class="banner-text-desc">Harap lengkapi nomor telepon WhatsApp dan alamat pengiriman ekspedisi untuk keperluan pengiriman pesanan.</div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Form Card -->
+<div class="dashboard-card">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Section 1: Informasi Akun -->
+        <div class="form-section-header">Informasi Akun</div>
+        <div class="form-grid-3">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" value="{{ userpengguna.username }}" disabled class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" value="{{ request.user.first_name|default:userpengguna.username }}" disabled class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Terdaftar</label>
+                <input type="email" value="{{ userpengguna.email }}" disabled class="form-control">
+            </div>
+        </div>
+
+        <!-- Section 2: Data Pribadi & Kontak Pengiriman -->
+        <div class="form-section-header" style="margin-top: 24px;">Data Pribadi & Kontak Pengiriman</div>
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">No. Telepon / WhatsApp <span class="req">*</span></label>
+                {{ form.telp }}
+                {% if form.telp.errors %}<div style="color: #dc2626; font-size: 11px; margin-top: 4px;">{{ form.telp.errors }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Jenis Kelamin <span class="req">*</span></label>
+                {{ form.gender }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Provinsi Domisili / Pengiriman <span class="req">*</span></label>
+                {{ form.provinsi_anggota }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Membership Tier</label>
+                {{ form.membership_tier }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Alamat Pengiriman Lengkap <span class="req">*</span></label>
+            {{ form.alamat }}
+            {% if form.alamat.errors %}<div style="color: #dc2626; font-size: 11px; margin-top: 4px;">{{ form.alamat.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Foto Profil / Avatar Kolektor</label>
+            {{ form.photo }}
+            {% if photo %}
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                    <img src="{{ photo.url }}" alt="Preview" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1px solid #d1d5db;">
+                    <span style="font-size: 11px; color: #6b7280;">Foto aktif terpasang. Unggah file baru untuk mengganti.</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+            <a href="{% url 'app:dashboard' %}" class="btn-secondary">
+                &larr; Kembali ke Dashboard
+            </a>
+            <button type="submit" class="btn-primary-save">
+                Simpan Data Profil
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
