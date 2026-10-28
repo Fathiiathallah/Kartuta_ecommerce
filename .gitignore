@@ -1,0 +1,30 @@
+# Python & Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Virtual Environment
+envku/
+venv/
+.venv/
+env/
+
+# Node
+node_modules/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.*
+
+# Media uploads (optional ignore or keep empty dir)
+media/
+!media/.gitkeep
