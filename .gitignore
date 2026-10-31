@@ -25,6 +25,5 @@ node_modules/
 .env
 .env.*
 
-# Media uploads (optional ignore or keep empty dir)
-media/
-!media/.gitkeep
+# Media uploads
+
