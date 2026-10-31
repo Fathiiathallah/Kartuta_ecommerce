@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - KartuTa{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="max-width: 720px; margin: 0 auto;">
+    <div class="card-title-bar">
+        <span>{% if is_edit %}Form Edit Kategori{% else %}Form Tambah Kategori Baru{% endif %}</span>
+        <a href="{% url 'app:kategori_list' %}" class="btn-secondary" style="font-size: 11px; padding: 6px 12px;">
+            ← Kembali ke Daftar
+        </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">NAMA KATEGORI <span class="req">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.name.errors.0 }}</div>
+            {% endif %}
+            <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Contoh: aespa Armageddon 2024, NewJeans Supernatural, IVE I've Mine</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">DESKRIPSI KATEGORI</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.description.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">GAMBAR BANNER / ICON KATEGORI</label>
+            {% if is_edit and kategori.image %}
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px;">
+                    <img src="{{ kategori.image.url }}" alt="Preview" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #222834;">
+                    <span style="font-size: 11px; color: #94A3B8;">Gambar saat ini</span>
+                </div>
+            {% endif %}
+            {{ form.image }}
+            {% if form.image.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.image.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 18px; border-top: 1px solid #222834;">
+            <button type="submit" class="btn-primary-save">
+                💾 {% if is_edit %}Simpan Perubahan{% else %}Tambahkan Kategori{% endif %}
+            </button>
+            <a href="{% url 'app:kategori_list' %}" class="btn-secondary">
+                Batal
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

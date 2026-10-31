@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - KartuTa{% endblock %}
+{% block page_title %}Form Photocard Official{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="max-width: 820px; margin: 0 auto;">
+    <div class="card-title-bar">
+        <span>{% if is_edit %}Edit Photocard: {{ product.name }}{% else %}Tambah Photocard Official Baru{% endif %}</span>
+        <a href="{% url 'app:produk_list' %}" class="btn-secondary" style="font-size: 11px; padding: 6px 12px;">
+            ← Kembali ke Katalog
+        </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">NAMA PHOTOCARD <span class="req">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.name.errors.0 }}</div>
+            {% endif %}
+            <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Contoh: Karina Armageddon Supernova Exclusive Hologram</div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">FANDOM / GRUP <span class="req">*</span></label>
+                {{ form.fandom_group }}
+                {% if form.fandom_group.errors %}
+                    <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.fandom_group.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">MEMBER BIAS</label>
+                {{ form.member_bias }}
+                {% if form.member_bias.errors %}
+                    <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.member_bias.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">KATEGORI ALBUM / ERA <span class="req">*</span></label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.category.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">GRADE KONDISI FISIK <span class="req">*</span></label>
+                {{ form.card_grade }}
+                {% if form.card_grade.errors %}
+                    <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.card_grade.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">HARGA SATUAN (RP) <span class="req">*</span></label>
+                {{ form.price }}
+                {% if form.price.errors %}
+                    <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.price.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">JUMLAH STOK <span class="req">*</span></label>
+                {{ form.stock }}
+                {% if form.stock.errors %}
+                    <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.stock.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">DESKRIPSI & SPESIFIKASI KARTU <span class="req">*</span></label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.description.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">FOTO UTAMA PHOTOCARD</label>
+            {% if is_edit and product.image_utama %}
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px;">
+                    <img src="{{ product.image_utama.url }}" alt="Preview" style="width: 60px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #222834;">
+                    <span style="font-size: 11px; color: #94A3B8;">Foto saat ini di server</span>
+                </div>
+            {% endif %}
+            {{ form.image_utama }}
+            {% if form.image_utama.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.image_utama.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+            {{ form.is_official_verified }}
+            <label for="{{ form.is_official_verified.id_for_label }}" style="font-size: 13px; font-weight: 600; color: #10B981; cursor: pointer;">
+                Centang jika photocard terverifikasi 100% Official (Bukan Unofficial/Fanmade)
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 18px; border-top: 1px solid #222834;">
+            <button type="submit" class="btn-primary-save">
+                💾 {% if is_edit %}Simpan Perubahan Photocard{% else %}Publikasikan Photocard{% endif %}
+            </button>
+            <a href="{% url 'app:produk_list' %}" class="btn-secondary">
+                Batal
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

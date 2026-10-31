@@ -38,6 +38,18 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{% url 'app:kategori_list' %}" class="{% if 'kategori' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">📂</span>
+                            <span>Kelola Kategori</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:produk_list' %}" class="{% if 'produk' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">🎴</span>
+                            <span>Kelola Produk</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="/admin/" target="_blank">
                             <span class="icon">⚙️</span>
                             <span>Django Admin</span>
@@ -54,6 +66,12 @@
                         <a href="{% url 'app:profile_pengguna' %}" class="{% if request.resolver_match.url_name == 'profile_pengguna' %}active{% endif %}">
                             <span class="icon">👤</span>
                             <span>Profil Pengguna</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:katalog_pengguna' %}" class="{% if request.resolver_match.url_name == 'katalog_pengguna' %}active{% endif %}">
+                            <span class="icon">🎴</span>
+                            <span>Katalog Photocard</span>
                         </a>
                     </li>
                 {% endif %}

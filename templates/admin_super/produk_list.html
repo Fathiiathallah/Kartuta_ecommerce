@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}Kelola Produk - KartuTa{% endblock %}
+{% block page_title %}Kelola Katalog Photocard{% endblock %}
+
+{% block content %}
+<div class="dashboard-card">
+    <div class="card-title-bar">
+        <span>Daftar Photocard Official di Etalase</span>
+        <a href="{% url 'app:produk_tambah' %}" class="btn-primary-save" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            <span>➕</span>
+            <span>Tambah Photocard Baru</span>
+        </a>
+    </div>
+
+    {% if products %}
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">No</th>
+                        <th style="width: 70px;">Foto</th>
+                        <th>Nama Photocard</th>
+                        <th>Kategori / Era</th>
+                        <th>Grade Kondisi</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Verifikasi</th>
+                        <th style="width: 150px; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in products %}
+                        <tr>
+                            <td style="color: #94A3B8;">{{ forloop.counter }}</td>
+                            <td>
+                                {% if item.image_utama %}
+                                    <img src="{{ item.image_utama.url }}" alt="{{ item.name }}" style="width: 48px; height: 64px; object-fit: cover; border-radius: 6px; border: 1px solid #222834;">
+                                {% else %}
+                                    <div style="width: 48px; height: 64px; border-radius: 6px; background: #222834; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                                        🃏
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">{{ item.name }}</strong>
+                                <span style="font-size: 11px; color: #94A3B8;">
+                                    {{ item.fandom_group }} • {{ item.member_bias|default:"All Member" }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge-tag" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #8B5CF6;">
+                                    {{ item.category.name }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if 'Mint' in item.card_grade %}
+                                    <span class="badge-tag badge-unlocked">
+                                        {{ item.card_grade }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge-tag" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #F59E0B;">
+                                        {{ item.card_grade }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span style="font-weight: 700; color: #FFFFFF;">Rp {{ item.price|floatformat:0 }}</span>
+                            </td>
+                            <td>
+                                {% if item.stock > 0 %}
+                                    <span style="font-weight: 600; color: #10B981;">{{ item.stock }} Pcs</span>
+                                {% else %}
+                                    <span style="font-weight: 600; color: #f87171;">Habis</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.is_official_verified %}
+                                    <span class="badge-tag" style="background: #065F46; color: #FFFFFF; font-size: 9px;">100% OFFICIAL</span>
+                                {% else %}
+                                    <span class="badge-tag" style="background: #222834; color: #94A3B8; font-size: 9px;">UNVERIFIED</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                <div style="display: inline-flex; gap: 8px;">
+                                    <a href="{% url 'app:produk_edit' item.id %}" class="btn-secondary" style="padding: 6px 10px; font-size: 11px;">
+                                        ✏️ Edit
+                                    </a>
+                                    <a href="{% url 'app:produk_hapus' item.id %}" onclick="return confirm('Hapus photocard {{ item.name }} dari etalase?');" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: #f87171;">
+                                        🗑️ Hapus
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 48px 16px; background: #222834; border-radius: 8px; border: 1px dashed #2a3346;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🎴</div>
+            <div style="font-size: 14px; font-weight: 700; color: #FFFFFF;">Belum Ada Produk Photocard</div>
+            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px; margin-bottom: 16px;">
+                Mulai masukkan photocard official ke etalase untuk dapat dilihat oleh para kolektor.
+            </div>
+            <a href="{% url 'app:produk_tambah' %}" class="btn-primary-save" style="text-decoration: none;">
+                ➕ Tambah Photocard Pertama
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

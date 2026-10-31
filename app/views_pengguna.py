@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .form_pengguna import formProfile
-from .models import UserPengguna, VirtualBinder, HistoryPayment
+from .models import UserPengguna, VirtualBinder, HistoryPayment, Product, Category
 from .decorators_admin import pengguna_required
 
 @login_required
@@ -63,3 +63,30 @@ def dashboard_pengguna(request):
         'payments': payments,
     }
     return render(request, 'pengguna/index.html', context)
+
+
+@login_required
+@pengguna_required
+def katalog_pengguna(request):
+    userpengguna = UserPengguna.objects.filter(user=request.user).first()
+    if not userpengguna:
+        userpengguna = UserPengguna.objects.filter(username=request.user.username).first()
+
+    category_id = request.GET.get('category')
+    if category_id:
+        products = Product.objects.filter(category_id=category_id).select_related('category').order_by('-created_at')
+    else:
+        products = Product.objects.select_related('category').all().order_by('-created_at')
+
+    categories = Category.objects.all()
+
+    context = {
+        'title': 'Katalog Photocard',
+        'heading': 'Etalase Official Photocard',
+        'userdetail': userpengguna,
+        'photo': userpengguna.photo if userpengguna and userpengguna.photo else None,
+        'products': products,
+        'categories': categories,
+        'active_category': category_id,
+    }
+    return render(request, 'pengguna/katalog.html', context)

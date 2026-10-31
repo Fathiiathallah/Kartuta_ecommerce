@@ -3,7 +3,27 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from app.models import UserAdmin, UserPengguna
+from app.models import UserAdmin, UserPengguna, Product, Category
+
+
+def homeView(request):
+    category_id = request.GET.get('category')
+    if category_id:
+        products = Product.objects.filter(category_id=category_id).select_related('category').order_by('-created_at')
+    else:
+        products = Product.objects.select_related('category').all().order_by('-created_at')
+
+    categories = Category.objects.all()
+
+    context = {
+        'title': 'KartuTa - K-Pop Photocard Official E-Commerce',
+        'heading': 'Etalase Official Photocard & Virtual Binder',
+        'products': products,
+        'categories': categories,
+        'active_category': category_id,
+    }
+    return render(request, 'homepage/index.html', context)
+
 
 def loginView(request):
     if request.user.is_authenticated:
