@@ -27,7 +27,9 @@ def homeView(request):
 
 def loginView(request):
     if request.user.is_authenticated:
-        return redirect('app:index')
+        if request.user.is_staff or request.user.last_name == 'Super Admin':
+            return redirect('app:dashboard_admin')
+        return redirect('home')
 
     if request.method == 'POST':
         login_input = request.POST.get('email', '').strip()
@@ -39,7 +41,9 @@ def loginView(request):
         if auth_user:
             login(request, auth_user)
             messages.success(request, f'Selamat Datang, {auth_user.first_name or auth_user.username}!')
-            return redirect('app:dashboard')
+            if auth_user.is_staff or auth_user.last_name == 'Super Admin':
+                return redirect('app:dashboard_admin')
+            return redirect('home')
 
         messages.warning(request, 'Email/Username atau password salah.')
         return redirect('login')
