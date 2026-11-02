@@ -4,149 +4,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>{{ title|default:"KartuTa • Official K-Pop Photocard Store & Virtual Binder Platform" }}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body style="background-color: var(--canvas-bg); color: var(--text-main);">
+<body class="pro-body">
 
-    <!-- Public Top Navigation Bar -->
-    <header style="background: var(--surface); border-bottom: 1px solid var(--border-dark); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <a href="{% url 'home' %}" style="text-decoration: none; font-size: 20px; font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 6px;">
-                <span class="logo-box" style="background: linear-gradient(135deg, var(--primary), var(--magenta)); color: #fff; padding: 2px 7px; border-radius: 6px; font-size: 14px;">KT</span>
-                <span>Kartu<span style="color: var(--magenta);">Ta</span></span>
-                <span style="font-size: 10px; background: var(--input-bg); color: var(--text-secondary); border: 1px solid var(--border-light); padding: 2px 6px; border-radius: 6px; font-weight: 600;">OFFICIAL STORE</span>
-            </a>
+    <!-- Top Announcement Micro Bar -->
+    <aside class="announcement-bar">
+        <div class="announcement-inner">
+            <span>🛡️ GARANSI KEASLIAN 100% ATAU REFUND PENUH</span>
+            <span class="announcement-bullet">•</span>
+            <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER SETIAP PEMBELIAN</span>
+            <span class="announcement-bullet">•</span>
+            <span>AUTO-SYNC VIRTUAL BINDER AKTIF</span>
         </div>
+    </aside>
 
-        <div style="display: flex; align-items: center; gap: 12px;">
-            {% if request.user.is_authenticated %}
-                {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
-                    <a href="{% url 'app:dashboard_admin' %}" class="btn-primary-save" style="text-decoration: none; padding: 8px 18px; font-size: 13px;">
-                        🛡️ Dashboard Admin ({{ request.user.first_name|default:request.user.username }})
-                    </a>
+    <!-- Professional Navbar -->
+    <header class="pro-navbar">
+        <div class="pro-navbar-container">
+            <!-- Brand -->
+            <a href="{% url 'home' %}" class="pro-brand">
+                <span class="pro-logo-badge">KT</span>
+                <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
+                <span class="pro-store-pill">AUTHENTIC STORE</span>
+            </a>
+
+            <!-- Search Bar Mockup (Ecommerce Utility) -->
+            <div class="nav-search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Cari photocard, era, member, atau album..." class="nav-search-input" readonly onclick="window.location.href='#katalog-etalase'">
+                <kbd class="search-shortcut">ESC</kbd>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pro-nav-actions">
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
+                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-nav btn-pro-primary">
+                            🛡️ Panel Admin
+                        </a>
+                    {% else %}
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-nav btn-pro-binder">
+                            <span>🎴</span> Virtual Binder ({{ request.user.first_name|default:request.user.username }})
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="btn-pro-nav btn-pro-ghost">Keluar</a>
                 {% else %}
-                    <a href="{% url 'app:dashboard_pengguna' %}" class="btn-primary-save" style="text-decoration: none; padding: 8px 18px; font-size: 13px;">
-                        👤 Buka Virtual Binder & Profil ({{ request.user.first_name|default:request.user.username }})
-                    </a>
+                    <a href="{% url 'login' %}" class="btn-pro-nav btn-pro-ghost">Masuk</a>
+                    <a href="{% url 'register' %}" class="btn-pro-nav btn-pro-primary">Daftar Kolektor</a>
                 {% endif %}
-                <a href="{% url 'logout' %}" class="btn-secondary" style="padding: 8px 14px; font-size: 13px;">
-                    Keluar
-                </a>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn-secondary" style="padding: 8px 16px; font-size: 13px;">
-                    Masuk Akun
-                </a>
-                <a href="{% url 'register' %}" class="btn-primary-save" style="text-decoration: none; padding: 8px 18px; font-size: 13px;">
-                    Daftar Kolektor
-                </a>
-            {% endif %}
+            </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section style="padding: 56px 24px 36px 24px; text-align: center; max-width: 900px; margin: 0 auto;">
-        <span class="badge-tag" style="background: #065F46; color: #FFFFFF; font-size: 10px; padding: 4px 12px; margin-bottom: 16px;">
-            🛡️ 100% OFFICIAL PHOTOCARD & 4-LAYER PACKING SAFETY
-        </span>
-        <h1 style="font-size: 38px; font-weight: 800; line-height: 1.2; margin-top: 12px; margin-bottom: 14px; letter-spacing: -1px;">
-            Platform E-Commerce Photocard <br>dengan <span style="background: linear-gradient(135deg, #8B5CF6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Virtual Binder</span> Pertama
-        </h1>
-        <p style="font-size: 15px; color: var(--text-secondary); max-width: 650px; margin: 0 auto 28px auto;">
-            Dapatkan photocard official bergaransi mint condition. Setiap pembelian fisik diverifikasi dan otomatis membuka slot kartu digital di binder interaktif Anda.
-        </p>
+    <main class="pro-container">
 
-        <!-- Category Filter Chips -->
-        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-            <a href="{% url 'home' %}" class="badge-tag" style="text-decoration: none; padding: 8px 18px; font-size: 12px; {% if not active_category %}background: #8B5CF6; color: #ffffff;{% else %}background: #161B26; color: #94A3B8; border: 1px solid #222834;{% endif %}">
-                Semua Era & Kategori
-            </a>
-            {% for cat in categories %}
-                <a href="{% url 'home' %}?category={{ cat.id }}" class="badge-tag" style="text-decoration: none; padding: 8px 18px; font-size: 12px; {% if active_category == cat.id|stringformat:'s' %}background: #8B5CF6; color: #ffffff;{% else %}background: #161B26; color: #94A3B8; border: 1px solid #222834;{% endif %}">
-                    {{ cat.name }}
-                </a>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- Product Showcase -->
-    <main style="max-width: 1200px; margin: 0 auto; padding: 0 24px 64px 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #222834; padding-bottom: 12px;">
-            <h2 style="font-size: 18px; font-weight: 700;">Etalase Photocard Tersedia</h2>
-            <span style="font-size: 12px; color: #94A3B8;">{{ products.count }} Item Terverifikasi</span>
-        </div>
-
-        {% if products %}
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px;">
-                {% for item in products %}
-                    <div style="background: #161B26; border: 1px solid #222834; border-radius: 12px; padding: 14px; display: flex; flex-direction: column;">
-                        <div style="position: relative; width: 100%; height: 280px; background: #0B0E14; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid #222834;">
-                            {% if item.image_utama %}
-                                <img src="{{ item.image_utama.url }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                            {% else %}
-                                <div style="font-size: 40px;">🃏</div>
-                            {% endif %}
-
-                            <div style="position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px;">
-                                {% if item.is_official_verified %}
-                                    <span class="badge-tag" style="background: #065F46; color: #FFFFFF; font-size: 9px;">100% OFFICIAL</span>
-                                {% endif %}
-                                <span class="badge-tag" style="background: #4C1D95; color: #FFFFFF; font-size: 9px;">{{ item.fandom_group }}</span>
-                            </div>
-
-                            <div style="position: absolute; bottom: 8px; right: 8px;">
-                                {% if 'Mint' in item.card_grade %}
-                                    <span class="badge-tag badge-unlocked" style="font-size: 9px; background: rgba(16, 185, 129, 0.9); color: #fff;">GRADE A</span>
-                                {% else %}
-                                    <span class="badge-tag" style="font-size: 9px; background: rgba(245, 158, 11, 0.9); color: #000; font-weight: 800;">GRADE B</span>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div style="font-size: 11px; color: #94A3B8; text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">
-                            {{ item.category.name }}
-                        </div>
-                        <div style="font-size: 15px; font-weight: 700; color: #FFFFFF; line-height: 1.3; margin-bottom: 12px; min-height: 40px;">
-                            {{ item.name }}
-                        </div>
-
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: auto; margin-bottom: 12px; padding-top: 8px; border-top: 1px solid #222834;">
-                            <div>
-                                <div style="font-size: 10px; color: #94A3B8;">HARGA</div>
-                                <div style="font-size: 17px; font-weight: 800; color: #FFFFFF;">Rp {{ item.price|floatformat:0 }}</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 10px; color: #94A3B8;">STOK</div>
-                                <div style="font-size: 12px; font-weight: 700; {% if item.stock <= 1 %}color: #F59E0B;{% else %}color: #10B981;{% endif %}">
-                                    {% if item.stock > 0 %}{{ item.stock }} Pcs{% else %}Sold Out{% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        {% if request.user.is_authenticated %}
-                            <a href="{% url 'app:katalog_pengguna' %}" class="btn-primary-save" style="text-decoration: none; text-align: center; padding: 8px; font-size: 12px;">
-                                Beli Sekarang
-                            </a>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="btn-primary-save" style="text-decoration: none; text-align: center; padding: 8px; font-size: 12px;">
-                                Masuk untuk Membeli
-                            </a>
-                        {% endif %}
+        <!-- Asymmetric Modern Hero Section -->
+        <section class="pro-hero-grid">
+            <!-- Left Hero Card (Big Impact) -->
+            <div class="hero-main-card">
+                <div class="hero-badge-wrap">
+                    <span class="live-indicator"></span>
+                    <span class="hero-badge-text">INDONESIA FIRST HYBRID PHOTOCARD ECOSYSTEM</span>
+                </div>
+                <h1 class="hero-headline">
+                    Beli Photocard Official, <br>
+                    Langsung Sync ke <span class="text-glow-gradient">Virtual Binder</span>.
+                </h1>
+                <p class="hero-subtext">
+                    Nikmati sensasi mengoleksi fisik berstandar kurasi mint condition dengan sinkronisasi portofolio kartu digital real-time di akun Anda.
+                </p>
+                <div class="hero-btn-row">
+                    <a href="#katalog-etalase" class="btn-hero-solid">Jelajahi Etalase &darr;</a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-hero-outline">Periksa Binder Saya &rarr;</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="btn-hero-outline">Buka Akun Kolektor &rarr;</a>
+                    {% endif %}
+                </div>
+                <!-- Quick Metric -->
+                <div class="hero-metrics-bar">
+                    <div class="metric-col">
+                        <span class="metric-val">100%</span>
+                        <span class="metric-lbl">Jaminan Keaslian</span>
                     </div>
+                    <div class="metric-sep"></div>
+                    <div class="metric-col">
+                        <span class="metric-val">4-Layer</span>
+                        <span class="metric-lbl">Packing Safety</span>
+                    </div>
+                    <div class="metric-sep"></div>
+                    <div class="metric-col">
+                        <span class="metric-val">Realtime</span>
+                        <span class="metric-lbl">Binder Unlocked</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero Card (Collector Promo Showcase) -->
+            <div class="hero-side-card">
+                <div class="side-card-tag">SPOTLIGHT RELEASE</div>
+                <div class="side-card-content">
+                    <span class="side-chip">AESPA • ARMAGEDDON</span>
+                    <h3>Curated Collector Drops</h3>
+                    <p>Photocard era comeback verified grade A. Setiap pengiriman dilengkapi proteksi ultra rigid toploader.</p>
+                    <div class="side-perks">
+                        <div class="perk-item">✓ Verified Authentic Seal</div>
+                        <div class="perk-item">✓ No Scratch / Mint Condition</div>
+                    </div>
+                    <a href="#katalog-etalase" class="side-action-btn">Lihat Koleksi Lengkap</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Badges Bar -->
+        <section class="trust-grid-bar">
+            <div class="trust-box">
+                <div class="trust-icon">🔍</div>
+                <div class="trust-detail">
+                    <h4>Verifikasi Keaslian Fisik</h4>
+                    <p>Kurasi detail cetakan, tekstur, & sudut pemotongan asli agensi.</p>
+                </div>
+            </div>
+            <div class="trust-box">
+                <div class="trust-icon">📦</div>
+                <div class="trust-detail">
+                    <h4>Standar Packing 4 Lapis</h4>
+                    <p>Sleeve bebas asam, toploader tebal, yellow board, & bubble bag.</p>
+                </div>
+            </div>
+            <div class="trust-box">
+                <div class="trust-icon">🎴</div>
+                <div class="trust-detail">
+                    <h4>Virtual Binder Terintegrasi</h4>
+                    <p>Kartu fisik tiba, inventaris digital akun langsung berwarna.</p>
+                </div>
+            </div>
+            <div class="trust-box">
+                <div class="trust-icon">⚡</div>
+                <div class="trust-detail">
+                    <h4>Pengiriman Ekspedisi Cepat</h4>
+                    <p>Pelacakan nomor resi otomatis terupdate di panel transaksi.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalog & Filter Showcase -->
+        <section id="katalog-etalase" class="catalog-wrapper">
+            <div class="catalog-top-heading">
+                <div>
+                    <h2 class="catalog-title">Etalase Koleksi Tersedia</h2>
+                    <p class="catalog-desc">Telusuri stok photocard resmi yang siap dikirim langsung ke alamat Anda.</p>
+                </div>
+                <div class="catalog-count-pill">{{ products.count }} Koleksi Terverifikasi</div>
+            </div>
+
+            <!-- Interactive Category Pills -->
+            <div class="category-pills-bar">
+                <a href="{% url 'home' %}#katalog-etalase" class="cat-pill {% if not active_category %}active-pill{% endif %}">
+                    Semua Era & Idol
+                </a>
+                {% for cat in categories %}
+                    <a href="{% url 'home' %}?category={{ cat.id }}#katalog-etalase" class="cat-pill {% if active_category == cat.id|stringformat:'s' %}active-pill{% endif %}">
+                        {{ cat.name }}
+                    </a>
                 {% endfor %}
             </div>
-        {% else %}
-            <div style="text-align: center; padding: 54px 16px; background: #161B26; border-radius: 12px; border: 1px dashed #222834;">
-                <div style="font-size: 36px; margin-bottom: 8px;">🎴</div>
-                <div style="font-size: 15px; font-weight: 700; color: #FFFFFF;">Belum Ada Produk Photocard di Etalase</div>
-                <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">Admin dapat menambahkan data photocard dan kategori melalui dashboard staf.</div>
+
+            <!-- Modern Product Grid (Photocard Ratio 2:3) -->
+            {% if products %}
+                <div class="pro-product-grid">
+                    {% for item in products %}
+                        <article class="pro-card">
+                            <!-- Visual Box -->
+                            <div class="pro-card-image-wrapper">
+                                <!-- Top Badges -->
+                                <div class="badge-overlay-header">
+                                    {% if item.is_official_verified %}
+                                        <span class="pro-badge-official">OFFICIAL</span>
+                                    {% endif %}
+                                    <span class="pro-badge-era">{{ item.fandom_group|default:item.category.name }}</span>
+                                </div>
+
+                                <!-- Image / Fallback -->
+                                <div class="pro-image-holder">
+                                    {% if item.image_utama %}
+                                        <img src="{{ item.image_utama.url }}" alt="{{ item.name }}" loading="lazy">
+                                    {% else %}
+                                        <div class="pro-image-placeholder">
+                                            <span>🎴</span>
+                                            <p>Foto Sedang Diverifikasi</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Condition Badge -->
+                                <div class="badge-overlay-bottom">
+                                    {% if 'Mint' in item.card_grade %}
+                                        <span class="grade-chip grade-mint">MINT / GRADE A</span>
+                                    {% else %}
+                                        <span class="grade-chip grade-standard">GRADE B</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Content Info -->
+                            <div class="pro-card-body">
+                                <div class="pro-item-sub">{{ item.category.name }}</div>
+                                <h3 class="pro-item-title" title="{{ item.name }}">{{ item.name }}</h3>
+
+                                <div class="pro-item-meta">
+                                    <div class="meta-price-box">
+                                        <span class="lbl-small">HARGA RESMI</span>
+                                        <span class="val-price">Rp {{ item.price|floatformat:0 }}</span>
+                                    </div>
+                                    <div class="meta-stock-box">
+                                        <span class="lbl-small">STOK</span>
+                                        <span class="val-stock {% if item.stock <= 1 %}stock-low{% endif %}">
+                                            {% if item.stock > 0 %}{{ item.stock }} Unit{% else %}Habis{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Call to Action -->
+                                {% if request.user.is_authenticated %}
+                                    <a href="{% url 'app:katalog_pengguna' %}" class="btn-pro-action">
+                                        Beli Sekarang
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'login' %}" class="btn-pro-action btn-login-action">
+                                        Masuk untuk Membeli
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state-box">
+                    <div class="empty-icon">🎴</div>
+                    <h3>Belum Ada Photocard di Kategori Ini</h3>
+                    <p>Produk untuk era ini sedang dalam antrean inspeksi dan kurasi fisik.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Collector Safety Standard (4-Layer Protocol) -->
+        <section class="protocol-section">
+            <div class="protocol-header">
+                <span class="protocol-pretitle">SECURITY ASSURANCE</span>
+                <h2>KartuTa 4-Layer Safe Packaging Protocol</h2>
+                <p>Kekhawatiran terbesar kolektor adalah kerusakan kartu saat pengiriman. Kami mengeliminasi risiko tersebut dengan 4 lapis perlindungan material kaku:</p>
             </div>
-        {% endif %}
+
+            <div class="protocol-grid">
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 01</span>
+                    <h4>Acid-Free Inner Sleeve</h4>
+                    <p>Melindungi permukaan glossy kartu dari goresan halus dan debu mikro.</p>
+                </div>
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 02</span>
+                    <h4>Ultra-Rigid Toploader</h4>
+                    <p>Plastik polimer tebal penahan benturan agar kartu tidak melengkung.</p>
+                </div>
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 03</span>
+                    <h4>Double Yellow Board</h4>
+                    <p>Penjepit karton padat bertekanan tinggi penahan beban guncangan paket.</p>
+                </div>
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 04</span>
+                    <h4>Bubble Mailer Seal</h4>
+                    <p>Amplop bantalan gelembung tebal kedap air dengan segel pengaman resmi.</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer style="background: var(--surface); border-top: 1px solid var(--border-dark); padding: 24px; text-align: center; font-size: 12px; color: #94A3B8;">
-        <div>© 2026 KartuTa E-Commerce Platform • Built with Django 5.2, Pure Custom CSS & Cloud Supabase PostgreSQL</div>
+    <!-- Professional Clean Footer -->
+    <footer class="pro-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="pro-brand" style="margin-bottom: 12px;">
+                    <span class="pro-logo-badge">KT</span>
+                    <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
+                </div>
+                <p class="footer-desc">Platform etalase photocard terverifikasi pertama di Indonesia dengan integrasi portofolio Virtual Binder kolektor.</p>
+            </div>
+            <div class="footer-links-col">
+                <h5>Navigasi Toko</h5>
+                <a href="{% url 'home' %}">Etalase Produk</a>
+                <a href="{% url 'app:index' %}">Virtual Binder</a>
+                <a href="{% url 'login' %}">Masuk Akun</a>
+            </div>
+            <div class="footer-links-col">
+                <h5>Keamanan & Layanan</h5>
+                <span>Standar Grading Mint</span>
+                <span>4-Layer Safe Packing</span>
+                <span>Garansi Uang Kembali</span>
+            </div>
+        </div>
+        <div class="footer-bottom-bar">
+            <span>© 2026 KartuTa E-Commerce Platform • Built with Django 5.2, Pure Custom CSS & Cloud PostgreSQL</span>
+        </div>
     </footer>
 
 </body>
