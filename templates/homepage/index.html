@@ -41,12 +41,12 @@
             <div class="pro-nav-actions">
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
-                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" style="width: 38px; height: 38px; border-radius: 50%; background: #1c2230; border: 1px solid #333d52; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; text-decoration: none;" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
+                            🛡️
                         </a>
                     {% else %}
-                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" style="width: 38px; height: 38px; border-radius: 50%; background: #1c2230; border: 1px solid #333d52; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; text-decoration: none;" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
+                            👤
                         </a>
                     {% endif %}
                     <a href="{% url 'logout' %}" class="btn-pro-nav btn-pro-ghost" title="Keluar / Logout">Keluar</a>

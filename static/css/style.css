@@ -2755,7 +2755,9 @@ body {
     grid-template-columns: 1fr;
     gap: 28px;
   }
-/* Compact User Icon Button */
+}
+
+/* Compact User Icon Button (Root level) */
 .btn-pro-icon-user {
   width: 38px;
   height: 38px;
@@ -2769,6 +2771,7 @@ body {
   font-size: 16px;
   text-decoration: none;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .btn-pro-icon-user:hover {
