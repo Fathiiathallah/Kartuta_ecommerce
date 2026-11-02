@@ -139,3 +139,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Supabase Cloud Storage (PaaS Media Bucket)
+SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://tbdqyckxugzornkzhbgq.supabase.co')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY', 'sb_publishable_uopLb-jrYVKjsvQTh89Y2w_8DKdw6iq')
+SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET', 'media')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "core.storage.SupabaseMediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+DEFAULT_FILE_STORAGE = 'core.storage.SupabaseMediaStorage'

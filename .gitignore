@@ -24,6 +24,9 @@ node_modules/
 # Environment variables
 .env
 .env.*
+!.env.example
 
-# Media uploads
+# Media uploads (stored in Supabase Cloud Storage)
+media/
+!media/.gitkeep
 
