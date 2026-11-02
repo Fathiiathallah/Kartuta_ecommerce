@@ -178,7 +178,7 @@
                     {% for item in products %}
                         <article class="pro-card">
                             <!-- Visual Box -->
-                            <div class="pro-card-image-wrapper">
+                            <a href="{% url 'produk_detail' item.id %}" class="pro-card-image-wrapper" style="text-decoration: none; display: block;">
                                 <!-- Top Badges -->
                                 <div class="badge-overlay-header">
                                     {% if item.is_official_verified %}
@@ -207,12 +207,14 @@
                                         <span class="grade-chip grade-standard">GRADE B</span>
                                     {% endif %}
                                 </div>
-                            </div>
+                            </a>
 
                             <!-- Content Info -->
                             <div class="pro-card-body">
                                 <div class="pro-item-sub">{{ item.category.name }}</div>
-                                <h3 class="pro-item-title" title="{{ item.name }}">{{ item.name }}</h3>
+                                <h3 class="pro-item-title" title="{{ item.name }}">
+                                    <a href="{% url 'produk_detail' item.id %}" style="text-decoration: none; color: inherit;">{{ item.name }}</a>
+                                </h3>
 
                                 <div class="pro-item-meta">
                                     <div class="meta-price-box">
@@ -228,15 +230,9 @@
                                 </div>
 
                                 <!-- Call to Action -->
-                                {% if request.user.is_authenticated %}
-                                    <a href="{% url 'app:katalog_pengguna' %}" class="btn-pro-action">
-                                        Beli Sekarang
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'login' %}" class="btn-pro-action btn-login-action">
-                                        Masuk untuk Membeli
-                                    </a>
-                                {% endif %}
+                                <a href="{% url 'produk_detail' item.id %}" class="btn-pro-action">
+                                    Beli Sekarang
+                                </a>
                             </div>
                         </article>
                     {% endfor %}

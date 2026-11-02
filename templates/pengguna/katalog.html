@@ -82,10 +82,10 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn-primary-save" style="width: 100%; padding: 8px 12px; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="alert('Fitur Checkout & Virtual Binder otomatis aktif pada tahap transaksi pembayaran QRIS Midtrans!');">
+                    <a href="{% url 'produk_detail' item.id %}" class="btn-primary-save" style="width: 100%; padding: 8px 12px; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;">
                         <span>🛒</span>
-                        <span>Beli & Buka di Binder</span>
-                    </button>
+                        <span>Beli & Detail Kartu</span>
+                    </a>
                 </div>
             {% endfor %}
         </div>

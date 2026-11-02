@@ -1,0 +1,356 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:product.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="pro-body">
+
+    <!-- Top Announcement Micro Bar -->
+    <aside class="announcement-bar">
+        <div class="announcement-inner">
+            <span>🛡️ GARANSI KEASLIAN 100% ATAU REFUND PENUH</span>
+            <span class="announcement-bullet">•</span>
+            <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER SETIAP PEMBELIAN</span>
+            <span class="announcement-bullet">•</span>
+            <span>AUTO-SYNC VIRTUAL BINDER AKTIF</span>
+        </div>
+    </aside>
+
+    <!-- Top Navbar -->
+    <header class="pro-navbar">
+        <div class="pro-navbar-container">
+            <a href="{% url 'home' %}" class="pro-brand">
+                <span class="pro-logo-badge">KT</span>
+                <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
+                <span class="pro-store-pill">AUTHENTIC STORE</span>
+            </a>
+
+            <div class="pro-nav-actions">
+                <a href="{% url 'home' %}#katalog-etalase" class="btn-pro-nav btn-pro-ghost">
+                    ← Kembali ke Etalase
+                </a>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
+                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-nav btn-pro-primary">
+                            🛡️ Panel Admin
+                        </a>
+                    {% else %}
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-nav btn-pro-binder">
+                            <span>🎴</span> Virtual Binder ({{ request.user.first_name|default:request.user.username }})
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="btn-pro-nav btn-pro-ghost">Keluar</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-pro-nav btn-pro-ghost">Masuk</a>
+                    <a href="{% url 'register' %}" class="btn-pro-nav btn-pro-primary">Daftar Kolektor</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="pro-container" style="gap: 32px; padding-top: 24px;">
+
+        <!-- Breadcrumbs Navigation -->
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94A3B8;">
+            <a href="{% url 'home' %}" style="color: #94A3B8; text-decoration: none;">Beranda</a>
+            <span>/</span>
+            <a href="{% url 'home' %}#katalog-etalase" style="color: #94A3B8; text-decoration: none;">Etalase</a>
+            <span>/</span>
+            <a href="{% url 'home' %}?category={{ product.category.id }}#katalog-etalase" style="color: #c4b5fd; text-decoration: none;">{{ product.category.name }}</a>
+            <span>/</span>
+            <span style="color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px;">{{ product.name }}</span>
+        </nav>
+
+        <!-- Product Detail Two-Column Layout -->
+        <section style="display: grid; grid-template-columns: minmax(320px, 440px) 1fr; gap: 40px; align-items: start;">
+            
+            <!-- Left: Card Visual & Badges -->
+            <div>
+                <div style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 18px; box-shadow: 0 16px 36px rgba(0,0,0,0.5);">
+                    <div style="position: relative; width: 100%; aspect-ratio: 2/3; background: #090c12; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: center;">
+                        
+                        <!-- Top Badges Overlay -->
+                        <div class="badge-overlay-header">
+                            {% if product.is_official_verified %}
+                                <span class="pro-badge-official">100% OFFICIAL</span>
+                            {% endif %}
+                            <span class="pro-badge-era">{{ product.fandom_group|default:product.category.name }}</span>
+                        </div>
+
+                        <!-- Image -->
+                        {% if product.image_utama %}
+                            <img src="{{ product.image_utama.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <div class="pro-image-placeholder">
+                                <span style="font-size: 54px;">🎴</span>
+                                <p>Foto Fisik Terkurasi</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Condition Badge Bottom Overlay -->
+                        <div class="badge-overlay-bottom">
+                            {% if 'Mint' in product.card_grade %}
+                                <span class="grade-chip grade-mint">MINT CONDITION / GRADE A</span>
+                            {% else %}
+                                <span class="grade-chip grade-standard">FACTORY SCRATCH / GRADE B</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Micro List Under Image -->
+                <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: #11151f; border: 1px solid #222834; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
+                        <span>🛡️</span>
+                        <span>Garansi Keaslian Cetakan</span>
+                    </div>
+                    <div style="background: #11151f; border: 1px solid #222834; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
+                        <span>📦</span>
+                        <span>Toploader & Yellow Board</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Product Specifications & Actions -->
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span class="side-chip" style="margin: 0;">{{ product.category.name }}</span>
+                        {% if product.member_bias %}
+                            <span class="side-chip" style="margin: 0; background: rgba(236, 72, 153, 0.15); border-color: rgba(236, 72, 153, 0.4); color: #f472b6;">
+                                Member: {{ product.member_bias }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <h1 style="font-size: 28px; font-weight: 900; line-height: 1.3; color: #ffffff; margin-bottom: 12px; letter-spacing: -0.5px;">
+                        {{ product.name }}
+                    </h1>
+                    <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #10b981; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+                        <span>✓</span>
+                        <span>Terverifikasi Original Agensi & Siap Dikirim</span>
+                    </div>
+                </div>
+
+                <!-- Price Box -->
+                <div style="background: #161b26; border: 1px solid #222834; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px;">HARGA OFFICIAL</div>
+                        <div style="font-size: 32px; font-weight: 900; color: #ffffff; letter-spacing: -1px; margin-top: 2px;">
+                            Rp {{ product.price|floatformat:0 }}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 11px; font-weight: 800; color: #94a3b8;">STATUS STOK</div>
+                        <div style="font-size: 16px; font-weight: 800; {% if product.stock <= 1 %}color: #f59e0b;{% else %}color: #10b981;{% endif %} margin-top: 2px;">
+                            {% if product.stock > 0 %}
+                                ● {{ product.stock }} Unit Tersedia
+                            {% else %}
+                                ✕ Stok Habis
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Virtual Binder Perk Callout -->
+                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(236, 72, 153, 0.08)); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 12px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px;">
+                    <span style="font-size: 26px;">🎴</span>
+                    <div>
+                        <strong style="color: #ffffff; font-size: 13px; display: block; margin-bottom: 2px;">Fitur Eksklusif: Auto-Sync Virtual Binder</strong>
+                        <p style="font-size: 12px; color: #c4b5fd; margin: 0; line-height: 1.5;">
+                            Saat pembayaran pesanan fisik kartu ini terkonfirmasi, slot digital pada <strong>Virtual Binder</strong> akun Anda akan otomatis terbuka dan berwarna.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Button Row -->
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    {% if request.user.is_authenticated %}
+                        {% if product.stock > 0 %}
+                            <button type="button" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; width: 100%; border: none; cursor: pointer;" onclick="alert('Pesanan untuk {{ product.name }} berhasil diproses! Silakan periksa status transaksi di dashboard Anda.');">
+                                🛒 Konfirmasi Beli Sekarang (Rp {{ product.price|floatformat:0 }})
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; width: 100%; background: #222834; color: #94a3b8; cursor: not-allowed; box-shadow: none;" disabled>
+                                Stok Habis / Sold Out
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; text-align: center;">
+                            🔐 Masuk untuk Membeli & Klaim Slot Binder
+                        </a>
+                        <a href="{% url 'register' %}" class="btn-hero-outline" style="text-align: center; font-size: 13px; padding: 11px;">
+                            Daftar Akun Kolektor Baru
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Specifications Card -->
+                <div style="background: #11151f; border: 1px solid #222834; border-radius: 12px; padding: 20px;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 14px; border-bottom: 1px solid #222834; padding-bottom: 8px;">
+                        Spesifikasi & Kondisi Kartu
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; margin-bottom: 16px;">
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">GRUP / FANDOM</span>
+                            <strong style="color: #ffffff;">{{ product.fandom_group|default:"aespa" }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">MEMBER</span>
+                            <strong style="color: #ffffff;">{{ product.member_bias|default:"All Member" }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">ERA / KATEGORI</span>
+                            <strong style="color: #ffffff;">{{ product.category.name }}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">GRADE KONDISI FISIK</span>
+                            <strong style="color: #10b981;">{{ product.card_grade }}</strong>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 4px;">DESKRIPSI LENGKAP:</div>
+                    <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
+                        {{ product.description|linebreaks }}
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4-Layer Safe Packaging Protocol (Reassurance) -->
+        <section class="protocol-section" style="margin-top: 24px;">
+            <div class="protocol-header">
+                <span class="protocol-pretitle">STANDAR PENGIRIMAN RESMI</span>
+                <h2>KartuTa 4-Layer Safe Packaging Protocol</h2>
+                <p>Setiap photocard yang Anda beli dilindungi dengan standar keamanan material 4 lapis:</p>
+            </div>
+
+            <div class="protocol-grid">
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 01</span>
+                    <h4>Acid-Free Inner Sleeve</h4>
+                    <p>Melindungi permukaan glossy kartu dari goresan halus dan debu mikro.</p>
+                </div>
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 02</span>
+                    <h4>Ultra-Rigid Toploader</h4>
+                    <p>Plastik polimer tebal penahan benturan agar kartu tidak melengkung.</p>
+                </div>
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 03</span>
+                    <h4>Double Yellow Board</h4>
+                    <p>Penjepit karton padat bertekanan tinggi penahan beban guncangan paket.</p>
+                </div>
+                <div class="protocol-col">
+                    <span class="protocol-step">Lapis 04</span>
+                    <h4>Bubble Mailer Seal</h4>
+                    <p>Amplop bantalan gelembung tebal kedap air dengan segel pengaman resmi.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Products Section -->
+        {% if related_products %}
+            <section style="margin-top: 16px;">
+                <div class="catalog-top-heading" style="margin-bottom: 20px;">
+                    <div>
+                        <h2 class="catalog-title">Photocard Lain di Era Ini</h2>
+                        <p class="catalog-desc">Koleksi lainnya dari kategori {{ product.category.name }}.</p>
+                    </div>
+                </div>
+
+                <div class="pro-product-grid">
+                    {% for item in related_products %}
+                        <article class="pro-card">
+                            <div class="pro-card-image-wrapper">
+                                <div class="badge-overlay-header">
+                                    {% if item.is_official_verified %}
+                                        <span class="pro-badge-official">OFFICIAL</span>
+                                    {% endif %}
+                                    <span class="pro-badge-era">{{ item.fandom_group|default:item.category.name }}</span>
+                                </div>
+
+                                <div class="pro-image-holder">
+                                    {% if item.image_utama %}
+                                        <img src="{{ item.image_utama.url }}" alt="{{ item.name }}" loading="lazy">
+                                    {% else %}
+                                        <div class="pro-image-placeholder">
+                                            <span>🎴</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="badge-overlay-bottom">
+                                    {% if 'Mint' in item.card_grade %}
+                                        <span class="grade-chip grade-mint">MINT</span>
+                                    {% else %}
+                                        <span class="grade-chip grade-standard">GRADE B</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="pro-card-body">
+                                <div class="pro-item-sub">{{ item.category.name }}</div>
+                                <h3 class="pro-item-title" title="{{ item.name }}">{{ item.name }}</h3>
+
+                                <div class="pro-item-meta">
+                                    <div class="meta-price-box">
+                                        <span class="lbl-small">HARGA</span>
+                                        <span class="val-price">Rp {{ item.price|floatformat:0 }}</span>
+                                    </div>
+                                    <div class="meta-stock-box">
+                                        <span class="lbl-small">STOK</span>
+                                        <span class="val-stock {% if item.stock <= 1 %}stock-low{% endif %}">
+                                            {{ item.stock }} Pcs
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <a href="{% url 'produk_detail' item.id %}" class="btn-pro-action">
+                                    Beli Sekarang
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+    </main>
+
+    <!-- Professional Clean Footer -->
+    <footer class="pro-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="pro-brand" style="margin-bottom: 12px;">
+                    <span class="pro-logo-badge">KT</span>
+                    <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
+                </div>
+                <p class="footer-desc">Platform etalase photocard terverifikasi pertama di Indonesia dengan integrasi portofolio Virtual Binder kolektor.</p>
+            </div>
+            <div class="footer-links-col">
+                <h5>Navigasi Toko</h5>
+                <a href="{% url 'home' %}">Etalase Produk</a>
+                <a href="{% url 'app:index' %}">Virtual Binder</a>
+                <a href="{% url 'login' %}">Masuk Akun</a>
+            </div>
+            <div class="footer-links-col">
+                <h5>Keamanan & Layanan</h5>
+                <span>Standar Grading Mint</span>
+                <span>4-Layer Safe Packing</span>
+                <span>Garansi Uang Kembali</span>
+            </div>
+        </div>
+        <div class="footer-bottom-bar">
+            <span>© 2026 KartuTa E-Commerce Platform • Built with Django 5.2, Pure Custom CSS & Cloud PostgreSQL</span>
+        </div>
+    </footer>
+
+</body>
+</html>

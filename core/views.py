@@ -1,9 +1,20 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from app.models import UserAdmin, UserPengguna, Product, Category
+
+
+def produkDetailView(request, id):
+    product = get_object_or_404(Product.objects.select_related('category'), id=id)
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
+    context = {
+        'title': f'{product.name} • KartuTa Authentic Store',
+        'product': product,
+        'related_products': related_products,
+    }
+    return render(request, 'homepage/detail_produk.html', context)
 
 
 def homeView(request):
