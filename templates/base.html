@@ -109,10 +109,6 @@
                 <div class="topbar-title">{% block page_title %}Dashboard Pengguna{% endblock %}</div>
             </div>
             <div class="topbar-right">
-                <a href="{% url 'home' %}" style="text-decoration: none; color: #ffffff; font-size: 12px; font-weight: 700; background: #222834; border: 1px solid #2a3346; padding: 5px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
-                    <span>🏠</span>
-                    <span>Ke Beranda Toko</span>
-                </a>
                 <span class="notif-badge-pill">100% OFFICIAL</span>
                 <div class="topbar-user">
                     <span style="font-size: 13px; font-weight: 600; color: #FFFFFF;">{{ request.user.first_name|default:request.user.username }}</span>
