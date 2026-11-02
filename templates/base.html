@@ -15,7 +15,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="{% url 'app:index' %}" class="sidebar-brand">
+            <a href="{% url 'home' %}" class="sidebar-brand" title="Kembali ke Beranda Toko">
                 <span class="logo-box">KT</span>
                 <span>Kartu<span class="tag">Ta</span></span>
                 <span class="badge-store">OFFICIAL</span>
@@ -25,6 +25,12 @@
         <nav class="sidebar-nav">
             <ul class="sidebar-menu">
                 {% if request.user.last_name == 'Super Admin' or request.user.is_staff %}
+                    <li>
+                        <a href="{% url 'home' %}">
+                            <span class="icon">🏠</span>
+                            <span>Lihat Beranda Toko</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="{% url 'app:dashboard_admin' %}" class="{% if request.resolver_match.url_name == 'dashboard_admin' or request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'index' %}active{% endif %}">
                             <span class="icon">📊</span>
@@ -57,9 +63,15 @@
                     </li>
                 {% else %}
                     <li>
+                        <a href="{% url 'home' %}">
+                            <span class="icon">🏠</span>
+                            <span>Beranda Toko</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{% url 'app:dashboard_pengguna' %}" class="{% if request.resolver_match.url_name == 'dashboard_pengguna' or request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'index' %}active{% endif %}">
                             <span class="icon">⊞</span>
-                            <span>Dashboard</span>
+                            <span>Dashboard & Binder</span>
                         </a>
                     </li>
                     <li>
@@ -97,6 +109,10 @@
                 <div class="topbar-title">{% block page_title %}Dashboard Pengguna{% endblock %}</div>
             </div>
             <div class="topbar-right">
+                <a href="{% url 'home' %}" style="text-decoration: none; color: #ffffff; font-size: 12px; font-weight: 700; background: #222834; border: 1px solid #2a3346; padding: 5px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                    <span>🏠</span>
+                    <span>Ke Beranda Toko</span>
+                </a>
                 <span class="notif-badge-pill">100% OFFICIAL</span>
                 <div class="topbar-user">
                     <span style="font-size: 13px; font-weight: 600; color: #FFFFFF;">{{ request.user.first_name|default:request.user.username }}</span>
