@@ -2755,8 +2755,30 @@ body {
     grid-template-columns: 1fr;
     gap: 28px;
   }
-  .pro-product-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+/* Compact User Icon Button */
+.btn-pro-icon-user {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #1c2230;
+  border: 1px solid var(--border-light, #2d3748);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-pro-icon-user:hover {
+  background: var(--primary, #8b5cf6);
+  border-color: var(--primary, #8b5cf6);
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(139, 92, 246, 0.5);
+}
+
+.btn-pro-icon-user svg {
+  width: 18px;
+  height: 18px;
 }
