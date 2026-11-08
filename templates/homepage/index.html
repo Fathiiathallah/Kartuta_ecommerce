@@ -5,18 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:"KartuTa • Official K-Pop Photocard Store & Virtual Binder Platform" }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3.0">
 </head>
 <body class="pro-body">
 
     <!-- Top Announcement Micro Bar -->
     <aside class="announcement-bar">
         <div class="announcement-inner">
-            <span>🛡️ GARANSI KEASLIAN 100% ATAU REFUND PENUH</span>
+            <span class="announcement-pill">OFFICIAL STORE</span>
+            <span>GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</span>
             <span class="announcement-bullet">•</span>
-            <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER SETIAP PEMBELIAN</span>
+            <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER</span>
             <span class="announcement-bullet">•</span>
-            <span>AUTO-SYNC VIRTUAL BINDER AKTIF</span>
+            <span>AUTO-SYNC VIRTUAL BINDER</span>
         </div>
     </aside>
 
@@ -27,32 +28,44 @@
             <a href="{% url 'home' %}" class="pro-brand">
                 <span class="pro-logo-badge">KT</span>
                 <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
-                <span class="pro-store-pill">AUTHENTIC STORE</span>
+                <span class="pro-store-pill">100% OFFICIAL</span>
             </a>
 
-            <!-- Search Bar Mockup (Ecommerce Utility) -->
-            <div class="nav-search-wrap">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Cari photocard, era, member, atau album..." class="nav-search-input" readonly onclick="window.location.href='#katalog-etalase'">
-                <kbd class="search-shortcut">ESC</kbd>
-            </div>
+            <!-- Center Navigation Links (Clean, Spaced, No Underline) -->
+            <nav class="pro-nav-links" style="display: flex; align-items: center; gap: 24px;">
+                <a href="{% url 'home' %}" class="nav-link-item active-nav-link" id="nav-home" style="color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Home</a>
+                <a href="#katalog-etalase" class="nav-link-item" id="nav-produk" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Produk</a>
+                <a href="#artikel-kolektor" class="nav-link-item" id="nav-artikel" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Artikel</a>
+                <a href="#mitra-kerjasama" class="nav-link-item" id="nav-mitra" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
+            </nav>
 
-            <!-- Action Buttons -->
+            <!-- Right Controls -->
             <div class="pro-nav-actions">
+                <!-- Search Bar Utility -->
+                <div class="nav-search-wrap" style="position: relative; width: 250px;">
+                    <span class="search-icon" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94A3B8; display: flex; align-items: center; pointer-events: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </span>
+                    <input type="text" placeholder="Cari photocard..." class="nav-search-input" style="width: 100%; height: 38px; line-height: 38px; padding-left: 38px; padding-right: 48px; background: rgba(22, 27, 38, 0.85); border: 1px solid #334155; border-radius: 20px; color: #FFFFFF; font-size: 13px; outline: none; cursor: pointer; box-sizing: border-box;" readonly onclick="window.location.href='#katalog-etalase'">
+                    <kbd class="search-shortcut" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #11151f; border: 1px solid #334155; color: #A78BFA; border-radius: 6px; font-size: 10px; font-weight: 700; padding: 2px 7px; line-height: 1; pointer-events: none;">⌘K</kbd>
+                </div>
+
+                <!-- Action Buttons -->
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
-                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" style="width: 38px; height: 38px; border-radius: 50%; background: #1c2230; border: 1px solid #333d52; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; text-decoration: none;" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
-                            🛡️
+                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
+                            <span style="font-size: 15px;">🛡️</span>
                         </a>
                     {% else %}
-                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" style="width: 38px; height: 38px; border-radius: 50%; background: #1c2230; border: 1px solid #333d52; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; text-decoration: none;" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
-                            👤
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
+                            <span class="user-live-dot"></span>
+                            <span style="font-size: 15px;">👤</span>
                         </a>
                     {% endif %}
-                    <a href="{% url 'logout' %}" class="btn-pro-nav btn-pro-ghost" title="Keluar / Logout">Keluar</a>
+                    <a href="{% url 'logout' %}" class="btn-pro-ghost" title="Keluar / Logout">Keluar</a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn-pro-nav btn-pro-ghost">Masuk</a>
-                    <a href="{% url 'register' %}" class="btn-pro-nav btn-pro-primary">Daftar Kolektor</a>
+                    <a href="{% url 'login' %}" class="btn-pro-ghost">Masuk</a>
+                    <a href="{% url 'register' %}" class="btn-pro-primary">Daftar Kolektor</a>
                 {% endif %}
             </div>
         </div>
@@ -62,90 +75,122 @@
 
         <!-- Asymmetric Modern Hero Section -->
         <section class="pro-hero-grid">
-            <!-- Left Hero Card (Big Impact) -->
+            <!-- Left Hero Card (Brand Value Proposition) -->
             <div class="hero-main-card">
                 <div class="hero-badge-wrap">
                     <span class="live-indicator"></span>
-                    <span class="hero-badge-text">INDONESIA FIRST HYBRID PHOTOCARD ECOSYSTEM</span>
+                    <span class="hero-badge-text">K-POP OFFICIAL PHOTOCARD ARCHIVE</span>
                 </div>
                 <h1 class="hero-headline">
-                    Beli Photocard Official, <br>
-                    Langsung Sync ke <span class="text-glow-gradient">Virtual Binder</span>.
+                    Kurasi Photocard Official. <br>
+                    Terverifikasi <span class="text-glow-gradient">100% Mint Condition</span>.
                 </h1>
                 <p class="hero-subtext">
-                    Nikmati sensasi mengoleksi fisik berstandar kurasi mint condition dengan sinkronisasi portofolio kartu digital real-time di akun Anda.
+                    Beli photocard idola resmi bergaransi keaslian agensi. Setiap pesanan fisik diperiksa ketat oleh staf QC dan otomatis membuka slot digital portofolio Virtual Binder Anda.
                 </p>
                 <div class="hero-btn-row">
-                    <a href="#katalog-etalase" class="btn-hero-solid">Jelajahi Etalase &darr;</a>
+                    <a href="#katalog-etalase" class="btn-hero-solid">Jelajahi Koleksi &darr;</a>
                     {% if request.user.is_authenticated %}
-                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-hero-outline">Periksa Binder Saya &rarr;</a>
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-hero-outline">Buka Virtual Binder &rarr;</a>
                     {% else %}
-                        <a href="{% url 'register' %}" class="btn-hero-outline">Buka Akun Kolektor &rarr;</a>
+                        <a href="{% url 'register' %}" class="btn-hero-outline">Daftar Akun Kolektor &rarr;</a>
                     {% endif %}
                 </div>
-                <!-- Quick Metric -->
-                <div class="hero-metrics-bar">
-                    <div class="metric-col">
-                        <span class="metric-val">100%</span>
-                        <span class="metric-lbl">Jaminan Keaslian</span>
+                <!-- Collector Assurance Guarantees -->
+                <div class="hero-assurance-bar">
+                    <div class="assurance-item">
+                        <span class="assurance-check">✓</span>
+                        <span class="assurance-text">100% Cetakan Asli Agensi</span>
                     </div>
-                    <div class="metric-sep"></div>
-                    <div class="metric-col">
-                        <span class="metric-val">4-Layer</span>
-                        <span class="metric-lbl">Packing Safety</span>
+                    <div class="assurance-item">
+                        <span class="assurance-check">✓</span>
+                        <span class="assurance-text">Free Toploader & Sleeve</span>
                     </div>
-                    <div class="metric-sep"></div>
-                    <div class="metric-col">
-                        <span class="metric-val">Realtime</span>
-                        <span class="metric-lbl">Binder Unlocked</span>
+                    <div class="assurance-item">
+                        <span class="assurance-check">✓</span>
+                        <span class="assurance-text">Auto-Sync Virtual Binder</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Hero Card (Collector Promo Showcase) -->
-            <div class="hero-side-card">
-                <div class="side-card-tag">SPOTLIGHT RELEASE</div>
-                <div class="side-card-content">
-                    <span class="side-chip">AESPA • ARMAGEDDON</span>
-                    <h3>Curated Collector Drops</h3>
-                    <p>Photocard era comeback verified grade A. Setiap pengiriman dilengkapi proteksi ultra rigid toploader.</p>
-                    <div class="side-perks">
-                        <div class="perk-item">✓ Verified Authentic Seal</div>
-                        <div class="perk-item">✓ No Scratch / Mint Condition</div>
+            <!-- Right Hero Card (Dynamic Hero Slide Spotlight) -->
+            <div class="hero-side-slider-wrap" style="position: relative;">
+                {% if hero_slides %}
+                    {% for slide in hero_slides %}
+                        <div class="hero-side-card hero-side-slide-item" id="side-slide-{{ forloop.counter }}" style="{% if not forloop.first %}display: none;{% endif %} height: 100%; {% if slide.gambar %}background: linear-gradient(180deg, rgba(17, 21, 31, 0.82) 0%, rgba(17, 21, 31, 0.96) 100%), url('{{ slide.gambar.url }}') center/cover no-repeat;{% endif %}">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="side-card-tag">{{ slide.badge_text|default:"SPOTLIGHT RELEASE" }}</div>
+                                {% if hero_slides|length > 1 %}
+                                    <div style="display: flex; gap: 6px; align-items: center;">
+                                        {% for s in hero_slides %}
+                                            <button type="button" onclick="switchSideSlide({{ forloop.counter }})" class="side-indicator-dot dot-side-{{ forloop.counter }}" style="width: {% if forloop.first %}22px{% else %}8px{% endif %}; height: 6px; border-radius: 3px; border: none; cursor: pointer; transition: all 0.2s; background: {% if forloop.first %}var(--magenta, #ec4899){% else %}#333d52{% endif %};" title="Slide {{ forloop.counter }}"></button>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="side-card-content">
+                                <span class="side-chip">{{ slide.badge_text|default:"OFFICIAL DROP" }}</span>
+                                <h3>{{ slide.judul|safe }}</h3>
+                                <p>{{ slide.subjudul|default:"Photocard era comeback verified grade A. Setiap pengiriman dilengkapi proteksi ultra rigid toploader." }}</p>
+                                
+                                <div class="side-perks">
+                                    <div class="perk-item">✓ Verified Authentic Seal</div>
+                                    <div class="perk-item">✓ No Scratch / Mint Condition</div>
+                                </div>
+                                
+                                <a href="{{ slide.link_url|default:'#katalog-etalase' }}" class="side-action-btn">
+                                    {{ slide.tombol_teks|default:"Lihat Koleksi Lengkap" }}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="hero-side-card" style="height: 100%;">
+                        <div class="side-card-tag">SPOTLIGHT RELEASE</div>
+                        <div class="side-card-content">
+                            <span class="side-chip">AESPA • ARMAGEDDON</span>
+                            <h3>Curated Collector Drops</h3>
+                            <p>Photocard era comeback verified grade A. Setiap pengiriman dilengkapi proteksi ultra rigid toploader.</p>
+                            <div class="side-perks">
+                                <div class="perk-item">✓ Verified Authentic Seal</div>
+                                <div class="perk-item">✓ No Scratch / Mint Condition</div>
+                            </div>
+                            <a href="#katalog-etalase" class="side-action-btn">Lihat Koleksi Lengkap</a>
+                        </div>
                     </div>
-                    <a href="#katalog-etalase" class="side-action-btn">Lihat Koleksi Lengkap</a>
-                </div>
+                {% endif %}
             </div>
         </section>
 
-        <!-- Trust Badges Bar -->
-        <section class="trust-grid-bar">
-            <div class="trust-box">
-                <div class="trust-icon">🔍</div>
-                <div class="trust-detail">
-                    <h4>Verifikasi Keaslian Fisik</h4>
-                    <p>Kurasi detail cetakan, tekstur, & sudut pemotongan asli agensi.</p>
+        <!-- Minimalist Trust Strip (Replaces bulky emoji cards) -->
+        <section class="trust-strip-container">
+            <div class="trust-item-minimal">
+                <div class="trust-item-icon">🔍</div>
+                <div class="trust-item-detail">
+                    <h4>Verifikasi Fisik Ketat</h4>
+                    <p>Inspeksi tekstur cetak, ketebalan art karton, dan keaslian hologram.</p>
                 </div>
             </div>
-            <div class="trust-box">
-                <div class="trust-icon">📦</div>
-                <div class="trust-detail">
+            <div class="trust-item-minimal">
+                <div class="trust-item-icon">🛡️</div>
+                <div class="trust-item-detail">
                     <h4>Standar Packing 4 Lapis</h4>
-                    <p>Sleeve bebas asam, toploader tebal, yellow board, & bubble bag.</p>
+                    <p>Inner sleeve bebas asam, toploader 35pt tebal, dan karton board penjepit.</p>
                 </div>
             </div>
-            <div class="trust-box">
-                <div class="trust-icon">🎴</div>
-                <div class="trust-detail">
-                    <h4>Virtual Binder Terintegrasi</h4>
-                    <p>Kartu fisik tiba, inventaris digital akun langsung berwarna.</p>
+            <div class="trust-item-minimal">
+                <div class="trust-item-icon">🎴</div>
+                <div class="trust-item-detail">
+                    <h4>Virtual Binder Otomatis</h4>
+                    <p>Inventaris digital di akun Anda terbuka saat pembelian fisik terkonfirmasi.</p>
                 </div>
             </div>
-            <div class="trust-box">
-                <div class="trust-icon">⚡</div>
-                <div class="trust-detail">
-                    <h4>Pengiriman Ekspedisi Cepat</h4>
-                    <p>Pelacakan nomor resi otomatis terupdate di panel transaksi.</p>
+            <div class="trust-item-minimal">
+                <div class="trust-item-icon">⚡</div>
+                <div class="trust-item-detail">
+                    <h4>Ekspedisi Cepat & Terlacak</h4>
+                    <p>Nomor resi pengiriman real-time langsung tercatat di status transaksi.</p>
                 </div>
             </div>
         </section>
@@ -246,12 +291,12 @@
             {% endif %}
         </section>
 
-        <!-- Collector Safety Standard (4-Layer Protocol) -->
+        <!-- Collector Packaging Protocol (Blueprint Style) -->
         <section class="protocol-section">
             <div class="protocol-header">
-                <span class="protocol-pretitle">SECURITY ASSURANCE</span>
-                <h2>KartuTa 4-Layer Safe Packaging Protocol</h2>
-                <p>Kekhawatiran terbesar kolektor adalah kerusakan kartu saat pengiriman. Kami mengeliminasi risiko tersebut dengan 4 lapis perlindungan material kaku:</p>
+                <span class="protocol-pretitle">STANDAR PROTEKSI KOLEKSI</span>
+                <h2>Protokol Kemasan 4 Lapis KartuTa</h2>
+                <p>Kekhawatiran terbesar kolektor adalah kartu melengkung atau tergores saat transit. Setiap kartu kami kirimkan dengan 4 lapis perlindungan material kaku:</p>
             </div>
 
             <div class="protocol-grid">
@@ -262,23 +307,118 @@
                 </div>
                 <div class="protocol-col">
                     <span class="protocol-step">Lapis 02</span>
-                    <h4>Ultra-Rigid Toploader</h4>
+                    <h4>Ultra-Rigid Toploader 35pt</h4>
                     <p>Plastik polimer tebal penahan benturan agar kartu tidak melengkung.</p>
                 </div>
                 <div class="protocol-col">
                     <span class="protocol-step">Lapis 03</span>
-                    <h4>Double Yellow Board</h4>
+                    <h4>Double Yellow Board Sandwich</h4>
                     <p>Penjepit karton padat bertekanan tinggi penahan beban guncangan paket.</p>
                 </div>
                 <div class="protocol-col">
                     <span class="protocol-step">Lapis 04</span>
-                    <h4>Bubble Mailer Seal</h4>
+                    <h4>Bubble Mailer Waterproof Seal</h4>
                     <p>Amplop bantalan gelembung tebal kedap air dengan segel pengaman resmi.</p>
                 </div>
             </div>
         </section>
 
+        <!-- Artikel & Edukasi Kolektor Section -->
+        {% if artikel_list %}
+        <section id="artikel-kolektor" class="catalog-wrapper" style="margin-top: 10px;">
+            <div class="catalog-top-heading">
+                <div>
+                    <h2 class="catalog-title">Artikel & Panduan Kolektor</h2>
+                    <p class="catalog-desc">Edukasi verifikasi keaslian, grading kondisi fisik, dan perawatan photocard resmi.</p>
+                </div>
+                <div class="catalog-count-pill">{{ artikel_list.count }} Artikel Terbit</div>
+            </div>
+
+            <div class="articles-grid">
+                {% for art in artikel_list %}
+                    <article class="article-card-editorial">
+                        <div>
+                            <span class="side-chip" style="margin-bottom: 12px; font-size: 10px;">{{ art.kategori.nama_kategori }}</span>
+                            <h3 style="font-size: 17px; font-weight: 800; color: #FFFFFF; line-height: 1.4; margin-bottom: 10px;">
+                                <a href="{% url 'artikel_detail' art.slug %}" style="color: inherit; text-decoration: none;">{{ art.judul }}</a>
+                            </h3>
+                            <p style="font-size: 13px; color: #94A3B8; line-height: 1.6; margin-bottom: 18px;">{{ art.konten|truncatewords:28 }}</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 12px; font-size: 11px; color: #64748B;">
+                            <span>✍️ {{ art.penulis.first_name|default:art.penulis.username|default:"Editor Resmi" }}</span>
+                            <a href="{% url 'artikel_detail' art.slug %}" style="color: #8B5CF6; text-decoration: none; font-weight: 700;">Baca Panduan Lengkap &rarr;</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Mitra & Ekspedisi Resmi -->
+        {% if mitra_list %}
+        <section id="mitra-kerjasama" style="background: #11151F; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 28px 24px; text-align: center;">
+            <div style="font-size: 10px; font-weight: 800; color: #8B5CF6; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;">JARINGAN EKSPEDISI & LOGISTIK RESMI</div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">Didukung Ekspedisi Terpercaya dengan Resi Otomatis</h3>
+            <p style="font-size: 12px; color: #94A3B8; margin-bottom: 20px;">Integrasi pelacakan kurir terpadu langsung di dashboard transaksi Anda.</p>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap;">
+                {% for m in mitra_list %}
+                    <div style="background: #161B26; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 22px; font-size: 13px; font-weight: 700; color: #FFFFFF; display: inline-flex; align-items: center; gap: 10px;">
+                        <span>📦</span>
+                        <span>{{ m.nama_mitra }}</span>
+                        <span style="font-size: 10px; color: #10B981; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 7px; border-radius: 4px;">{{ m.kategori_mitra }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
     </main>
+
+    <!-- Slide Switcher & Scrollspy JS -->
+    <script>
+        function switchSideSlide(targetIdx) {
+            document.querySelectorAll('.hero-side-slide-item').forEach(function(slide, i) {
+                slide.style.display = (i + 1 === targetIdx) ? 'flex' : 'none';
+            });
+            document.querySelectorAll('.side-indicator-dot').forEach(function(dot) {
+                dot.style.background = '#333d52';
+                dot.style.width = '8px';
+            });
+            document.querySelectorAll('.dot-side-' + targetIdx).forEach(function(dot) {
+                dot.style.background = 'var(--magenta, #ec4899)';
+                dot.style.width = '22px';
+            });
+        }
+
+        // Navbar Scrollspy Highlight
+        window.addEventListener('scroll', function() {
+            var scrollPos = window.scrollY + 240;
+            var secProduk = document.getElementById('katalog-etalase');
+            var secArtikel = document.getElementById('artikel-kolektor');
+            var secMitra = document.getElementById('mitra-kerjasama');
+
+            var current = 'home';
+            if (secMitra && scrollPos >= secMitra.offsetTop) {
+                current = 'mitra';
+            } else if (secArtikel && scrollPos >= secArtikel.offsetTop) {
+                current = 'artikel';
+            } else if (secProduk && scrollPos >= secProduk.offsetTop) {
+                current = 'produk';
+            }
+
+            document.querySelectorAll('.nav-link-item').forEach(function(item) {
+                item.classList.remove('active-nav-link');
+                item.style.color = '#94A3B8';
+                item.style.fontWeight = '600';
+            });
+            var activeNav = document.getElementById('nav-' + current);
+            if (activeNav) {
+                activeNav.classList.add('active-nav-link');
+                activeNav.style.color = '#FFFFFF';
+                activeNav.style.fontWeight = '700';
+            }
+        });
+    </script>
 
     <!-- Professional Clean Footer -->
     <footer class="pro-footer">

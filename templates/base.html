@@ -55,6 +55,47 @@
                             <span>Kelola Produk</span>
                         </a>
                     </li>
+
+                    <!-- ARTIKEL & HALAMAN -->
+                    <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: #64748B; letter-spacing: 0.8px; text-transform: uppercase;">
+                        ARTIKEL & HALAMAN
+                    </li>
+                    <li>
+                        <a href="{% url 'app:artikel_list' %}" class="{% if 'artikel' in request.resolver_match.url_name and 'kategori' not in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">📝</span>
+                            <span>Kelola Artikel</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:kategori_artikel_list' %}" class="{% if 'kategori_artikel' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">📁</span>
+                            <span>Kategori Artikel</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:halaman_list' %}" class="{% if 'halaman' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">📄</span>
+                            <span>Kelola Halaman</span>
+                        </a>
+                    </li>
+
+                    <!-- TAMPILAN & MITRA -->
+                    <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: #64748B; letter-spacing: 0.8px; text-transform: uppercase;">
+                        TAMPILAN & MITRA
+                    </li>
+                    <li>
+                        <a href="{% url 'app:hero_slide_list' %}" class="{% if 'hero_slide' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">🖼️</span>
+                            <span>Hero Slide</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:kerjasama_list' %}" class="{% if 'kerjasama' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">🤝</span>
+                            <span>Kerja Sama</span>
+                        </a>
+                    </li>
+
                     <li>
                         <a href="/admin/" target="_blank">
                             <span class="icon">⚙️</span>

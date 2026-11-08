@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from app.models import UserAdmin, UserPengguna, Product, Category
+from app.models import UserAdmin, UserPengguna, Product, Category, HeroSlide, Artikel, KategoriArtikel, Halaman, KerjaSama
 
 
 def produkDetailView(request, id):
@@ -17,6 +17,17 @@ def produkDetailView(request, id):
     return render(request, 'homepage/detail_produk.html', context)
 
 
+def artikelDetailView(request, slug):
+    artikel = get_object_or_404(Artikel.objects.select_related('kategori', 'penulis'), slug=slug, is_published=True)
+    related_articles = Artikel.objects.filter(is_published=True).exclude(id=artikel.id)[:3]
+    context = {
+        'title': f'{artikel.judul} • Panduan Kolektor KartuTa',
+        'artikel': artikel,
+        'related_articles': related_articles,
+    }
+    return render(request, 'homepage/detail_artikel.html', context)
+
+
 def homeView(request):
     category_id = request.GET.get('category')
     if category_id:
@@ -25,6 +36,9 @@ def homeView(request):
         products = Product.objects.select_related('category').all().order_by('-created_at')
 
     categories = Category.objects.all()
+    hero_slides = HeroSlide.objects.filter(aktif=True).order_by('urutan')
+    artikel_list = Artikel.objects.filter(is_published=True).select_related('kategori')[:3]
+    mitra_list = KerjaSama.objects.filter(aktif=True)
 
     context = {
         'title': 'KartuTa - K-Pop Photocard Official E-Commerce',
@@ -32,6 +46,10 @@ def homeView(request):
         'products': products,
         'categories': categories,
         'active_category': category_id,
+        'hero_slides': hero_slides,
+        'first_slide': hero_slides.first(),
+        'artikel_list': artikel_list,
+        'mitra_list': mitra_list,
     }
     return render(request, 'homepage/index.html', context)
 

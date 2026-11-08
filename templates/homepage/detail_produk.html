@@ -5,18 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:product.name }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3.0">
 </head>
 <body class="pro-body">
 
     <!-- Top Announcement Micro Bar -->
     <aside class="announcement-bar">
         <div class="announcement-inner">
-            <span>🛡️ GARANSI KEASLIAN 100% ATAU REFUND PENUH</span>
+            <span class="announcement-pill">OFFICIAL STORE</span>
+            <span>GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</span>
             <span class="announcement-bullet">•</span>
-            <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER SETIAP PEMBELIAN</span>
+            <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER</span>
             <span class="announcement-bullet">•</span>
-            <span>AUTO-SYNC VIRTUAL BINDER AKTIF</span>
+            <span>AUTO-SYNC VIRTUAL BINDER</span>
         </div>
     </aside>
 
@@ -26,27 +27,36 @@
             <a href="{% url 'home' %}" class="pro-brand">
                 <span class="pro-logo-badge">KT</span>
                 <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
-                <span class="pro-store-pill">AUTHENTIC STORE</span>
+                <span class="pro-store-pill">100% OFFICIAL</span>
             </a>
 
+            <!-- Center Navigation Links (Clean, Spaced, No Underline) -->
+            <nav class="pro-nav-links" style="display: flex; align-items: center; gap: 24px;">
+                <a href="{% url 'home' %}" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Home</a>
+                <a href="{% url 'home' %}#katalog-etalase" class="nav-link-item active-nav-link" style="color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Produk</a>
+                <a href="{% url 'home' %}#artikel-kolektor" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Artikel</a>
+                <a href="{% url 'home' %}#mitra-kerjasama" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
+            </nav>
+
             <div class="pro-nav-actions">
-                <a href="{% url 'home' %}#katalog-etalase" class="btn-pro-nav btn-pro-ghost">
+                <a href="{% url 'home' %}#katalog-etalase" class="btn-pro-ghost">
                     ← Kembali ke Etalase
                 </a>
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
-                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" style="width: 38px; height: 38px; border-radius: 50%; background: #1c2230; border: 1px solid #333d52; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; text-decoration: none;" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
-                            🛡️
+                        <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
+                            <span style="font-size: 15px;">🛡️</span>
                         </a>
                     {% else %}
-                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" style="width: 38px; height: 38px; border-radius: 50%; background: #1c2230; border: 1px solid #333d52; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; text-decoration: none;" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
-                            👤
+                        <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
+                            <span class="user-live-dot"></span>
+                            <span style="font-size: 15px;">👤</span>
                         </a>
                     {% endif %}
-                    <a href="{% url 'logout' %}" class="btn-pro-nav btn-pro-ghost" title="Keluar / Logout">Keluar</a>
+                    <a href="{% url 'logout' %}" class="btn-pro-ghost" title="Keluar / Logout">Keluar</a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn-pro-nav btn-pro-ghost">Masuk</a>
-                    <a href="{% url 'register' %}" class="btn-pro-nav btn-pro-primary">Daftar Kolektor</a>
+                    <a href="{% url 'login' %}" class="btn-pro-ghost">Masuk</a>
+                    <a href="{% url 'register' %}" class="btn-pro-primary">Daftar Kolektor</a>
                 {% endif %}
             </div>
         </div>

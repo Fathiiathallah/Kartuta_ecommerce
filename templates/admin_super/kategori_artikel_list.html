@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - KartuTa{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-card">
+    <div class="card-title-bar">
+        <span>Daftar Kategori Artikel & Panduan Edukasi</span>
+        <a href="{% url 'app:kategori_artikel_tambah' %}" class="btn-primary-save" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            <span>➕</span>
+            <span>Tambah Kategori Baru</span>
+        </a>
+    </div>
+
+    {% if kategori_list %}
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">No</th>
+                        <th>Nama Kategori</th>
+                        <th>Slug</th>
+                        <th>Deskripsi</th>
+                        <th style="width: 140px;">Jumlah Artikel</th>
+                        <th style="width: 100px;">Status</th>
+                        <th style="width: 160px; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in kategori_list %}
+                        <tr>
+                            <td style="color: #94A3B8;">{{ forloop.counter }}</td>
+                            <td>
+                                <strong style="color: #FFFFFF; font-size: 13px;">{{ item.nama_kategori }}</strong>
+                            </td>
+                            <td style="color: #8B5CF6; font-size: 12px; font-family: monospace;">
+                                /{{ item.slug }}
+                            </td>
+                            <td style="color: #94A3B8; font-size: 12px;">
+                                {{ item.deskripsi|default:"-" }}
+                            </td>
+                            <td>
+                                <span class="badge-tag" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #8B5CF6;">
+                                    {{ item.artikel_list.count }} Artikel
+                                </span>
+                            </td>
+                            <td>
+                                {% if item.aktif %}
+                                    <span class="badge-tag badge-unlocked">Aktif</span>
+                                {% else %}
+                                    <span class="badge-tag" style="background: #222834; color: #94A3B8;">Nonaktif</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                <div style="display: inline-flex; gap: 8px;">
+                                    <a href="{% url 'app:kategori_artikel_edit' item.id %}" class="btn-secondary" style="padding: 6px 12px; font-size: 11px;">
+                                        ✏️ Edit
+                                    </a>
+                                    <a href="{% url 'app:kategori_artikel_hapus' item.id %}" onclick="return confirm('Hapus kategori {{ item.nama_kategori }}? Semua artikel dalam kategori ini juga akan terhapus.');" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: #f87171;">
+                                        🗑️ Hapus
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 48px 16px; background: #222834; border-radius: 8px; border: 1px dashed #2a3346;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
+            <div style="font-size: 14px; font-weight: 700; color: #FFFFFF;">Belum Ada Kategori Artikel</div>
+            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px; margin-bottom: 16px;">
+                Tambahkan kategori pertama untuk mengelompokkan artikel dan tips edukasi kolektor.
+            </div>
+            <a href="{% url 'app:kategori_artikel_tambah' %}" class="btn-primary-save" style="text-decoration: none;">
+                ➕ Tambah Kategori Artikel Baru
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

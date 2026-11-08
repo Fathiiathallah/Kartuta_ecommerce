@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - KartuTa{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-card">
+    <div class="card-title-bar">
+        <span>Daftar Artikel & Panduan Edukasi Kolektor</span>
+        <a href="{% url 'app:artikel_tambah' %}" class="btn-primary-save" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            <span>➕</span>
+            <span>Tulis Artikel Baru</span>
+        </a>
+    </div>
+
+    {% if artikel_data %}
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">No</th>
+                        <th style="width: 70px;">Cover</th>
+                        <th>Judul Artikel</th>
+                        <th>Kategori</th>
+                        <th>Penulis</th>
+                        <th>Status</th>
+                        <th>Tanggal Terbit</th>
+                        <th style="width: 150px; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in artikel_data %}
+                        <tr>
+                            <td style="color: #94A3B8;">{{ forloop.counter }}</td>
+                            <td>
+                                {% if item.gambar_utama %}
+                                    <img src="{{ item.gambar_utama.url }}" alt="{{ item.judul }}" style="width: 52px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid #222834;">
+                                {% else %}
+                                    <div style="width: 52px; height: 38px; border-radius: 6px; background: #222834; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                                        📝
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">{{ item.judul }}</strong>
+                                <span style="font-size: 11px; color: #8B5CF6; font-family: monospace;">/{{ item.slug }}</span>
+                            </td>
+                            <td>
+                                <span class="badge-tag" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #8B5CF6;">
+                                    {{ item.kategori.nama_kategori }}
+                                </span>
+                            </td>
+                            <td style="color: #94A3B8; font-size: 12px;">
+                                {{ item.penulis.first_name|default:item.penulis.username|default:"Admin" }}
+                            </td>
+                            <td>
+                                {% if item.is_published %}
+                                    <span class="badge-tag badge-unlocked">Terbit</span>
+                                {% else %}
+                                    <span class="badge-tag" style="background: #222834; color: #94A3B8;">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td style="color: #94A3B8; font-size: 12px;">
+                                {{ item.created_at|date:"d M Y" }}
+                            </td>
+                            <td style="text-align: center;">
+                                <div style="display: inline-flex; gap: 8px;">
+                                    <a href="{% url 'app:artikel_edit' item.id %}" class="btn-secondary" style="padding: 6px 10px; font-size: 11px;">
+                                        ✏️ Edit
+                                    </a>
+                                    <a href="{% url 'app:artikel_hapus' item.id %}" onclick="return confirm('Hapus artikel {{ item.judul }}?');" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: #f87171;">
+                                        🗑️ Hapus
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 48px 16px; background: #222834; border-radius: 8px; border: 1px dashed #2a3346;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📝</div>
+            <div style="font-size: 14px; font-weight: 700; color: #FFFFFF;">Belum Ada Artikel yang Ditulis</div>
+            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px; margin-bottom: 16px;">
+                Mulai publikasikan artikel panduan kolektor, verifikasi keaslian kartu, dan berita seputar photocard.
+            </div>
+            <a href="{% url 'app:artikel_tambah' %}" class="btn-primary-save" style="text-decoration: none;">
+                ➕ Tulis Artikel Pertama
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - KartuTa{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="max-width: 820px; margin: 0 auto;">
+    <div class="card-title-bar">
+        <span>{% if is_edit %}Edit Artikel{% else %}Form Tulis Artikel Baru{% endif %}</span>
+        <a href="{% url 'app:artikel_list' %}" class="btn-secondary" style="font-size: 11px; padding: 6px 12px;">
+            ← Kembali ke Daftar
+        </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">JUDUL ARTIKEL <span class="req">*</span></label>
+            {{ form.judul }}
+            {% if form.judul.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.judul.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">KATEGORI ARTIKEL <span class="req">*</span></label>
+            {{ form.kategori }}
+            {% if form.kategori.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.kategori.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">KONTEN / ISI ARTIKEL <span class="req">*</span></label>
+            {{ form.konten }}
+            {% if form.konten.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.konten.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">GAMBAR UTAMA / COVER ARTIKEL</label>
+            {% if is_edit and artikel.gambar_utama %}
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px;">
+                    <img src="{{ artikel.gambar_utama.url }}" alt="Cover" style="width: 80px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #222834;">
+                    <span style="font-size: 11px; color: #94A3B8;">Gambar saat ini di server</span>
+                </div>
+            {% endif %}
+            {{ form.gambar_utama }}
+            {% if form.gambar_utama.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.gambar_utama.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 14px;">
+            {{ form.is_published }}
+            <label for="{{ form.is_published.id_for_label }}" style="font-size: 13px; font-weight: 600; color: #10B981; cursor: pointer;">
+                Publikasikan artikel ini agar langsung tayang di beranda toko
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 18px; border-top: 1px solid #222834;">
+            <button type="submit" class="btn-primary-save">
+                💾 {% if is_edit %}Simpan Perubahan Artikel{% else %}Terbitkan Artikel{% endif %}
+            </button>
+            <a href="{% url 'app:artikel_list' %}" class="btn-secondary">
+                Batal
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - KartuTa{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="max-width: 720px; margin: 0 auto;">
+    <div class="card-title-bar">
+        <span>{% if is_edit %}Edit Mitra Kerja Sama{% else %}Form Tambah Mitra Baru{% endif %}</span>
+        <a href="{% url 'app:kerjasama_list' %}" class="btn-secondary" style="font-size: 11px; padding: 6px 12px;">
+            ← Kembali ke Daftar
+        </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label">NAMA MITRA / INSTANSI <span class="req">*</span></label>
+            {{ form.nama_mitra }}
+            {% if form.nama_mitra.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.nama_mitra.errors.0 }}</div>
+            {% endif %}
+            <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Contoh: J&T Express Indonesia, Midtrans Payment Gateway, SM Entertainment Official</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">KATEGORI MITRA</label>
+            {{ form.kategori_mitra }}
+            {% if form.kategori_mitra.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.kategori_mitra.errors.0 }}</div>
+            {% endif %}
+            <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Contoh: Ekspedisi & Logistik, Payment Gateway, Komunitas Kolektor</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">DESKRIPSI KERJA SAMA</label>
+            {{ form.deskripsi }}
+            {% if form.deskripsi.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.deskripsi.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">WEBSITE / LINK PROFIL MITRA</label>
+            {{ form.link_url }}
+            {% if form.link_url.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.link_url.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">LOGO MITRA / ICON</label>
+            {% if is_edit and mitra.logo %}
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px;">
+                    <img src="{{ mitra.logo.url }}" alt="Logo" style="width: 50px; height: 50px; object-fit: contain; border-radius: 6px; background: #222834; padding: 4px;">
+                    <span style="font-size: 11px; color: #94A3B8;">Logo saat ini</span>
+                </div>
+            {% endif %}
+            {{ form.logo }}
+            {% if form.logo.errors %}
+                <div style="color: #f87171; font-size: 11px; margin-top: 4px;">{{ form.logo.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 14px;">
+            {{ form.aktif }}
+            <label for="{{ form.aktif.id_for_label }}" style="font-size: 13px; font-weight: 600; color: #10B981; cursor: pointer;">
+                Tampilkan mitra ini di halaman beranda toko
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 18px; border-top: 1px solid #222834;">
+            <button type="submit" class="btn-primary-save">
+                💾 {% if is_edit %}Simpan Perubahan Mitra{% else %}Tambahkan Mitra{% endif %}
+            </button>
+            <a href="{% url 'app:kerjasama_list' %}" class="btn-secondary">
+                Batal
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

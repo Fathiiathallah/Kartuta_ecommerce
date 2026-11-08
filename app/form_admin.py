@@ -1,5 +1,8 @@
 from django import forms
-from .models import UserAdmin, Category, Product
+from .models import (
+    UserAdmin, Category, Product,
+    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama
+)
 
 class formProfile(forms.ModelForm):
     gender = forms.ChoiceField(
@@ -79,3 +82,70 @@ class ProductForm(forms.ModelForm):
         }
 
 formProduk = ProductForm
+
+
+class KategoriArtikelForm(forms.ModelForm):
+    class Meta:
+        model = KategoriArtikel
+        fields = ['nama_kategori', 'deskripsi', 'aktif']
+        widgets = {
+            'nama_kategori': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nama Kategori (Contoh: Panduan Kolektor)'}),
+            'deskripsi': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Deskripsi singkat kategori artikel'}),
+            'aktif': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class ArtikelForm(forms.ModelForm):
+    class Meta:
+        model = Artikel
+        fields = ['judul', 'kategori', 'konten', 'gambar_utama', 'is_published']
+        widgets = {
+            'judul': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Judul Artikel / Panduan Edukasi'}),
+            'kategori': forms.Select(attrs={'class': 'form-select'}),
+            'konten': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Isi artikel lengkap...'}),
+            'gambar_utama': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class HalamanForm(forms.ModelForm):
+    class Meta:
+        model = Halaman
+        fields = ['judul', 'slug', 'konten', 'aktif']
+        widgets = {
+            'judul': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Judul Halaman (Contoh: Tentang Kami / Kebijakan Privasi)'}),
+            'slug': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Slug URL (Opsional, otomatis dibuat jika kosong)'}),
+            'konten': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Isi teks halaman statis...'}),
+            'aktif': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class HeroSlideForm(forms.ModelForm):
+    class Meta:
+        model = HeroSlide
+        fields = ['judul', 'subjudul', 'badge_text', 'gambar', 'link_url', 'tombol_teks', 'urutan', 'aktif']
+        widgets = {
+            'judul': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Judul Banner Slide (Mendukung tag HTML sederhana)'}),
+            'subjudul': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Deskripsi / Subjudul slide'}),
+            'badge_text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teks Badge (Contoh: OFFICIAL COMEBACK DROP)'}),
+            'gambar': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'link_url': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Link Tujuan (Contoh: #katalog-etalase atau /home/)'}),
+            'tombol_teks': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Label Tombol (Contoh: Jelajahi Etalase ↓)'}),
+            'urutan': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Nomor Urutan (1, 2, 3...)'}),
+            'aktif': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class KerjaSamaForm(forms.ModelForm):
+    class Meta:
+        model = KerjaSama
+        fields = ['nama_mitra', 'kategori_mitra', 'logo', 'link_url', 'deskripsi', 'aktif']
+        widgets = {
+            'nama_mitra': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nama Instansi / Mitra (Contoh: J&T Express Official)'}),
+            'kategori_mitra': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Kategori (Ekspedisi Logistik, Payment, dll)'}),
+            'logo': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'link_url': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Website / Profil Mitra'}),
+            'deskripsi': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Deskripsi singkat kerja sama'}),
+            'aktif': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+

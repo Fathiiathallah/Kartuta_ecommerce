@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 
 class Provinsi(models.Model):
@@ -142,3 +143,115 @@ class VirtualBinder(models.Model):
 
     def __str__(self):
         return f"Binder {self.user_client.username} - Slot #{self.slot_number}"
+
+
+# ==============================================================================
+# ARTIKEL & HALAMAN
+# ==============================================================================
+
+class KategoriArtikel(models.Model):
+    nama_kategori = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    deskripsi = models.TextField(blank=True, null=True)
+    aktif = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nama_kategori)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.nama_kategori
+
+    class Meta:
+        verbose_name = 'Kategori Artikel'
+        verbose_name_plural = 'Kategori Artikel'
+
+
+class Artikel(models.Model):
+    judul = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    kategori = models.ForeignKey(KategoriArtikel, on_delete=models.CASCADE, related_name='artikel_list')
+    penulis = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='artikel_penulis')
+    konten = models.TextField()
+    gambar_utama = models.ImageField(upload_to='artikel_images/', blank=True, null=True)
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.judul)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.judul
+
+    class Meta:
+        verbose_name = 'Artikel'
+        verbose_name_plural = 'Artikel'
+        ordering = ['-created_at']
+
+
+class Halaman(models.Model):
+    judul = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=170, unique=True, blank=True)
+    konten = models.TextField()
+    aktif = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.judul)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.judul
+
+    class Meta:
+        verbose_name = 'Halaman'
+        verbose_name_plural = 'Halaman'
+
+
+# ==============================================================================
+# TAMPILAN & MITRA
+# ==============================================================================
+
+class HeroSlide(models.Model):
+    judul = models.CharField(max_length=200)
+    subjudul = models.TextField(blank=True, null=True)
+    gambar = models.ImageField(upload_to='hero_slides/', blank=True, null=True)
+    link_url = models.CharField(max_length=255, default='#katalog-etalase')
+    tombol_teks = models.CharField(max_length=50, default='Jelajahi Etalase ↓')
+    badge_text = models.CharField(max_length=100, default='INDONESIA FIRST HYBRID PHOTOCARD ECOSYSTEM')
+    urutan = models.PositiveIntegerField(default=0)
+    aktif = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Slide #{self.urutan}: {self.judul}"
+
+    class Meta:
+        verbose_name = 'Hero Slide'
+        verbose_name_plural = 'Hero Slide'
+        ordering = ['urutan', '-created_at']
+
+
+class KerjaSama(models.Model):
+    nama_mitra = models.CharField(max_length=100)
+    kategori_mitra = models.CharField(max_length=50, default='Ekspedisi & Kurir')
+    logo = models.ImageField(upload_to='mitra_logos/', blank=True, null=True)
+    link_url = models.CharField(max_length=255, blank=True, null=True)
+    deskripsi = models.CharField(max_length=200, blank=True, null=True)
+    aktif = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nama_mitra
+
+    class Meta:
+        verbose_name = 'Kerja Sama'
+        verbose_name_plural = 'Kerja Sama'
+
