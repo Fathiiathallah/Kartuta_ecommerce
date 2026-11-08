@@ -6,6 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:"KartuTa • Official K-Pop Photocard Store & Virtual Binder Platform" }}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3.0">
+    <style>
+        /* Transisi Halus (Smooth Cross-Fade & Scale) Hero Slide */
+        .hero-side-slider-wrap {
+            display: grid !important;
+            position: relative;
+            height: 100%;
+        }
+        .hero-side-slide-item {
+            grid-area: 1 / 1;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.985);
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hero-side-slide-item.active-slide {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: scale(1);
+            z-index: 2;
+        }
+    </style>
 </head>
 <body class="pro-body">
 
@@ -117,7 +141,7 @@
             <div class="hero-side-slider-wrap" style="position: relative;">
                 {% if hero_slides %}
                     {% for slide in hero_slides %}
-                        <div class="hero-side-card hero-side-slide-item" id="side-slide-{{ forloop.counter }}" style="{% if not forloop.first %}display: none;{% endif %} height: 100%; {% if slide.gambar %}background: linear-gradient(180deg, rgba(17, 21, 31, 0.82) 0%, rgba(17, 21, 31, 0.96) 100%), url('{{ slide.gambar.url }}') center/cover no-repeat;{% endif %}">
+                        <div class="hero-side-card hero-side-slide-item {% if forloop.first %}active-slide{% endif %}" id="side-slide-{{ forloop.counter }}" style="height: 100%; {% if slide.gambar %}background: linear-gradient(180deg, rgba(17, 21, 31, 0.82) 0%, rgba(17, 21, 31, 0.96) 100%), url('{{ slide.gambar.url }}') center/cover no-repeat;{% endif %}">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <div class="side-card-tag">{{ slide.badge_text|default:"SPOTLIGHT RELEASE" }}</div>
                                 {% if hero_slides|length > 1 %}
@@ -378,51 +402,95 @@
 
     </main>
 
-    <!-- Slide Switcher & Scrollspy JS -->
-    <script>
-        function switchSideSlide(targetIdx) {
-            document.querySelectorAll('.hero-side-slide-item').forEach(function(slide, i) {
-                slide.style.display = (i + 1 === targetIdx) ? 'flex' : 'none';
-            });
-            document.querySelectorAll('.side-indicator-dot').forEach(function(dot) {
-                dot.style.background = '#333d52';
-                dot.style.width = '8px';
-            });
-            document.querySelectorAll('.dot-side-' + targetIdx).forEach(function(dot) {
-                dot.style.background = 'var(--magenta, #ec4899)';
-                dot.style.width = '22px';
-            });
-        }
+  <!-- Slide Switcher & Scrollspy JS -->
+<script>
+    var currentSlide = 1;
+    var slides = document.querySelectorAll('.hero-side-slide-item');
+    var totalSlides = slides.length;
+    var slideTimer = null;
+    // Fungsi ganti slide dengan transisi smooth
+    function switchSideSlide(targetIdx) {
+        currentSlide = targetIdx;
 
-        // Navbar Scrollspy Highlight
-        window.addEventListener('scroll', function() {
-            var scrollPos = window.scrollY + 240;
-            var secProduk = document.getElementById('katalog-etalase');
-            var secArtikel = document.getElementById('artikel-kolektor');
-            var secMitra = document.getElementById('mitra-kerjasama');
-
-            var current = 'home';
-            if (secMitra && scrollPos >= secMitra.offsetTop) {
-                current = 'mitra';
-            } else if (secArtikel && scrollPos >= secArtikel.offsetTop) {
-                current = 'artikel';
-            } else if (secProduk && scrollPos >= secProduk.offsetTop) {
-                current = 'produk';
-            }
-
-            document.querySelectorAll('.nav-link-item').forEach(function(item) {
-                item.classList.remove('active-nav-link');
-                item.style.color = '#94A3B8';
-                item.style.fontWeight = '600';
-            });
-            var activeNav = document.getElementById('nav-' + current);
-            if (activeNav) {
-                activeNav.classList.add('active-nav-link');
-                activeNav.style.color = '#FFFFFF';
-                activeNav.style.fontWeight = '700';
+        // 1. Tampilkan slide target dengan class active-slide (memicu CSS opacity & transform)
+        document.querySelectorAll('.hero-side-slide-item').forEach(function(slide, i) {
+            if (i + 1 === targetIdx) {
+                slide.classList.add('active-slide');
+            } else {
+                slide.classList.remove('active-slide');
             }
         });
-    </script>
+
+        // 2. Reset semua dot indikator
+        document.querySelectorAll('.side-indicator-dot').forEach(function(dot) {
+            dot.style.background = '#333d52';
+            dot.style.width = '8px';
+        });
+
+        // 3. Aktifkan dot target
+        document.querySelectorAll('.dot-side-' + targetIdx).forEach(function(dot) {
+            dot.style.background = 'var(--magenta, #ec4899)';
+            dot.style.width = '22px';
+        });
+    }
+    // Jalankan timer auto-slide (5 detik)
+    function startAutoSlide() {
+        stopAutoSlide(); // Hindari penumpukan interval ganda
+        if (totalSlides > 1) {
+            slideTimer = setInterval(function() {
+                var nextSlide = (currentSlide % totalSlides) + 1;
+                switchSideSlide(nextSlide);
+            }, 5000);
+        }
+    }
+    // Hentikan timer sementara
+    function stopAutoSlide() {
+        if (slideTimer) {
+            clearInterval(slideTimer);
+            slideTimer = null;
+        }
+    }
+    // Pasang listener pause saat kursor hover di area hero slider
+    var sliderWrap = document.querySelector('.hero-side-slider-wrap');
+    if (sliderWrap) {
+        sliderWrap.addEventListener('mouseenter', stopAutoSlide);
+        sliderWrap.addEventListener('mouseleave', startAutoSlide);
+    }
+    // Hubungkan klik tombol dot dengan reset timer
+    document.querySelectorAll('.side-indicator-dot').forEach(function(dot) {
+        dot.addEventListener('click', function() {
+            startAutoSlide(); // Reset hitungan waktu 5 detik dari awal setelah diklik manual
+        });
+    });
+    // Jalankan rotasi otomatis pertama kali
+    startAutoSlide();
+    // Navbar Scrollspy Highlight
+    window.addEventListener('scroll', function() {
+        var scrollPos = window.scrollY + 240;
+        var secProduk = document.getElementById('katalog-etalase');
+        var secArtikel = document.getElementById('artikel-kolektor');
+        var secMitra = document.getElementById('mitra-kerjasama');
+        var current = 'home';
+        if (secMitra && scrollPos >= secMitra.offsetTop) {
+            current = 'mitra';
+        } else if (secArtikel && scrollPos >= secArtikel.offsetTop) {
+            current = 'artikel';
+        } else if (secProduk && scrollPos >= secProduk.offsetTop) {
+            current = 'produk';
+        }
+        document.querySelectorAll('.nav-link-item').forEach(function(item) {
+            item.classList.remove('active-nav-link');
+            item.style.color = '#94A3B8';
+            item.style.fontWeight = '600';
+        });
+        var activeNav = document.getElementById('nav-' + current);
+        if (activeNav) {
+            activeNav.classList.add('active-nav-link');
+            activeNav.style.color = '#FFFFFF';
+            activeNav.style.fontWeight = '700';
+        }
+    });
+</script>
 
     <!-- Professional Clean Footer -->
     {% include 'homepage/footer.html' %}
