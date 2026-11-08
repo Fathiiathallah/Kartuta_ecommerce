@@ -91,6 +91,10 @@
                 <span>•</span>
                 <span>📅 {{ artikel.created_at|date:"d F Y" }}</span>
                 <span>•</span>
+                <span style="display: inline-flex; align-items: center; background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); padding: 3px 10px; border-radius: 6px; font-weight: 700;">
+                    {{ artikel.views_count }} views
+                </span>
+                <span>•</span>
                 <span style="background: rgba(16, 185, 129, 0.12); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 4px; font-weight: 700;">
                     ✓ Terverifikasi Tim Kurasi
                 </span>
@@ -168,32 +172,7 @@
     </main>
 
     <!-- Professional Clean Footer -->
-    <footer class="pro-footer">
-        <div class="footer-inner">
-            <div class="footer-brand-col">
-                <div class="pro-brand" style="margin-bottom: 12px;">
-                    <span class="pro-logo-badge">KT</span>
-                    <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
-                </div>
-                <p class="footer-desc">Platform etalase photocard terverifikasi pertama di Indonesia dengan integrasi portofolio Virtual Binder kolektor.</p>
-            </div>
-            <div class="footer-links-col">
-                <h5>Navigasi Toko</h5>
-                <a href="{% url 'home' %}">Etalase Produk</a>
-                <a href="{% url 'app:index' %}">Virtual Binder</a>
-                <a href="{% url 'login' %}">Masuk Akun</a>
-            </div>
-            <div class="footer-links-col">
-                <h5>Keamanan & Layanan</h5>
-                <span>Standar Grading Mint</span>
-                <span>4-Layer Safe Packing</span>
-                <span>Garansi Uang Kembali</span>
-            </div>
-        </div>
-        <div class="footer-bottom-bar">
-            <span>© 2026 KartuTa E-Commerce Platform • Built with Django 5.2, Pure Custom CSS & Cloud PostgreSQL</span>
-        </div>
-    </footer>
+    {% include 'homepage/footer.html' %}
 
 </body>
 </html>

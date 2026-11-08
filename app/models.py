@@ -176,6 +176,7 @@ class Artikel(models.Model):
     penulis = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='artikel_penulis')
     konten = models.TextField()
     gambar_utama = models.ImageField(upload_to='artikel_images/', blank=True, null=True)
+    views_count = models.PositiveIntegerField(default=0, verbose_name='Total Views')
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -254,4 +255,22 @@ class KerjaSama(models.Model):
     class Meta:
         verbose_name = 'Kerja Sama'
         verbose_name_plural = 'Kerja Sama'
+
+
+class WebSetting(models.Model):
+    nama_organisasi = models.CharField(max_length=200, default='KartuTa Indonesia')
+    alamat = models.TextField(default='Jl. Kesejahteraan Timur No. 6, makassar, Sulawesi Selatan, Indonesia')
+    no_telp = models.CharField(max_length=20, default='+62 812-3456-7890')
+    email = models.EmailField(default='contact@kartuta.id')
+    logo = models.ImageField(upload_to='web_setting/logo/', blank=True, null=True)
+    favicon = models.ImageField(upload_to='web_setting/favicon/', blank=True, null=True)
+    link_instagram = models.URLField(blank=True, null=True, default='https://instagram.com/kartuta.official')
+    link_maps = models.URLField(blank=True, null=True, default='https://maps.google.com')
+
+    def __str__(self):
+        return self.nama_organisasi
+
+    class Meta:
+        verbose_name = 'Web Setting'
+        verbose_name_plural = 'Web Setting'
 

@@ -1,0 +1,84 @@
+{% load static %}
+<footer class="pro-footer">
+    <div class="footer-inner" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 36px; max-width: 1360px; margin: 0 auto; padding-bottom: 36px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        
+        <!-- Kolom 1: Profil Organisasi & Alamat -->
+        <div class="footer-col">
+            <div class="pro-brand" style="margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                {% if web_setting.logo %}
+                    <img src="{{ web_setting.logo.url }}" alt="{{ web_setting.nama_organisasi }}" style="max-height: 38px; width: auto; object-fit: contain;">
+                {% else %}
+                    <span class="pro-logo-badge">KT</span>
+                    <span class="pro-brand-text">{{ web_setting.nama_organisasi|default:"KartuTa" }}</span>
+                {% endif %}
+            </div>
+            <p style="font-size: 13px; color: #94A3B8; line-height: 1.7; margin: 0 0 12px 0;">
+                Platform etalase photocard terverifikasi dengan grading fisik standar kolektor dan integrasi Virtual Binder.
+            </p>
+            {% if web_setting.alamat %}
+                <div style="font-size: 12px; color: #64748B; line-height: 1.6; display: flex; align-items: flex-start; gap: 8px;">
+                    <span>📍</span>
+                    <span>{{ web_setting.alamat }}</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Kolom 2: Kontak Langsung -->
+        <div class="footer-col footer-links-col">
+            <h5 style="color: #FFFFFF; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Kontak Kami</h5>
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+                {% if web_setting.no_telp %}
+                    <a href="tel:{{ web_setting.no_telp }}" style="color: #94A3B8; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <span>📞</span>
+                        <span>{{ web_setting.no_telp }}</span>
+                    </a>
+                {% endif %}
+                {% if web_setting.email %}
+                    <a href="mailto:{{ web_setting.email }}" style="color: #94A3B8; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <span>✉️</span>
+                        <span>{{ web_setting.email }}</span>
+                    </a>
+                {% endif %}
+                {% if web_setting.link_maps %}
+                    <a href="{{ web_setting.link_maps }}" target="_blank" rel="noopener noreferrer" style="color: #8B5CF6; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                        <span>🗺️</span>
+                        <span>Buka di Google Maps</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Kolom 3: Media Sosial & Navigasi -->
+        <div class="footer-col footer-links-col">
+            <h5 style="color: #FFFFFF; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Ikuti & Navigasi</h5>
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+                {% if web_setting.link_instagram %}
+                    <a href="{{ web_setting.link_instagram }}" target="_blank" rel="noopener noreferrer" style="color: #EC4899; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                        
+                        <span>Instagram Resmi</span>
+                    </a>
+                {% endif %}
+                <a href="{% url 'home' %}#katalog-etalase" style="color: #94A3B8; text-decoration: none;">Etalase Produk</a>
+                <a href="{% url 'home' %}#artikel-kolektor" style="color: #94A3B8; text-decoration: none;">Panduan & Edukasi</a>
+                <a href="{% url 'app:index' %}" style="color: #94A3B8; text-decoration: none;">Virtual Binder Kolektor</a>
+            </div>
+        </div>
+
+        <!-- Kolom 4: Jaminan Keamanan -->
+        <div class="footer-col footer-links-col">
+            <h5 style="color: #FFFFFF; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Keamanan & Layanan</h5>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #94A3B8;">
+                <span style="display: flex; align-items: center; gap: 6px;">🛡️ Garansi Keaslian 100%</span>
+                <span style="display: flex; align-items: center; gap: 6px;">📦 4-Layer Safe Packaging</span>
+                <span style="display: flex; align-items: center; gap: 6px;">✨ Standar Grading Mint</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Sub-footer Bottom Bar -->
+    <div class="footer-bottom-bar" style="max-width: 1360px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #64748B;">
+        <span>&copy; {% now "Y" %} {{ web_setting.nama_organisasi|default:"KartuTa" }}. Seluruh hak cipta dilindungi undang-undang.</span>
+        <span>Built with Django 5.2 • PostgreSQL</span>
+    </div>
+</footer>

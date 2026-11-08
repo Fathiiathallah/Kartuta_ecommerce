@@ -23,6 +23,7 @@
                         <th>Kategori</th>
                         <th>Penulis</th>
                         <th>Status</th>
+                        <th>Views</th>
                         <th>Tanggal Terbit</th>
                         <th style="width: 150px; text-align: center;">Aksi</th>
                     </tr>
@@ -58,6 +59,9 @@
                                 {% else %}
                                     <span class="badge-tag" style="background: #222834; color: #94A3B8;">Draft</span>
                                 {% endif %}
+                            </td>
+                            <td style="color: #C4B5FD; font-size: 12px; font-weight: 700;">
+                                {{ item.views_count }}
                             </td>
                             <td style="color: #94A3B8; font-size: 12px;">
                                 {{ item.created_at|date:"d M Y" }}

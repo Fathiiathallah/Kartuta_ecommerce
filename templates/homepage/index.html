@@ -345,8 +345,12 @@
                             <p style="font-size: 13px; color: #94A3B8; line-height: 1.6; margin-bottom: 18px;">{{ art.konten|truncatewords:28 }}</p>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 12px; font-size: 11px; color: #64748B;">
-                            <span>✍️ {{ art.penulis.first_name|default:art.penulis.username|default:"Editor Resmi" }}</span>
-                            <a href="{% url 'artikel_detail' art.slug %}" style="color: #8B5CF6; text-decoration: none; font-weight: 700;">Baca Panduan Lengkap &rarr;</a>
+                            <span style="display: inline-flex; align-items: center; gap: 8px;">
+                                <span>✍️ {{ art.penulis.first_name|default:art.penulis.username|default:"Editor Resmi" }}</span>
+                                <span>•</span>
+                                <span>{{ art.views_count }} views</span>
+                            </span>
+                            <a href="{% url 'artikel_detail' art.slug %}" style="color: #8B5CF6; text-decoration: none; font-weight: 700;">Baca Selengkapnya &rarr;</a>
                         </div>
                     </article>
                 {% endfor %}
@@ -421,32 +425,7 @@
     </script>
 
     <!-- Professional Clean Footer -->
-    <footer class="pro-footer">
-        <div class="footer-inner">
-            <div class="footer-brand-col">
-                <div class="pro-brand" style="margin-bottom: 12px;">
-                    <span class="pro-logo-badge">KT</span>
-                    <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
-                </div>
-                <p class="footer-desc">Platform etalase photocard terverifikasi pertama di Indonesia dengan integrasi portofolio Virtual Binder kolektor.</p>
-            </div>
-            <div class="footer-links-col">
-                <h5>Navigasi Toko</h5>
-                <a href="{% url 'home' %}">Etalase Produk</a>
-                <a href="{% url 'app:index' %}">Virtual Binder</a>
-                <a href="{% url 'login' %}">Masuk Akun</a>
-            </div>
-            <div class="footer-links-col">
-                <h5>Keamanan & Layanan</h5>
-                <span>Standar Grading Mint</span>
-                <span>4-Layer Safe Packing</span>
-                <span>Garansi Uang Kembali</span>
-            </div>
-        </div>
-        <div class="footer-bottom-bar">
-            <span>© 2026 KartuTa E-Commerce Platform • Built with Django 5.2, Pure Custom CSS & Cloud PostgreSQL</span>
-        </div>
-    </footer>
+    {% include 'homepage/footer.html' %}
 
 </body>
 </html>

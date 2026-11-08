@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 from app.models import UserAdmin, UserPengguna, Product, Category, HeroSlide, Artikel, KategoriArtikel, Halaman, KerjaSama
 
 
@@ -19,6 +20,14 @@ def produkDetailView(request, id):
 
 def artikelDetailView(request, slug):
     artikel = get_object_or_404(Artikel.objects.select_related('kategori', 'penulis'), slug=slug, is_published=True)
+
+    # Tambah total views (menggunakan session agar tidak bertambah saat refresh berkali-kali dalam 1 sesi)
+    session_key = f'viewed_article_{artikel.id}'
+    if not request.session.get(session_key, False):
+        Artikel.objects.filter(id=artikel.id).update(views_count=F('views_count') + 1)
+        artikel.refresh_from_db(fields=['views_count'])
+        request.session[session_key] = True
+
     related_articles = Artikel.objects.filter(is_published=True).exclude(id=artikel.id)[:3]
     context = {
         'title': f'{artikel.judul} • Panduan Kolektor KartuTa',

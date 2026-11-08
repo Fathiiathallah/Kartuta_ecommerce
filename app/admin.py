@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     UserAdmin, UserClient, Category,
     MediaGambarProduk, Product, HistoryPayment, VirtualBinder,
-    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama
+    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama, WebSetting
 )
 
 admin.site.register(UserAdmin)
@@ -44,3 +44,8 @@ class HeroSlideAdmin(admin.ModelAdmin):
 class KerjaSamaAdmin(admin.ModelAdmin):
     list_display = ('nama_mitra', 'kategori_mitra', 'aktif', 'created_at')
     search_fields = ('nama_mitra', 'deskripsi')
+
+
+@admin.register(WebSetting)
+class WebSettingAdmin(admin.ModelAdmin):
+    list_display = ('nama_organisasi', 'no_telp', 'email')
