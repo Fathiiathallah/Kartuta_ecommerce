@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}Keranjang Koleksi - KartuTa{% endblock %}
+{% block page_title %}Keranjang Belanja Photocard{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-dark); padding-bottom: 14px;">
+        <div>
+            <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+                <span>🛒</span>
+                <span>Keranjang Photocard Anda</span>
+            </h2>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                Semua item dijamin 100% official dan diproteksi 4-Layer Safe Packaging.
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'app:katalog_pengguna' %}" class="btn-hero-outline" style="font-size: 12px; padding: 8px 14px; text-decoration: none;">
+                + Tambah Photocard Lain
+            </a>
+        </div>
+    </div>
+
+    {% if cart_items %}
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start;">
+            <!-- Cart Items List -->
+            <div>
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    {% for item in cart_items %}
+                        <div style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 12px; padding: 16px; display: grid; grid-template-columns: 80px 1fr auto auto; gap: 16px; align-items: center;">
+                            <!-- Thumbnail -->
+                            <div style="width: 80px; height: 100px; background: #0B0E14; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: center;">
+                                {% if item.product.image_utama %}
+                                    <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <span style="font-size: 28px;">🎴</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Product Info -->
+                            <div>
+                                <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 4px;">
+                                    <span class="badge-tag" style="font-size: 9px; background: #4C1D95; color: #FFFFFF;">
+                                        {{ item.product.fandom_group|default:"K-POP" }}
+                                    </span>
+                                    <span class="badge-tag badge-unlocked" style="font-size: 9px;">
+                                        {{ item.product.card_grade }}
+                                    </span>
+                                </div>
+                                <h3 style="font-size: 15px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                                    <a href="{% url 'produk_detail' item.product.id %}" style="color: inherit; text-decoration: none;">
+                                        {{ item.product.name }}
+                                    </a>
+                                </h3>
+                                <div style="font-size: 12px; color: var(--text-secondary);">
+                                    Era: {{ item.product.category.name }}
+                                </div>
+                                <div style="font-size: 13px; font-weight: 800; color: #c4b5fd; margin-top: 6px;">
+                                    Rp {{ item.product.price|floatformat:0 }} <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">/ pcs</span>
+                                </div>
+                            </div>
+
+                            <!-- Quantity Controls -->
+                            <div style="display: flex; align-items: center; gap: 8px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; padding: 4px 8px;">
+                                <form method="POST" action="{% url 'app:cart_update' item.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="minus">
+                                    <button type="submit" style="background: none; border: none; color: #FFFFFF; font-size: 16px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">−</button>
+                                </form>
+                                <span style="font-size: 13px; font-weight: 800; color: #FFFFFF; min-width: 24px; text-align: center;">
+                                    {{ item.quantity }}
+                                </span>
+                                <form method="POST" action="{% url 'app:cart_update' item.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="plus">
+                                    <button type="submit" style="background: none; border: none; color: #FFFFFF; font-size: 16px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px;" {% if item.quantity >= item.product.stock %}disabled style="opacity: 0.4;"{% endif %}>+</button>
+                                </form>
+                            </div>
+
+                            <!-- Subtotal & Remove -->
+                            <div style="text-align: right; min-width: 120px;">
+                                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">SUBTOTAL</div>
+                                <div style="font-size: 15px; font-weight: 900; color: #FFFFFF; margin-top: 2px;">
+                                    Rp {{ item.subtotal|floatformat:0 }}
+                                </div>
+                                <form method="POST" action="{% url 'app:cart_remove' item.id %}" style="display: inline; margin-top: 8px;">
+                                    {% csrf_token %}
+                                    <button type="submit" onclick="return confirm('Hapus item ini dari keranjang?');" style="background: none; border: none; color: #f87171; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 4px; margin-top: 6px;">
+                                        <span>🗑️</span>
+                                        <span>Hapus</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 12px; padding: 20px; position: sticky; top: 90px;">
+                <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF; margin-bottom: 16px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px;">
+                    Ringkasan Belanja
+                </h3>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>Total Photocard</span>
+                        <strong style="color: #FFFFFF;">{{ total_qty }} pcs</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>Subtotal Produk</span>
+                        <strong style="color: #FFFFFF;">Rp {{ subtotal|floatformat:0 }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>4-Layer Safe Packaging</span>
+                        <span style="color: #10B981; font-weight: 700;">GRATIS (Rp0)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>Ongkos Kirim</span>
+                        <span style="color: var(--text-muted); font-size: 11px;">Dihitung di Checkout</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-dark); display: flex; justify-content: space-between; align-items: baseline;">
+                    <span style="font-size: 13px; font-weight: 700; color: #FFFFFF;">Total Estimasi</span>
+                    <span style="font-size: 20px; font-weight: 900; color: #8B5CF6;">Rp {{ subtotal|floatformat:0 }}</span>
+                </div>
+
+                <a href="{% url 'app:checkout' %}" class="btn-primary-save" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; margin-top: 18px; font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 8px;">
+                    <span>Lanjut ke Checkout</span>
+                    <span>→</span>
+                </a>
+
+                <div style="margin-top: 16px; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 8px; padding: 10px 12px; display: flex; gap: 8px; font-size: 11px; color: #c4b5fd;">
+                    <span>🛡️</span>
+                    <span>Garansi 100% uang kembali jika photocard terbukti tidak official atau rusak dalam pengiriman.</span>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div style="text-align: center; padding: 56px 20px; background: #161B26; border-radius: 12px; border: 1px dashed var(--border-dark);">
+            <div style="font-size: 48px; margin-bottom: 12px;">🛒</div>
+            <h3 style="font-size: 16px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px;">Keranjang Belanja Anda Masih Kosong</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); max-width: 420px; margin: 0 auto 20px;">
+                Belum ada photocard yang dimasukkan ke keranjang. Jelajahi etalase resmi kami untuk melengkapi koleksi binder Anda!
+            </p>
+            <a href="{% url 'app:katalog_pengguna' %}" class="btn-primary-save" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 20px; font-size: 13px;">
+                <span>🎴</span>
+                <span>Jelajahi Katalog Photocard</span>
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

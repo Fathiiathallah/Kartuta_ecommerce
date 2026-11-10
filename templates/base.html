@@ -55,6 +55,12 @@
                             <span>Kelola Produk</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'app:pesanan_admin_list' %}" class="{% if 'pesanan_admin' in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">📦</span>
+                            <span>Kelola Pesanan & Resi</span>
+                        </a>
+                    </li>
 
                     <!-- ARTIKEL & HALAMAN -->
                     <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: #64748B; letter-spacing: 0.8px; text-transform: uppercase;">
@@ -127,6 +133,23 @@
                             <span>Katalog Photocard</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'app:cart_list' %}" class="{% if request.resolver_match.url_name == 'cart_list' %}active{% endif %}" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="icon">🛒</span>
+                                <span>Keranjang</span>
+                            </div>
+                            {% if cart_count > 0 %}
+                                <span class="badge-tag" style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 800;">{{ cart_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:pesanan_saya' %}" class="{% if 'pesanan' in request.resolver_match.url_name and 'admin' not in request.resolver_match.url_name %}active{% endif %}">
+                            <span class="icon">📦</span>
+                            <span>Pesanan & Tracking</span>
+                        </a>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
@@ -150,6 +173,15 @@
                 <div class="topbar-title">{% block page_title %}Dashboard Pengguna{% endblock %}</div>
             </div>
             <div class="topbar-right">
+                {% if not request.user.is_staff and request.user.last_name != 'Super Admin' %}
+                    <a href="{% url 'app:cart_list' %}" title="Keranjang Belanja" style="display: inline-flex; align-items: center; gap: 6px; background: #161B26; border: 1px solid var(--border-dark); padding: 6px 12px; border-radius: 8px; color: #FFFFFF; text-decoration: none; font-size: 12px; margin-right: 12px;">
+                        <span>🛒</span>
+                        <span>Keranjang</span>
+                        {% if cart_count > 0 %}
+                            <span style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 800;">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                {% endif %}
                 <span class="notif-badge-pill">100% OFFICIAL</span>
                 <div class="topbar-user">
                     <span style="font-size: 13px; font-weight: 600; color: #FFFFFF;">{{ request.user.first_name|default:request.user.username }}</span>

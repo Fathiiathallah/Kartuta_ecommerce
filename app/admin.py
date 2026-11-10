@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import (
     UserAdmin, UserClient, Category,
     MediaGambarProduk, Product, HistoryPayment, VirtualBinder,
-    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama, WebSetting
+    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama, WebSetting,
+    OrderItem, CartItem, OrderTrackingLog
 )
 
 admin.site.register(UserAdmin)
@@ -12,6 +13,9 @@ admin.site.register(MediaGambarProduk)
 admin.site.register(Product)
 admin.site.register(HistoryPayment)
 admin.site.register(VirtualBinder)
+admin.site.register(OrderItem)
+admin.site.register(CartItem)
+admin.site.register(OrderTrackingLog)
 
 # ARTIKEL & HALAMAN
 @admin.register(KategoriArtikel)

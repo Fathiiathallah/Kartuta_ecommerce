@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import Q
 from .models import (
     UserAdmin, UserPengguna, Product, Category, HistoryPayment,
-    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama
+    KategoriArtikel, Artikel, Halaman, HeroSlide, KerjaSama,
+    OrderItem, CartItem, OrderTrackingLog
 )
 from .form_admin import (
     formProfile, CategoryForm, ProductForm,
@@ -656,4 +658,113 @@ def kerjasama_hapus(request, id):
     mitra.delete()
     messages.success(request, f'Mitra "{nama}" berhasil dihapus!')
     return redirect('app:kerjasama_list')
+
+
+# ==============================================================================
+# TRACKING & KELOLA PESANAN (ADMIN)
+# ==============================================================================
+
+@admin_required
+def pesanan_admin_list(request):
+    useradmin, photo = get_admin_data(request)
+    status_filter = request.GET.get('status', '').strip()
+    search_query = request.GET.get('q', '').strip()
+
+    orders = HistoryPayment.objects.select_related('user_client').prefetch_related('items', 'items__product').order_by('-payment_date')
+
+    if status_filter:
+        orders = orders.filter(status=status_filter)
+
+    if search_query:
+        orders = orders.filter(
+            Q(invoice_number__icontains=search_query) |
+            Q(user_client__username__icontains=search_query) |
+            Q(shipping_name__icontains=search_query) |
+            Q(tracking_number_awb__icontains=search_query) |
+            Q(courier_service__icontains=search_query)
+        )
+
+    counts = {
+        'all': HistoryPayment.objects.count(),
+        'pending': HistoryPayment.objects.filter(status='Pending').count(),
+        'completed': HistoryPayment.objects.filter(status='Completed').count(),
+        'packing': HistoryPayment.objects.filter(status='Packing').count(),
+        'shipped': HistoryPayment.objects.filter(status='Shipped').count(),
+        'delivered': HistoryPayment.objects.filter(status='Delivered').count(),
+        'failed': HistoryPayment.objects.filter(status='Failed').count(),
+    }
+
+    context = {
+        'title': 'Tracking & Manajemen Pesanan',
+        'heading': 'Kelola Pesanan & Resi Pengiriman',
+        'photo': photo,
+        'userdetail': useradmin,
+        'orders': orders,
+        'status_filter': status_filter,
+        'search_query': search_query,
+        'counts': counts,
+    }
+    return render(request, 'admin_super/pesanan_list.html', context)
+
+
+@admin_required
+def pesanan_admin_detail(request, invoice_number):
+    useradmin, photo = get_admin_data(request)
+    order = get_object_or_404(
+        HistoryPayment.objects.select_related('user_client').prefetch_related('items', 'items__product', 'tracking_logs'),
+        invoice_number=invoice_number
+    )
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        new_awb = request.POST.get('tracking_number_awb', '').strip()
+        new_courier = request.POST.get('courier_service', '').strip()
+        tracking_note = request.POST.get('tracking_note', '').strip()
+
+        old_status = order.status
+        old_awb = order.tracking_number_awb
+
+        if new_status:
+            order.status = new_status
+        if new_awb:
+            order.tracking_number_awb = new_awb
+        if new_courier:
+            order.courier_service = new_courier
+
+        order.save()
+
+        # Otomatis unlock Virtual Binder jika lunas/dikirim
+        if new_status in ['Completed', 'Packing', 'Shipped', 'Delivered']:
+            order.unlock_virtual_binder()
+
+        # Catat Tracking Log
+        log_parts = []
+        if old_status != new_status:
+            log_parts.append(f"Status diubah ke {order.get_status_display()}")
+        if new_awb and new_awb != old_awb:
+            log_parts.append(f"No. Resi Kurir: {new_awb}")
+        if tracking_note:
+            log_parts.append(tracking_note)
+
+        full_note = " — ".join(log_parts) if log_parts else f"Pesanan diproses oleh admin {useradmin.username}."
+        OrderTrackingLog.objects.create(
+            order=order,
+            status=order.status,
+            note=full_note
+        )
+
+        messages.success(request, f'Status & informasi pelacakan pesanan #{order.invoice_number} berhasil diperbarui!')
+        return redirect('app:pesanan_admin_detail', invoice_number=order.invoice_number)
+
+    context = {
+        'title': f'Kelola Pesanan #{order.invoice_number}',
+        'heading': f'Tracking & Kelola Pesanan #{order.invoice_number}',
+        'photo': photo,
+        'userdetail': useradmin,
+        'order': order,
+        'logs': order.tracking_logs.all(),
+        'status_choices': HistoryPayment.PAYMENT_STATUS,
+    }
+    return render(request, 'admin_super/pesanan_detail.html', context)
+
 

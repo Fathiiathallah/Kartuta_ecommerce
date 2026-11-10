@@ -155,3 +155,12 @@ STORAGES = {
     },
 }
 DEFAULT_FILE_STORAGE = 'core.storage.SupabaseMediaStorage'
+
+# ==============================================================================
+# MIDTRANS PAYMENT GATEWAY
+# ==============================================================================
+MIDTRANS_SERVER_KEY = os.getenv('MIDTRANS_SERVER_KEY', 'SB-Mid-server-yLXyeGYtmh__4D9nszlvIaBQ')
+MIDTRANS_CLIENT_KEY = os.getenv('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-3DG3cH33zPQJ.c_tgs0~xfZm')
+MIDTRANS_IS_PRODUCTION = os.getenv('MIDTRANS_IS_PRODUCTION', 'False').lower() == 'true'
+MIDTRANS_SNAP_URL = 'https://app.midtrans.com/snap/v1/transactions' if MIDTRANS_IS_PRODUCTION else 'https://app.sandbox.midtrans.com/snap/v1/transactions'
+MIDTRANS_SNAP_JS = 'https://app.midtrans.com/snap/snap.js' if MIDTRANS_IS_PRODUCTION else 'https://app.sandbox.midtrans.com/snap/snap.js'

@@ -47,10 +47,30 @@ urlpatterns = [
     path('kerjasama/edit/<int:id>/', views_admin.kerjasama_edit, name='kerjasama_edit'),
     path('kerjasama/hapus/<int:id>/', views_admin.kerjasama_hapus, name='kerjasama_hapus'),
 
+    # KELOLA PESANAN & TRACKING (ADMIN)
+    path('admin-pesanan/', views_admin.pesanan_admin_list, name='pesanan_admin_list'),
+    path('admin-pesanan/<str:invoice_number>/', views_admin.pesanan_admin_detail, name='pesanan_admin_detail'),
+
     ###### PENGGUNA/CLIENTS ######
     path('profile/pengguna', views_pengguna.profile_pengguna, name='profile_pengguna'),
     path('dashboard/pengguna', views_pengguna.dashboard_pengguna, name='dashboard_pengguna'),
     path('katalog/', views_pengguna.katalog_pengguna, name='katalog_pengguna'),
+
+    # KERANJANG & CHECKOUT (PENGGUNA)
+    path('keranjang/', views_pengguna.cart_list, name='cart_list'),
+    path('keranjang/tambah/<int:product_id>/', views_pengguna.cart_add, name='cart_add'),
+    path('keranjang/update/<int:item_id>/', views_pengguna.cart_update, name='cart_update'),
+    path('keranjang/hapus/<int:item_id>/', views_pengguna.cart_remove, name='cart_remove'),
+    path('checkout/', views_pengguna.checkout, name='checkout'),
+
+    # TRACKING PESANAN (PENGGUNA)
+    path('pesanan/', views_pengguna.pesanan_saya, name='pesanan_saya'),
+    path('pesanan/<str:invoice_number>/', views_pengguna.pesanan_detail, name='pesanan_detail'),
+    path('pesanan/<str:invoice_number>/bayar/', views_pengguna.pesanan_bayar_simulasi, name='pesanan_bayar_simulasi'),
+    path('pesanan/<str:invoice_number>/terima/', views_pengguna.pesanan_konfirmasi_terima, name='pesanan_konfirmasi_terima'),
+
+    # MIDTRANS WEBHOOK
+    path('midtrans-notification/', views_pengguna.midtrans_notification, name='midtrans_notification'),
 
     ###### UMUM ######
     path('dashboard', views.index, name='dashboard'),

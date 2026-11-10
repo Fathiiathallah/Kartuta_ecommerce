@@ -42,6 +42,13 @@
                 <a href="{% url 'home' %}#katalog-etalase" class="btn-pro-ghost">
                     ← Kembali ke Etalase
                 </a>
+                <a href="{% url 'app:cart_list' %}" class="btn-pro-ghost" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; position: relative;">
+                    <span>🛒</span>
+                    <span>Keranjang</span>
+                    {% if cart_count > 0 %}
+                        <span style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 10px;">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
                         <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
@@ -178,12 +185,32 @@
                 </div>
 
                 <!-- Action Button Row -->
-                <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
                     {% if request.user.is_authenticated %}
                         {% if product.stock > 0 %}
-                            <button type="button" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; width: 100%; border: none; cursor: pointer;" onclick="alert('Pesanan untuk {{ product.name }} berhasil diproses! Silakan periksa status transaksi di dashboard Anda.');">
-                                🛒 Konfirmasi Beli Sekarang (Rp {{ product.price|floatformat:0 }})
-                            </button>
+                            <form method="POST" action="{% url 'app:cart_add' product.id %}" style="display: flex; flex-direction: column; gap: 12px;">
+                                {% csrf_token %}
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label style="font-size: 12px; font-weight: 700; color: #94A3B8;">Jumlah:</label>
+                                    <div style="display: flex; align-items: center; gap: 6px; background: #0B0E14; border: 1px solid #222834; border-radius: 8px; padding: 4px 8px;">
+                                        <button type="button" onclick="let q=document.getElementById('buy_qty'); if(q.value>1) q.value--;" style="background:none; border:none; color:#fff; font-size:16px; cursor:pointer; width:24px; height:24px;">−</button>
+                                        <input type="number" id="buy_qty" name="quantity" value="1" min="1" max="{{ product.stock }}" style="width: 40px; background: transparent; border: none; color: #fff; font-weight: 800; text-align: center; font-size: 14px;">
+                                        <button type="button" onclick="let q=document.getElementById('buy_qty'); if(q.value<{{ product.stock }}) q.value++;" style="background:none; border:none; color:#fff; font-size:16px; cursor:pointer; width:24px; height:24px;">+</button>
+                                    </div>
+                                    <span style="font-size: 11px; color: #64748B;">Sisa stok: {{ product.stock }} pcs</span>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <button type="submit" name="add_only" value="1" class="btn-hero-outline" style="padding: 13px 16px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                        <span>🛒</span>
+                                        <span>+ Keranjang</span>
+                                    </button>
+                                    <button type="submit" name="buy_now" value="1" class="btn-pro-action" style="padding: 13px 16px; font-size: 13px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                        <span>⚡</span>
+                                        <span>Beli Sekarang</span>
+                                    </button>
+                                </div>
+                            </form>
                         {% else %}
                             <button type="button" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; width: 100%; background: #222834; color: #94a3b8; cursor: not-allowed; box-shadow: none;" disabled>
                                 Stok Habis / Sold Out

@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% block title %}Tracking #{{ order.invoice_number }} - KartuTa{% endblock %}
+{% block page_title %}Detail & Pelacakan Pesanan{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 20px;">
+    
+    <!-- Top Action Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="{% url 'app:pesanan_saya' %}" class="btn-hero-outline" style="text-decoration: none; padding: 8px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+            <span>←</span>
+            <span>Kembali ke Daftar Pesanan</span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 12px; color: var(--text-secondary);">Nomor Invoice:</span>
+            <span style="font-size: 14px; font-weight: 900; color: #FFFFFF; font-family: monospace; background: #161B26; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-dark);">
+                {{ order.invoice_number }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Tracking Stepper Card -->
+    <div class="dashboard-card" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <span class="badge-tag" style="background: #4C1D95; color: #FFFFFF; font-size: 10px; margin-bottom: 6px; display: inline-block;">
+                    LIVE TRACKING
+                </span>
+                <h2 style="font-size: 20px; font-weight: 800; color: #FFFFFF;">
+                    Status Pengiriman: <span style="color: #8B5CF6;">{{ order.get_status_display }}</span>
+                </h2>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                    Dipesan pada {{ order.payment_date|date:"l, d F Y - H:i" }} WIB
+                </p>
+            </div>
+
+            <!-- Contextual Action Buttons -->
+            <div>
+                {% if order.status == 'Pending' %}
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        {% if snap_token %}
+                            <button type="button" onclick="payWithSnap()" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 20px; font-size: 13px; font-weight: 800; background: #8B5CF6; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);">
+                                <span>💳</span>
+                                <span>Bayar via Midtrans (QRIS / VA)</span>
+                            </button>
+                        {% endif %}
+                        <form method="POST" action="{% url 'app:pesanan_bayar_simulasi' order.invoice_number %}" id="simulasi-pay-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-hero-outline" style="cursor: pointer; padding: 12px 16px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                                <span>⚡</span>
+                                <span>Konfirmasi Instan</span>
+                            </button>
+                        </form>
+                    </div>
+                {% elif order.status == 'Shipped' %}
+                    <form method="POST" action="{% url 'app:pesanan_konfirmasi_terima' order.invoice_number %}">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Apakah Anda yakin paket telah diterima dengan kondisi baik?');" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 18px; font-size: 13px; font-weight: 800; background: #8B5CF6; display: inline-flex; align-items: center; gap: 8px;">
+                            <span>📦</span>
+                            <span>Konfirmasi Paket Telah Diterima</span>
+                        </button>
+                    </form>
+                {% elif order.status == 'Delivered' %}
+                    <span class="badge-tag badge-unlocked" style="padding: 10px 16px; font-size: 12px; font-weight: 800;">
+                        🎉 Pesanan Telah Selesai
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 5-Step Visual Stepper -->
+        <div style="margin: 30px 0 20px 0; padding: 0 10px;">
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; position: relative; text-align: center;">
+                <!-- Step 1: Pending -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 1 %}background: #8B5CF6; color: #FFFFFF; box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);{% else %}background: #222834; color: var(--text-muted);{% endif %}">
+                        {% if order.status_step > 1 %}✓{% else %}1{% endif %}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 1 %}#FFFFFF{% else %}var(--text-muted){% endif %};">
+                        Pesanan Dibuat
+                    </div>
+                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Menunggu Bayar</div>
+                </div>
+
+                <!-- Step 2: Completed -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 2 %}background: #10B981; color: #FFFFFF; box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);{% else %}background: #222834; color: var(--text-muted);{% endif %}">
+                        {% if order.status_step > 2 %}✓{% else %}2{% endif %}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 2 %}#FFFFFF{% else %}var(--text-muted){% endif %};">
+                        Pembayaran Lunas
+                    </div>
+                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Terverifikasi Instan</div>
+                </div>
+
+                <!-- Step 3: Packing -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 3 %}background: #3B82F6; color: #FFFFFF; box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);{% else %}background: #222834; color: var(--text-muted);{% endif %}">
+                        {% if order.status_step > 3 %}✓{% else %}3{% endif %}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 3 %}#FFFFFF{% else %}var(--text-muted){% endif %};">
+                        QC & Packing
+                    </div>
+                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">4-Layer Protocol</div>
+                </div>
+
+                <!-- Step 4: Shipped -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 4 %}background: #8B5CF6; color: #FFFFFF; box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);{% else %}background: #222834; color: var(--text-muted);{% endif %}">
+                        {% if order.status_step > 4 %}✓{% else %}4{% endif %}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 4 %}#FFFFFF{% else %}var(--text-muted){% endif %};">
+                        Pengiriman Kurir
+                    </div>
+                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Dalam Perjalanan</div>
+                </div>
+
+                <!-- Step 5: Delivered -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 5 %}background: #065F46; color: #FFFFFF; box-shadow: 0 0 12px rgba(6, 95, 70, 0.6);{% else %}background: #222834; color: var(--text-muted);{% endif %}">
+                        {% if order.status_step >= 5 %}✓{% else %}5{% endif %}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 5 %}#FFFFFF{% else %}var(--text-muted){% endif %};">
+                        Paket Diterima
+                    </div>
+                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Selesai</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ekspedisi & Nomor Resi Bar -->
+        <div style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 20px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <span style="font-size: 26px;">🚚</span>
+                <div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">EKSPEDISI & KURIR</div>
+                    <strong style="color: #FFFFFF; font-size: 14px;">{{ order.courier_service }}</strong>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right;">NOMOR RESI PENGIRIMAN (AWB)</div>
+                    <div style="font-family: monospace; font-size: 16px; font-weight: 800; color: #8B5CF6; letter-spacing: 0.5px;">
+                        {% if order.tracking_number_awb %}
+                            {{ order.tracking_number_awb }}
+                        {% else %}
+                            <span style="font-size: 12px; color: var(--text-secondary); font-style: italic;">Sedang diproses oleh warehouse</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if order.tracking_number_awb %}
+                    <button type="button" onclick="navigator.clipboard.writeText('{{ order.tracking_number_awb }}'); alert('Nomor resi {{ order.tracking_number_awb }} disalin!');" class="btn-hero-outline" style="padding: 6px 12px; font-size: 11px; cursor: pointer;">
+                        Salin Resi
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 2 Column Details: Timeline Tracking & Product Details -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+        
+        <!-- Left: Activity Tracking Logs -->
+        <div class="dashboard-card" style="padding: 24px;">
+            <h3 style="font-size: 15px; font-weight: 800; color: #FFFFFF; margin-bottom: 16px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span>⏱️</span>
+                <span>Riwayat Aktivitas & Perjalanan Paket</span>
+            </h3>
+
+            {% if logs %}
+                <div style="position: relative; padding-left: 20px; border-left: 2px solid #222834; display: flex; flex-direction: column; gap: 18px; margin-left: 8px;">
+                    {% for log in logs %}
+                        <div style="position: relative;">
+                            <!-- Bullet Dot -->
+                            <div style="position: absolute; left: -27px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #8B5CF6; border: 2px solid #0B0E14;"></div>
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;">
+                                <strong style="color: #FFFFFF; font-size: 13px;">{{ log.status }}</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">{{ log.created_at|date:"d M, H:i" }} WIB</span>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">
+                                {{ log.note|default:"Status diperbarui oleh sistem." }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 12px;">
+                    Belum ada riwayat aktivitas pelacakan.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Right: Ordered Products & Shipping Info -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Items Purchased -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: #FFFFFF; margin-bottom: 16px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <span>🎴</span>
+                    <span>Item Photocard Dipesan</span>
+                </h3>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% if order.items.exists %}
+                        {% for item in order.items.all %}
+                            <div style="display: flex; gap: 12px; align-items: center; background: #161B26; padding: 10px; border-radius: 8px; border: 1px solid var(--border-dark);">
+                                <div style="width: 48px; height: 60px; background: #0B0E14; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    {% if item.product.image_utama %}
+                                        <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                        <span>🎴</span>
+                                    {% endif %}
+                                </div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <h4 style="font-size: 13px; font-weight: 700; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ item.product.name }}
+                                    </h4>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">
+                                        {{ item.quantity }} pcs x Rp {{ item.price|floatformat:0 }}
+                                    </div>
+                                </div>
+                                <div style="font-weight: 800; font-size: 13px; color: #8B5CF6;">
+                                    Rp {{ item.subtotal|floatformat:0 }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% elif order.product %}
+                        <div style="display: flex; gap: 12px; align-items: center; background: #161B26; padding: 10px; border-radius: 8px; border: 1px solid var(--border-dark);">
+                            <div style="width: 48px; height: 60px; background: #0B0E14; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                {% if order.product.image_utama %}
+                                    <img src="{{ order.product.image_utama.url }}" alt="{{ order.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <span>🎴</span>
+                                {% endif %}
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <h4 style="font-size: 13px; font-weight: 700; color: #FFFFFF;">{{ order.product.name }}</h4>
+                                <div style="font-size: 11px; color: var(--text-secondary);">1 pcs</div>
+                            </div>
+                            <div style="font-weight: 800; font-size: 13px; color: #8B5CF6;">
+                                Rp {{ order.amount|floatformat:0 }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Total Amount Summary -->
+                <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--border-dark); display: flex; justify-content: space-between; align-items: baseline;">
+                    <div>
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">METODE PEMBAYARAN</div>
+                        <div style="font-size: 12px; color: #FFFFFF; font-weight: 600;">{{ order.payment_method }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">TOTAL AKHIR</div>
+                        <div style="font-size: 18px; font-weight: 900; color: #8B5CF6;">Rp {{ order.amount|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Destination & Shipping Address -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: #FFFFFF; margin-bottom: 14px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <span>📍</span>
+                    <span>Tujuan Pengiriman</span>
+                </h3>
+
+                <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                    <strong style="color: #FFFFFF; display: block; font-size: 14px;">{{ order.shipping_name|default:order.user_client.username }}</strong>
+                    <div>Telp: {{ order.shipping_phone|default:order.user_client.telp|default:"-" }}</div>
+                    <div>Kota: {{ order.shipping_city|default:"-" }}</div>
+                    <div style="margin-top: 4px; color: #FFFFFF;">
+                        {{ order.shipping_address|default:order.user_client.alamat|default:"-" }}
+                    </div>
+                    {% if order.notes %}
+                        <div style="margin-top: 8px; font-size: 11px; background: #0B0E14; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-dark);">
+                            <span style="color: #F59E0B; font-weight: 700;">Catatan:</span> {{ order.notes }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% if snap_token %}
+    <script src="{{ midtrans_snap_js }}" data-client-key="{{ midtrans_client_key }}"></script>
+    <script>
+        function payWithSnap() {
+            snap.pay('{{ snap_token }}', {
+                onSuccess: function(result) {
+                    // Otomatis verifikasi pesanan saat pembayaran Midtrans selesai
+                    document.getElementById('simulasi-pay-form').submit();
+                },
+                onPending: function(result) {
+                    alert('Pembayaran diproses atau menunggu transfer. Silakan periksa status transaksi.');
+                    window.location.reload();
+                },
+                onError: function(result) {
+                    alert('Pembayaran Midtrans gagal atau dibatalkan.');
+                },
+                onClose: function() {
+                    console.log('Pelanggan menutup pop-up Midtrans.');
+                }
+            });
+        }
+    </script>
+{% endif %}
+{% endblock %}

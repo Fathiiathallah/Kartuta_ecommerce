@@ -51,6 +51,14 @@
                 </div>
 
                 <!-- Action Buttons -->
+                <a href="{% url 'app:cart_list' %}" class="btn-pro-ghost" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; position: relative;">
+                    <span>🛒</span>
+                    <span>Keranjang</span>
+                    {% if cart_count > 0 %}
+                        <span style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 10px;">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
                         <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">

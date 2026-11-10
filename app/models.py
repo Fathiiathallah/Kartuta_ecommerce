@@ -120,17 +120,110 @@ class HistoryPayment(models.Model):
         ('Failed', 'Batal / Waktu Habis'),
     ]
     user_client = models.ForeignKey(UserClient, on_delete=models.CASCADE, related_name='payments')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     invoice_number = models.CharField(max_length=50, unique=True)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     payment_method = models.CharField(max_length=50, default='QRIS Midtrans')
     courier_service = models.CharField(max_length=50, default='J&T Express Reguler')
     tracking_number_awb = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='Pending')
+    shipping_name = models.CharField(max_length=150, blank=True, null=True)
+    shipping_phone = models.CharField(max_length=30, blank=True, null=True)
+    shipping_address = models.TextField(blank=True, null=True)
+    shipping_city = models.CharField(max_length=100, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     payment_date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def display_products(self):
+        items_list = self.items.select_related('product').all()
+        if items_list.exists():
+            return ", ".join([f"{item.product.name} (x{item.quantity})" for item in items_list])
+        if self.product:
+            return self.product.name
+        return "-"
+
+    @property
+    def total_quantity(self):
+        items_list = self.items.all()
+        if items_list.exists():
+            return sum(item.quantity for item in items_list)
+        return 1
+
+    @property
+    def status_step(self):
+        mapping = {
+            'Pending': 1,
+            'Completed': 2,
+            'Packing': 3,
+            'Shipped': 4,
+            'Delivered': 5,
+            'Failed': 0,
+        }
+        return mapping.get(self.status, 1)
+
+    def unlock_virtual_binder(self):
+        if not self.user_client:
+            return
+        products_to_unlock = []
+        if self.items.exists():
+            products_to_unlock = [item.product for item in self.items.select_related('product', 'product__category').all()]
+        elif self.product:
+            products_to_unlock = [self.product]
+
+        for prod in products_to_unlock:
+            if not VirtualBinder.objects.filter(user_client=self.user_client, product=prod).exists():
+                next_slot = VirtualBinder.objects.filter(user_client=self.user_client).count() + 1
+                VirtualBinder.objects.create(
+                    user_client=self.user_client,
+                    product=prod,
+                    era_album_template=prod.category.name if prod.category else 'Official Era',
+                    slot_number=next_slot,
+                    is_unlocked=True
+                )
 
     def __str__(self):
         return f"{self.invoice_number} - {self.status}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(HistoryPayment, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def subtotal(self):
+        return self.price * self.quantity
+
+    def __str__(self):
+        return f"{self.order.invoice_number} - {self.product.name} (x{self.quantity})"
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def subtotal(self):
+        return self.product.price * self.quantity
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} ({self.quantity})"
+
+
+class OrderTrackingLog(models.Model):
+    order = models.ForeignKey(HistoryPayment, on_delete=models.CASCADE, related_name='tracking_logs')
+    status = models.CharField(max_length=50)
+    note = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.order.invoice_number} - {self.status}"
 
 
 class VirtualBinder(models.Model):

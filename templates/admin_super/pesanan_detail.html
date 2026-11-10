@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block title %}Kelola Pesanan #{{ order.invoice_number }} - KartuTa Admin{% endblock %}
+{% block page_title %}Tracking & Kelola Pesanan Administrator{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Top Action Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="{% url 'app:pesanan_admin_list' %}" class="btn-hero-outline" style="text-decoration: none; padding: 8px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+            <span>←</span>
+            <span>Kembali ke Daftar Pesanan Admin</span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="{% url 'app:pesanan_detail' order.invoice_number %}" target="_blank" class="btn-hero-outline" style="text-decoration: none; padding: 6px 12px; font-size: 11px;">
+                👁️ Tampilan Sisi Pengguna
+            </a>
+            <span style="font-size: 13px; font-weight: 900; color: #FFFFFF; font-family: monospace; background: #161B26; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-dark);">
+                {{ order.invoice_number }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+
+        <!-- Left: Form Kelola Status & Input Resi AWB -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="dashboard-card" style="padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1px solid var(--border-dark); padding-bottom: 12px;">
+                    <span style="font-size: 22px;">🛠️</span>
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF;">Update Status & Resi Kurir (AWB)</h3>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Perubahan status dan resi akan langsung terlihat di live tracking pengguna.</p>
+                    </div>
+                </div>
+
+                <form method="POST" action="{% url 'app:pesanan_admin_detail' order.invoice_number %}">
+                    {% csrf_token %}
+
+                    <!-- Status Dropdown -->
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">STATUS PESANAN *</label>
+                        <select name="status" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                            {% for key, val in status_choices %}
+                                <option value="{{ key }}" {% if order.status == key %}selected{% endif %}>
+                                    {{ key }} — {{ val }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Ekspedisi / Kurir -->
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">EKSPEDISI / KURIR</label>
+                        <input type="text" name="courier_service" value="{{ order.courier_service }}" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                    </div>
+
+                    <!-- Nomor Resi AWB -->
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">NOMOR RESI KURIR (AWB)</label>
+                        <input type="text" name="tracking_number_awb" value="{{ order.tracking_number_awb|default:'' }}" placeholder="Contoh: JT9827364821 / JNE882930" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #8B5CF6; font-family: monospace; font-size: 14px; font-weight: 800;">
+                    </div>
+
+                    <!-- Catatan Pelacakan Tambahan -->
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">CATATAN TRACKING / LOG PERJALANAN</label>
+                        <input type="text" name="tracking_note" placeholder="Misal: Paket diserahkan ke drop point J&T Makassar" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                    </div>
+
+                    <button type="submit" class="btn-primary-save" style="width: 100%; padding: 12px; font-size: 13px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>💾</span>
+                        <span>Simpan Status & Kirim Update Tracking</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Activity Logs Timeline -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: #FFFFFF; margin-bottom: 16px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <span>📜</span>
+                    <span>Log Aktivitas Pelacakan Pesanan</span>
+                </h3>
+
+                {% if logs %}
+                    <div style="position: relative; padding-left: 20px; border-left: 2px solid #222834; display: flex; flex-direction: column; gap: 16px; margin-left: 6px;">
+                        {% for log in logs %}
+                            <div style="position: relative;">
+                                <div style="position: absolute; left: -27px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #8B5CF6; border: 2px solid #0B0E14;"></div>
+                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                    <strong style="color: #FFFFFF; font-size: 12px;">{{ log.status }}</strong>
+                                    <span style="font-size: 10px; color: var(--text-muted);">{{ log.created_at|date:"d M Y, H:i" }} WIB</span>
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                                    {{ log.note }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 20px;">
+                        Belum ada riwayat aktivitas.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right: Order Details & Customer Info -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Customer & Shipping Details -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: #FFFFFF; margin-bottom: 14px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <span>👤</span>
+                    <span>Informasi Pelanggan & Alamat Kirim</span>
+                </h3>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+                    <div>
+                        <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">NAMA PENERIMA</span>
+                        <strong style="color: #FFFFFF; display: block;">{{ order.shipping_name|default:order.user_client.username }}</strong>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">USERNAME AKUN</span>
+                            <div style="color: #c4b5fd;">@{{ order.user_client.username }}</div>
+                        </div>
+                        <div>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">NO. TELEPON / WA</span>
+                            <div style="color: #FFFFFF;">{{ order.shipping_phone|default:order.user_client.telp|default:"-" }}</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">KOTA TUJUAN</span>
+                        <div style="color: #FFFFFF;">{{ order.shipping_city|default:"-" }}</div>
+                    </div>
+
+                    <div>
+                        <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ALAMAT LENGKAP</span>
+                        <div style="color: #FFFFFF; line-height: 1.5; background: #0B0E14; padding: 10px; border-radius: 8px; border: 1px solid var(--border-dark); margin-top: 4px;">
+                            {{ order.shipping_address|default:order.user_client.alamat|default:"-" }}
+                        </div>
+                    </div>
+
+                    {% if order.notes %}
+                        <div>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">CATATAN DARI PEMBELI</span>
+                            <div style="color: #F59E0B; background: #0B0E14; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-dark); font-size: 12px; margin-top: 4px;">
+                                {{ order.notes }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Items Ordered -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: #FFFFFF; margin-bottom: 14px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <span>🎴</span>
+                    <span>Item Photocard yang Harus Dipacking</span>
+                </h3>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% if order.items.exists %}
+                        {% for item in order.items.all %}
+                            <div style="display: flex; gap: 12px; align-items: center; background: #161B26; padding: 10px; border-radius: 8px; border: 1px solid var(--border-dark);">
+                                <div style="width: 48px; height: 62px; background: #0B0E14; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    {% if item.product.image_utama %}
+                                        <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                        <span>🎴</span>
+                                    {% endif %}
+                                </div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <strong style="color: #FFFFFF; font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ item.product.name }}
+                                    </strong>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">
+                                        Grade: <span style="color: #10B981;">{{ item.product.card_grade }}</span> • {{ item.quantity }} pcs
+                                    </div>
+                                    <div style="font-size: 11px; color: #c4b5fd;">
+                                        Rp {{ item.price|floatformat:0 }} / pcs
+                                    </div>
+                                </div>
+                                <div style="text-align: right; font-weight: 800; color: #8B5CF6; font-size: 13px;">
+                                    Rp {{ item.subtotal|floatformat:0 }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% elif order.product %}
+                        <div style="display: flex; gap: 12px; align-items: center; background: #161B26; padding: 10px; border-radius: 8px; border: 1px solid var(--border-dark);">
+                            <div style="width: 48px; height: 62px; background: #0B0E14; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                {% if order.product.image_utama %}
+                                    <img src="{{ order.product.image_utama.url }}" alt="{{ order.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <span>🎴</span>
+                                {% endif %}
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <strong style="color: #FFFFFF; font-size: 13px;">{{ order.product.name }}</strong>
+                                <div style="font-size: 11px; color: var(--text-secondary);">1 pcs</div>
+                            </div>
+                            <div style="text-align: right; font-weight: 800; color: #8B5CF6; font-size: 13px;">
+                                Rp {{ order.amount|floatformat:0 }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Financial Summary -->
+                <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-dark); display: flex; justify-content: space-between; align-items: baseline;">
+                    <div>
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">METODE PEMBAYARAN</div>
+                        <div style="font-size: 12px; color: #FFFFFF; font-weight: 600;">{{ order.payment_method }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">TOTAL TRANSAKSI</div>
+                        <div style="font-size: 20px; font-weight: 900; color: #8B5CF6;">Rp {{ order.amount|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

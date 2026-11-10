@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Kelola Pesanan & Resi Kurir - KartuTa Admin{% endblock %}
+{% block page_title %}Tracking & Manajemen Pesanan{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="padding: 24px;">
+    <!-- Top Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-dark); padding-bottom: 14px; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+                <span>📦</span>
+                <span>Manajemen Pesanan Masuk & Pengiriman</span>
+            </h2>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                Input nomor resi pengiriman kurir (AWB), perbarui status order, dan pantau pengiriman ke pelanggan.
+            </p>
+        </div>
+
+        <!-- Search Bar -->
+        <form method="GET" action="{% url 'app:pesanan_admin_list' %}" style="display: flex; gap: 8px;">
+            {% if status_filter %}
+                <input type="hidden" name="status" value="{{ status_filter }}">
+            {% endif %}
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Cari invoice / pelanggan / resi..." class="form-control" style="padding: 8px 12px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 12px; width: 240px;">
+            <button type="submit" class="btn-hero-outline" style="padding: 8px 14px; font-size: 12px; cursor: pointer;">
+                Cari
+            </button>
+            {% if search_query %}
+                <a href="{% url 'app:pesanan_admin_list' %}" class="btn-hero-outline" style="padding: 8px 10px; font-size: 12px; color: #f87171; text-decoration: none;">
+                    ✕ Reset
+                </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Status Tabs Filter -->
+    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px;">
+        <a href="{% url 'app:pesanan_admin_list' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if not status_filter %}background: #8B5CF6; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            Semua ({{ counts.all }})
+        </a>
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Pending{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Pending' %}background: #F59E0B; color: #000000; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            ⏳ Menunggu Bayar ({{ counts.pending }})
+        </a>
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Completed{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Completed' %}background: #10B981; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            ✓ Lunas Terverifikasi ({{ counts.completed }})
+        </a>
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Packing{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Packing' %}background: #3B82F6; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            🎁 Sedang Dipacking ({{ counts.packing }})
+        </a>
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Shipped{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Shipped' %}background: #8B5CF6; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            🚚 Dalam Pengiriman ({{ counts.shipped }})
+        </a>
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Delivered{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Delivered' %}background: #065F46; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            🎉 Selesai Diterima ({{ counts.delivered }})
+        </a>
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Failed{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Failed' %}background: #EF4444; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            ✕ Batal ({{ counts.failed }})
+        </a>
+    </div>
+
+    <!-- Orders Table -->
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">No</th>
+                        <th>Invoice / Tanggal</th>
+                        <th>Pelanggan</th>
+                        <th>Item Photocard</th>
+                        <th>Kurir & Resi AWB</th>
+                        <th>Total Bayar</th>
+                        <th>Status</th>
+                        <th style="width: 140px; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td style="color: var(--text-muted);">{{ forloop.counter }}</td>
+                            <td>
+                                <strong style="color: #FFFFFF; font-family: monospace; font-size: 12px; display: block;">{{ order.invoice_number }}</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">{{ order.payment_date|date:"d M Y, H:i" }}</span>
+                            </td>
+                            <td>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">{{ order.shipping_name|default:order.user_client.username }}</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">@{{ order.user_client.username }} • {{ order.shipping_phone|default:order.user_client.telp|default:"-" }}</span>
+                            </td>
+                            <td style="max-width: 200px;">
+                                <div style="font-size: 12px; color: #FFFFFF; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ order.display_products }}
+                                </div>
+                                <span style="font-size: 10px; color: var(--text-muted);">Total: {{ order.total_quantity }} pcs</span>
+                            </td>
+                            <td>
+                                <div style="font-size: 12px; color: #FFFFFF; font-weight: 600;">{{ order.courier_service }}</div>
+                                {% if order.tracking_number_awb %}
+                                    <span style="font-family: monospace; color: #8B5CF6; font-size: 11px; font-weight: 700;">{{ order.tracking_number_awb }}</span>
+                                {% else %}
+                                    <span style="font-size: 10px; color: #F59E0B; font-weight: 700;">● Belum Ada Resi</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong style="color: #8B5CF6; font-size: 13px;">Rp {{ order.amount|floatformat:0 }}</strong>
+                                <span style="font-size: 10px; color: var(--text-muted); display: block;">{{ order.payment_method }}</span>
+                            </td>
+                            <td>
+                                {% if order.status == 'Pending' %}
+                                    <span class="badge-tag" style="background: #F59E0B; color: #000000; font-weight: 800; font-size: 10px;">
+                                        Menunggu Bayar
+                                    </span>
+                                {% elif order.status == 'Completed' %}
+                                    <span class="badge-tag" style="background: #10B981; color: #FFFFFF; font-size: 10px;">
+                                        Lunas
+                                    </span>
+                                {% elif order.status == 'Packing' %}
+                                    <span class="badge-tag" style="background: #3B82F6; color: #FFFFFF; font-size: 10px;">
+                                        Packing
+                                    </span>
+                                {% elif order.status == 'Shipped' %}
+                                    <span class="badge-tag" style="background: #8B5CF6; color: #FFFFFF; font-size: 10px;">
+                                        Dikirim Kurir
+                                    </span>
+                                {% elif order.status == 'Delivered' %}
+                                    <span class="badge-tag badge-unlocked" style="font-size: 10px;">
+                                        Selesai
+                                    </span>
+                                {% else %}
+                                    <span class="badge-tag" style="background: #EF4444; color: #FFFFFF; font-size: 10px;">
+                                        Batal
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="{% url 'app:pesanan_admin_detail' order.invoice_number %}" class="btn-primary-save" style="padding: 6px 12px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                    <span>⚙️</span>
+                                    <span>Kelola / Resi</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 48px 20px; background: #161B26; border-radius: 12px; border: 1px dashed var(--border-dark);">
+            <div style="font-size: 40px; margin-bottom: 10px;">📭</div>
+            <h3 style="font-size: 15px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Tidak Ada Pesanan</h3>
+            <p style="font-size: 12px; color: var(--text-secondary);">
+                {% if search_query %}
+                    Tidak ada pesanan yang sesuai dengan kata kunci "{{ search_query }}".
+                {% elif status_filter %}
+                    Tidak ada pesanan dengan filter status "{{ status_filter }}".
+                {% else %}
+                    Belum ada pesanan masuk di sistem KartuTa.
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

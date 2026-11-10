@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}Checkout Pengiriman - KartuTa{% endblock %}
+{% block page_title %}Checkout & Konfirmasi Pengiriman{% endblock %}
+
+{% block content %}
+<form method="POST" action="{% url 'app:checkout' %}" id="checkout-form">
+    {% csrf_token %}
+    <div style="display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start;">
+        
+        <!-- Left Column: Shipping & Payment Details -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- 1. Alamat Pengiriman -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1px solid var(--border-dark); padding-bottom: 12px;">
+                    <span style="font-size: 20px;">📍</span>
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF;">1. Data Penerima & Alamat Pengiriman</h3>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Pastikan alamat lengkap untuk pengemasan 4-Layer Safety dan pengiriman kurir.</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">NAMA LENGKAP PENERIMA *</label>
+                        <input type="text" name="shipping_name" value="{{ userdetail.user.get_full_name|default:userdetail.username }}" required class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">NO. TELEPON / WHATSAPP *</label>
+                        <input type="text" name="shipping_phone" value="{{ userdetail.telp|default:'' }}" required placeholder="Contoh: 081234567890" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">KOTA / KABUPATEN PENGIRIMAN *</label>
+                    <input type="text" name="shipping_city" value="{{ userdetail.provinsi_anggota.nama_provinsi|default:'Makassar' }}" required placeholder="Contoh: Makassar, Sulawesi Selatan" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">ALAMAT LENGKAP (JALAN, NO. RUMAH, RT/RW, KECAMATAN) *</label>
+                    <textarea name="shipping_address" required rows="3" placeholder="Tuliskan nama jalan, nomor rumah, patokan..." class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px; line-height: 1.5;">{{ userdetail.alamat|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">CATATAN PENGIRIMAN (OPSIONAL)</label>
+                    <input type="text" name="notes" placeholder="Misal: Titipkan di pos satpam atau jangan dilipat" class="form-control" style="width: 100%; padding: 10px 14px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 13px;">
+                </div>
+            </div>
+
+            <!-- 2. Pilihan Ekspedisi & Kurir -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1px solid var(--border-dark); padding-bottom: 12px;">
+                    <span style="font-size: 20px;">🚚</span>
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF;">2. Layanan Ekspedisi & Kurir Terverifikasi</h3>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Setiap pengiriman dilengkapi resi kurir real-time dan asuransi proteksi kartu.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" class="courier-option">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="radio" name="courier_service" value="J&T Express Reguler" data-cost="18000" checked onchange="updateShipping(18000)">
+                            <div>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">J&T Express Reguler</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">Estimasi 2-3 Hari Kerja • Termasuk Resi AWB</span>
+                            </div>
+                        </div>
+                        <strong style="color: #8B5CF6; font-size: 13px;">Rp 18.000</strong>
+                    </label>
+
+                    <label style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" class="courier-option">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="radio" name="courier_service" value="JNE Reguler" data-cost="20000" onchange="updateShipping(20000)">
+                            <div>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">JNE Reguler</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">Estimasi 2-3 Hari Kerja • Termasuk Resi AWB</span>
+                            </div>
+                        </div>
+                        <strong style="color: #8B5CF6; font-size: 13px;">Rp 20.000</strong>
+                    </label>
+
+                    <label style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" class="courier-option">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="radio" name="courier_service" value="SiCepat BEST" data-cost="25000" onchange="updateShipping(25000)">
+                            <div>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">SiCepat BEST (Next Day)</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">Estimasi 1-2 Hari Kerja (Kilat Prioritas)</span>
+                            </div>
+                        </div>
+                        <strong style="color: #8B5CF6; font-size: 13px;">Rp 25.000</strong>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 3. Metode Pembayaran -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1px solid var(--border-dark); padding-bottom: 12px;">
+                    <span style="font-size: 20px;">💳</span>
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF;">3. Metode Pembayaran Resmi</h3>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Pilih metode pembayaran aman. Pembayaran otomatis diverifikasi sistem.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label style="background: #161B26; border: 1px solid #4C1D95; border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="radio" name="payment_method" value="QRIS Midtrans" checked>
+                            <div>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">QRIS Midtrans (Instan Semua Bank & E-Wallet)</strong>
+                                <span style="font-size: 11px; color: #10B981;">Verifikasi otomatis seketika • Bebas Biaya Admin</span>
+                            </div>
+                        </div>
+                        <span class="badge-tag badge-unlocked" style="font-size: 10px;">REKOMENDASI</span>
+                    </label>
+
+                    <label style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="radio" name="payment_method" value="Transfer Bank BCA">
+                            <div>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">Transfer Bank BCA (Virtual Account)</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">Proses cepat via m-BCA / KlikBCA / ATM</span>
+                            </div>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">BCA</span>
+                    </label>
+
+                    <label style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="radio" name="payment_method" value="Transfer Bank Mandiri">
+                            <div>
+                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">Transfer Bank Mandiri (Livin' by Mandiri)</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">Proses cepat via Livin' / Mandiri Online</span>
+                            </div>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">MANDIRI</span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Order Summary & Pay Button -->
+        <div style="background: #161B26; border: 1px solid var(--border-dark); border-radius: 12px; padding: 22px; position: sticky; top: 90px;">
+            <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF; margin-bottom: 16px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px;">
+                Ringkasan Pesanan ({{ total_qty }} item)
+            </h3>
+
+            <!-- Item Mini List -->
+            <div style="display: flex; flex-direction: column; gap: 12px; max-height: 220px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px;">
+                {% for item in cart_items %}
+                    <div style="display: flex; gap: 10px; align-items: center; font-size: 12px;">
+                        <div style="width: 44px; height: 56px; background: #0B0E14; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-dark); flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                            {% if item.product.image_utama %}
+                                <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <span>🎴</span>
+                            {% endif %}
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 700; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.product.name }}</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">{{ item.quantity }} x Rp {{ item.product.price|floatformat:0 }}</div>
+                        </div>
+                        <div style="font-weight: 800; color: #c4b5fd;">
+                            Rp {{ item.subtotal|floatformat:0 }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Cost Calculations -->
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; border-top: 1px solid var(--border-dark); padding-top: 14px;">
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span>Subtotal Produk</span>
+                    <strong style="color: #FFFFFF;">Rp {{ subtotal|floatformat:0 }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span>4-Layer Packaging</span>
+                    <span style="color: #10B981; font-weight: 700;">GRATIS</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span>Ongkos Kirim</span>
+                    <strong style="color: #FFFFFF;" id="shipping-display">Rp {{ default_shipping_cost|floatformat:0 }}</strong>
+                </div>
+            </div>
+
+            <!-- Grand Total -->
+            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-dark); display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-size: 14px; font-weight: 800; color: #FFFFFF;">Total Pembayaran</span>
+                <span style="font-size: 22px; font-weight: 900; color: #8B5CF6;" id="grand-total-display">Rp {{ grand_total|floatformat:0 }}</span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary-save" style="width: 100%; padding: 14px; margin-top: 18px; font-size: 14px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>🔒</span>
+                <span>Konfirmasi & Buat Pesanan</span>
+            </button>
+
+            <!-- Auto-Sync Binder Note -->
+            <div style="margin-top: 16px; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #c4b5fd; line-height: 1.5;">
+                ✨ <strong>Fitur Auto-Sync:</strong> Begitu pembayaran terverifikasi, photocard ini otomatis masuk dan membuka slot di <strong>Virtual Binder</strong> akun Anda.
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    const subtotal = {{ subtotal }};
+    function updateShipping(cost) {
+        document.getElementById('shipping-display').innerText = 'Rp ' + cost.toLocaleString('id-ID');
+        const grandTotal = subtotal + cost;
+        document.getElementById('grand-total-display').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+    }
+</script>
+{% endblock %}

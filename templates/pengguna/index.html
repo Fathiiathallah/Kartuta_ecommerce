@@ -113,20 +113,27 @@
                         <th>Metode</th>
                         <th>No. Resi Kurir (AWB)</th>
                         <th>Status</th>
+                        <th style="width: 100px; text-align: center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for p in payments %}
                         <tr>
                             <td><strong>{{ p.invoice_number }}</strong></td>
-                            <td>{{ p.product.name }}</td>
+                            <td>{{ p.display_products }}</td>
                             <td>Rp{{ p.amount|floatformat:0 }}</td>
                             <td>{{ p.payment_method }}</td>
                             <td style="font-family: monospace; color: #8B5CF6;">{{ p.tracking_number_awb|default:"-" }}</td>
                             <td>
-                                <span class="badge-tag {% if p.status == 'Completed' %}badge-unlocked{% else %}badge-urgent{% endif %}">
-                                    {{ p.status }}
+                                <span class="badge-tag {% if p.status == 'Completed' %}badge-unlocked{% elif p.status == 'Shipped' %}badge-tag{% else %}badge-urgent{% endif %}">
+                                    {{ p.get_status_display|default:p.status }}
                                 </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="{% url 'app:pesanan_detail' p.invoice_number %}" class="btn-primary-save" style="padding: 5px 10px; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                    <span>🔍</span>
+                                    <span>Lacak</span>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
