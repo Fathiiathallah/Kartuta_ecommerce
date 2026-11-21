@@ -5,15 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:product.name }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.3">
 </head>
 <body class="pro-body">
+{% include 'partials/icons.html' %}
 
     <!-- Top Announcement Micro Bar -->
     <aside class="announcement-bar">
         <div class="announcement-inner">
             <span class="announcement-pill">OFFICIAL STORE</span>
-            <span>GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</span>
+            {% if info_page %}
+                <a href="{% url 'halaman_detail' info_page.slug %}" class="announcement-claim">GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</a>
+            {% else %}
+                <span>GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</span>
+            {% endif %}
             <span class="announcement-bullet">•</span>
             <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER</span>
             <span class="announcement-bullet">•</span>
@@ -32,32 +37,30 @@
 
             <!-- Center Navigation Links (Clean, Spaced, No Underline) -->
             <nav class="pro-nav-links" style="display: flex; align-items: center; gap: 24px;">
-                <a href="{% url 'home' %}" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Home</a>
-                <a href="{% url 'home' %}#katalog-etalase" class="nav-link-item active-nav-link" style="color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Produk</a>
-                <a href="{% url 'home' %}#artikel-kolektor" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Artikel</a>
-                <a href="{% url 'home' %}#mitra-kerjasama" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
+                <a href="{% url 'home' %}" class="nav-link-item" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Home</a>
+                <a href="{% url 'home' %}#katalog-etalase" class="nav-link-item active-nav-link" style="color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Produk</a>
+                <a href="{% url 'home' %}#artikel-kolektor" class="nav-link-item" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Artikel</a>
+                <a href="{% url 'home' %}#mitra-kerjasama" class="nav-link-item" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
             </nav>
 
             <div class="pro-nav-actions">
-                <a href="{% url 'home' %}#katalog-etalase" class="btn-pro-ghost">
-                    ← Kembali ke Etalase
+                <a href="{% url 'home' %}#katalog-etalase" class="btn-pro-ghost"> Kembali ke Etalase
                 </a>
-                <a href="{% url 'app:cart_list' %}" class="btn-pro-ghost" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; position: relative;">
-                    <span>🛒</span>
-                    <span>Keranjang</span>
+                <a href="{% url 'app:cart_list' %}" class="btn-pro-icon-cart" aria-label="Keranjang belanja{% if cart_count > 0 %}, {{ cart_count }} item{% endif %}" title="Keranjang belanja">
+                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cart"/></svg>
                     {% if cart_count > 0 %}
-                        <span style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 10px;">{{ cart_count }}</span>
+                        <span class="cart-badge">{{ cart_count }}</span>
                     {% endif %}
                 </a>
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
                         <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
-                            <span style="font-size: 15px;">🛡️</span>
+                            <span style="font-size: 15px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
                         </a>
                     {% else %}
                         <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
                             <span class="user-live-dot"></span>
-                            <span style="font-size: 15px;">👤</span>
+                            <span style="font-size: 15px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-user"/></svg></span>
                         </a>
                     {% endif %}
                     <a href="{% url 'logout' %}" class="btn-pro-ghost" title="Keluar / Logout">Keluar</a>
@@ -72,14 +75,14 @@
     <main class="pro-container" style="gap: 32px; padding-top: 24px;">
 
         <!-- Breadcrumbs Navigation -->
-        <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94A3B8;">
-            <a href="{% url 'home' %}" style="color: #94A3B8; text-decoration: none;">Beranda</a>
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+            <a href="{% url 'home' %}" style="color: var(--text-secondary); text-decoration: none;">Beranda</a>
             <span>/</span>
-            <a href="{% url 'home' %}#katalog-etalase" style="color: #94A3B8; text-decoration: none;">Etalase</a>
+            <a href="{% url 'home' %}#katalog-etalase" style="color: var(--text-secondary); text-decoration: none;">Etalase</a>
             <span>/</span>
-            <a href="{% url 'home' %}?category={{ product.category.id }}#katalog-etalase" style="color: #c4b5fd; text-decoration: none;">{{ product.category.name }}</a>
+            <a href="{% url 'home' %}?category={{ product.category.id }}#katalog-etalase" style="color: var(--text-hint); text-decoration: none;">{{ product.category.name }}</a>
             <span>/</span>
-            <span style="color: #ffffff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px;">{{ product.name }}</span>
+            <span style="color: var(--text-main); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px;">{{ product.name }}</span>
         </nav>
 
         <!-- Product Detail Two-Column Layout -->
@@ -88,7 +91,7 @@
             <!-- Left: Card Visual & Badges -->
             <div>
                 <div style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 18px; box-shadow: 0 16px 36px rgba(0,0,0,0.5);">
-                    <div style="position: relative; width: 100%; aspect-ratio: 2/3; background: #090c12; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: center;">
+                    <div style="position: relative; width: 100%; aspect-ratio: 2/3; background: var(--canvas-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: center;">
                         
                         <!-- Top Badges Overlay -->
                         <div class="badge-overlay-header">
@@ -103,7 +106,7 @@
                             <img src="{{ product.image_utama.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
                         {% else %}
                             <div class="pro-image-placeholder">
-                                <span style="font-size: 54px;">🎴</span>
+                                <span style="font-size: 54px;"><svg class="icon-svg icon-svg--lg" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></span>
                                 <p>Foto Fisik Terkurasi</p>
                             </div>
                         {% endif %}
@@ -121,12 +124,12 @@
 
                 <!-- Trust Micro List Under Image -->
                 <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div style="background: #11151f; border: 1px solid #222834; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
-                        <span>🛡️</span>
+                    <div style="background: var(--surface); border: 1px solid var(--input-bg); border-radius: 8px; padding: 10px 12px; font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+                        <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
                         <span>Garansi Keaslian Cetakan</span>
                     </div>
-                    <div style="background: #11151f; border: 1px solid #222834; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
-                        <span>📦</span>
+                    <div style="background: var(--surface); border: 1px solid var(--input-bg); border-radius: 8px; padding: 10px 12px; font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+                        <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg></span>
                         <span>Toploader & Yellow Board</span>
                     </div>
                 </div>
@@ -139,35 +142,35 @@
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <span class="side-chip" style="margin: 0;">{{ product.category.name }}</span>
                         {% if product.member_bias %}
-                            <span class="side-chip" style="margin: 0; background: rgba(236, 72, 153, 0.15); border-color: rgba(236, 72, 153, 0.4); color: #f472b6;">
+                            <span class="side-chip" style="margin: 0; background: rgba(236, 72, 153, 0.15); border-color: rgba(236, 72, 153, 0.4); color: var(--magenta);">
                                 Member: {{ product.member_bias }}
                             </span>
                         {% endif %}
                     </div>
-                    <h1 style="font-size: 28px; font-weight: 900; line-height: 1.3; color: #ffffff; margin-bottom: 12px; letter-spacing: -0.5px;">
+                    <h1 style="font-size: 28px; font-weight: 900; line-height: 1.3; color: var(--text-main); margin-bottom: 12px; letter-spacing: -0.5px;">
                         {{ product.name }}
                     </h1>
-                    <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #10b981; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
-                        <span>✓</span>
+                    <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: var(--emerald); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+                        <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
                         <span>Terverifikasi Original Agensi & Siap Dikirim</span>
                     </div>
                 </div>
 
                 <!-- Price Box -->
-                <div style="background: #161b26; border: 1px solid #222834; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: var(--surface); border: 1px solid var(--input-bg); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <div style="font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px;">HARGA OFFICIAL</div>
-                        <div style="font-size: 32px; font-weight: 900; color: #ffffff; letter-spacing: -1px; margin-top: 2px;">
+                        <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px;">HARGA OFFICIAL</div>
+                        <div style="font-size: 32px; font-weight: 900; color: var(--text-main); letter-spacing: -1px; margin-top: 2px;">
                             Rp {{ product.price|floatformat:0 }}
                         </div>
                     </div>
                     <div style="text-align: right;">
-                        <div style="font-size: 11px; font-weight: 800; color: #94a3b8;">STATUS STOK</div>
-                        <div style="font-size: 16px; font-weight: 800; {% if product.stock <= 1 %}color: #f59e0b;{% else %}color: #10b981;{% endif %} margin-top: 2px;">
+                        <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary);">STATUS STOK</div>
+                        <div style="font-size: 16px; font-weight: 800; {% if product.stock <= 1 %}color: var(--amber);{% else %}color: var(--emerald);{% endif %} margin-top: 2px;">
                             {% if product.stock > 0 %}
                                 ● {{ product.stock }} Unit Tersedia
                             {% else %}
-                                ✕ Stok Habis
+                                <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Stok Habis
                             {% endif %}
                         </div>
                     </div>
@@ -175,10 +178,10 @@
 
                 <!-- Virtual Binder Perk Callout -->
                 <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(236, 72, 153, 0.08)); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 12px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px;">
-                    <span style="font-size: 26px;">🎴</span>
+                    <span style="font-size: 26px;"><svg class="icon-svg icon-svg--lg" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></span>
                     <div>
-                        <strong style="color: #ffffff; font-size: 13px; display: block; margin-bottom: 2px;">Fitur Eksklusif: Auto-Sync Virtual Binder</strong>
-                        <p style="font-size: 12px; color: #c4b5fd; margin: 0; line-height: 1.5;">
+                        <strong style="color: var(--text-main); font-size: 13px; display: block; margin-bottom: 2px;">Fitur Eksklusif: Auto-Sync Virtual Binder</strong>
+                        <p style="font-size: 12px; color: var(--text-hint); margin: 0; line-height: 1.5;">
                             Saat pembayaran pesanan fisik kartu ini terkonfirmasi, slot digital pada <strong>Virtual Binder</strong> akun Anda akan otomatis terbuka dan berwarna.
                         </p>
                     </div>
@@ -191,34 +194,32 @@
                             <form method="POST" action="{% url 'app:cart_add' product.id %}" style="display: flex; flex-direction: column; gap: 12px;">
                                 {% csrf_token %}
                                 <div style="display: flex; align-items: center; gap: 12px;">
-                                    <label style="font-size: 12px; font-weight: 700; color: #94A3B8;">Jumlah:</label>
-                                    <div style="display: flex; align-items: center; gap: 6px; background: #0B0E14; border: 1px solid #222834; border-radius: 8px; padding: 4px 8px;">
+                                    <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary);">Jumlah:</label>
+                                    <div style="display: flex; align-items: center; gap: 6px; background: var(--canvas-bg); border: 1px solid var(--input-bg); border-radius: 8px; padding: 4px 8px;">
                                         <button type="button" onclick="let q=document.getElementById('buy_qty'); if(q.value>1) q.value--;" style="background:none; border:none; color:#fff; font-size:16px; cursor:pointer; width:24px; height:24px;">−</button>
                                         <input type="number" id="buy_qty" name="quantity" value="1" min="1" max="{{ product.stock }}" style="width: 40px; background: transparent; border: none; color: #fff; font-weight: 800; text-align: center; font-size: 14px;">
                                         <button type="button" onclick="let q=document.getElementById('buy_qty'); if(q.value<{{ product.stock }}) q.value++;" style="background:none; border:none; color:#fff; font-size:16px; cursor:pointer; width:24px; height:24px;">+</button>
                                     </div>
-                                    <span style="font-size: 11px; color: #64748B;">Sisa stok: {{ product.stock }} pcs</span>
+                                    <span style="font-size: 11px; color: var(--text-muted);">Sisa stok: {{ product.stock }} pcs</span>
                                 </div>
 
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <button type="submit" name="add_only" value="1" class="btn-hero-outline" style="padding: 13px 16px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                        <span>🛒</span>
-                                        <span>+ Keranjang</span>
+                                    <button type="submit" name="add_only" value="1" class="btn-hero-outline" style="padding: 13px 16px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px;">
+                                        Tambah ke Keranjang
                                     </button>
-                                    <button type="submit" name="buy_now" value="1" class="btn-pro-action" style="padding: 13px 16px; font-size: 13px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                        <span>⚡</span>
-                                        <span>Beli Sekarang</span>
+                                    <button type="submit" name="buy_now" value="1" class="btn-pro-action" style="padding: 13px 16px; font-size: 13px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px;">
+                                        Beli Sekarang
                                     </button>
                                 </div>
                             </form>
                         {% else %}
-                            <button type="button" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; width: 100%; background: #222834; color: #94a3b8; cursor: not-allowed; box-shadow: none;" disabled>
+                            <button type="button" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; width: 100%; background: var(--input-bg); color: var(--text-secondary); cursor: not-allowed; box-shadow: none;" disabled>
                                 Stok Habis / Sold Out
                             </button>
                         {% endif %}
                     {% else %}
                         <a href="{% url 'login' %}?next={{ request.path }}" class="btn-pro-action" style="padding: 14px 20px; font-size: 14px; text-align: center;">
-                            🔐 Masuk untuk Membeli & Klaim Slot Binder
+                            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg> Masuk untuk Membeli & Klaim Slot Binder
                         </a>
                         <a href="{% url 'register' %}" class="btn-hero-outline" style="text-align: center; font-size: 13px; padding: 11px;">
                             Daftar Akun Kolektor Baru
@@ -227,32 +228,32 @@
                 </div>
 
                 <!-- Specifications Card -->
-                <div style="background: #11151f; border: 1px solid #222834; border-radius: 12px; padding: 20px;">
-                    <h3 style="font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 14px; border-bottom: 1px solid #222834; padding-bottom: 8px;">
+                <div style="background: var(--surface); border: 1px solid var(--input-bg); border-radius: 12px; padding: 20px;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 14px; border-bottom: 1px solid var(--input-bg); padding-bottom: 8px;">
                         Spesifikasi & Kondisi Kartu
                     </h3>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; margin-bottom: 16px;">
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">GRUP / FANDOM</span>
-                            <strong style="color: #ffffff;">{{ product.fandom_group|default:"aespa" }}</strong>
+                            <span style="color: var(--text-muted); display: block; font-size: 10px; font-weight: 700;">GRUP / FANDOM</span>
+                            <strong style="color: var(--text-main);">{{ product.fandom_group|default:"aespa" }}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">MEMBER</span>
-                            <strong style="color: #ffffff;">{{ product.member_bias|default:"All Member" }}</strong>
+                            <span style="color: var(--text-muted); display: block; font-size: 10px; font-weight: 700;">MEMBER</span>
+                            <strong style="color: var(--text-main);">{{ product.member_bias|default:"All Member" }}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">ERA / KATEGORI</span>
-                            <strong style="color: #ffffff;">{{ product.category.name }}</strong>
+                            <span style="color: var(--text-muted); display: block; font-size: 10px; font-weight: 700;">ERA / KATEGORI</span>
+                            <strong style="color: var(--text-main);">{{ product.category.name }}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 10px; font-weight: 700;">GRADE KONDISI FISIK</span>
-                            <strong style="color: #10b981;">{{ product.card_grade }}</strong>
+                            <span style="color: var(--text-muted); display: block; font-size: 10px; font-weight: 700;">GRADE KONDISI FISIK</span>
+                            <strong style="color: var(--emerald);">{{ product.card_grade }}</strong>
                         </div>
                     </div>
 
-                    <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 4px;">DESKRIPSI LENGKAP:</div>
-                    <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px;">DESKRIPSI LENGKAP:</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
                         {{ product.description|linebreaks }}
                     </div>
                 </div>
@@ -270,24 +271,32 @@
 
             <div class="protocol-grid">
                 <div class="protocol-col">
-                    <span class="protocol-step">Lapis 01</span>
-                    <h4>Acid-Free Inner Sleeve</h4>
-                    <p>Melindungi permukaan glossy kartu dari goresan halus dan debu mikro.</p>
+                    <span class="protocol-step">01</span>
+                    <div>
+                        <h4>Acid-Free Inner Sleeve</h4>
+                        <p>Melindungi permukaan glossy kartu dari goresan halus dan debu mikro.</p>
+                    </div>
                 </div>
                 <div class="protocol-col">
-                    <span class="protocol-step">Lapis 02</span>
-                    <h4>Ultra-Rigid Toploader</h4>
-                    <p>Plastik polimer tebal penahan benturan agar kartu tidak melengkung.</p>
+                    <span class="protocol-step">02</span>
+                    <div>
+                        <h4>Ultra-Rigid Toploader</h4>
+                        <p>Plastik polimer tebal penahan benturan agar kartu tidak melengkung.</p>
+                    </div>
                 </div>
                 <div class="protocol-col">
-                    <span class="protocol-step">Lapis 03</span>
-                    <h4>Double Yellow Board</h4>
-                    <p>Penjepit karton padat bertekanan tinggi penahan beban guncangan paket.</p>
+                    <span class="protocol-step">03</span>
+                    <div>
+                        <h4>Double Yellow Board</h4>
+                        <p>Penjepit karton padat bertekanan tinggi penahan beban guncangan paket.</p>
+                    </div>
                 </div>
                 <div class="protocol-col">
-                    <span class="protocol-step">Lapis 04</span>
-                    <h4>Bubble Mailer Seal</h4>
-                    <p>Amplop bantalan gelembung tebal kedap air dengan segel pengaman resmi.</p>
+                    <span class="protocol-step">04</span>
+                    <div>
+                        <h4>Bubble Mailer Seal</h4>
+                        <p>Amplop bantalan gelembung tebal kedap air dengan segel pengaman resmi.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -315,10 +324,10 @@
 
                                 <div class="pro-image-holder">
                                     {% if item.image_utama %}
-                                        <img src="{{ item.image_utama.url }}" alt="{{ item.name }}" loading="lazy">
+                                        <img width="600" height="900" src="{{ item.image_utama.url }}" alt="{{ item.name }}" loading="lazy">
                                     {% else %}
                                         <div class="pro-image-placeholder">
-                                            <span>🎴</span>
+                                            <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></span>
                                         </div>
                                     {% endif %}
                                 </div>

@@ -8,10 +8,10 @@
     <div class="profile-summary-card">
         <div class="profile-avatar-wrap">
             {% if photo %}
-                <img src="{{ photo.url }}" alt="Profile Photo" class="profile-avatar-img" style="border-color: #0f172a;">
+                <img src="{{ photo.url }}" alt="Profile Photo" class="profile-avatar-img" style="border-color: var(--canvas-bg);">
             {% else %}
-                <div class="profile-avatar-placeholder" style="background: #0f172a; color: #ffffff; border-color: #0f172a;">
-                    🛡️
+                <div class="profile-avatar-placeholder" style="background: var(--canvas-bg); color: var(--text-main); border-color: var(--canvas-bg);">
+                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
                 </div>
             {% endif %}
         </div>
@@ -29,7 +29,7 @@
                 <div class="profile-field-item">
                     <div class="field-label-micro">DIVISI OPERASIONAL</div>
                     <div class="field-value-text">
-                        <span class="badge-tag" style="background: #0f172a; color: #fff;">
+                        <span class="badge-tag" style="background: var(--canvas-bg); color: #fff;">
                             {{ userdetail.role_divisi|default:"Operations & QC" }}
                         </span>
                     </div>
@@ -48,11 +48,11 @@
 
             <div style="display: flex; gap: 10px;">
                 <a href="{% url 'app:profile_admin' %}" class="btn-edit-profile">
-                    <span>✏️</span>
+                    <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-pencil"/></svg></span>
                     <span>Edit Profil Admin</span>
                 </a>
-                <a href="/admin/" target="_blank" class="btn-edit-profile" style="background: #0084c7;">
-                    <span>⚙️</span>
+                <a href="/admin/" target="_blank" class="btn-edit-profile" style="background: var(--accent-info);">
+                    <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-gear"/></svg></span>
                     <span>Django Admin</span>
                 </a>
             </div>
@@ -64,21 +64,21 @@
 <div class="dashboard-card" style="padding: 20px 24px;">
     <div class="card-title-bar" style="margin-bottom: 14px;">Metrik Operasional Toko</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
-        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+        <div style="background: var(--input-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 14px 18px;">
             <div class="field-label-micro">TOTAL PELANGGAN</div>
-            <div style="font-size: 24px; font-weight: 800; color: #8B5CF6; margin-top: 4px;">{{ stats.total_clients }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--primary); margin-top: 4px;">{{ stats.total_clients }}</div>
         </div>
-        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+        <div style="background: var(--input-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 14px 18px;">
             <div class="field-label-micro">KATALOG PRODUK</div>
-            <div style="font-size: 24px; font-weight: 800; color: #10B981; margin-top: 4px;">{{ stats.total_products }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--emerald); margin-top: 4px;">{{ stats.total_products }}</div>
         </div>
-        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+        <div style="background: var(--input-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 14px 18px;">
             <div class="field-label-micro">KATEGORI</div>
-            <div style="font-size: 24px; font-weight: 800; color: #EC4899; margin-top: 4px;">{{ stats.total_categories }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--magenta); margin-top: 4px;">{{ stats.total_categories }}</div>
         </div>
-        <div style="background: #222834; border: 1px solid #2a3346; border-radius: 8px; padding: 14px 18px;">
+        <div style="background: var(--input-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 14px 18px;">
             <div class="field-label-micro">TOTAL TRANSAKSI</div>
-            <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-top: 4px;">{{ stats.total_orders }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--amber); margin-top: 4px;">{{ stats.total_orders }}</div>
         </div>
     </div>
 </div>
@@ -109,14 +109,14 @@
                                 <span class="badge-tag badge-unlocked">{{ c.membership_tier }}</span>
                             </td>
                             <td>{{ c.alamat|default:"-"|truncatechars:35 }}</td>
-                            <td style="color: #6b7280;">{{ c.date_joined|date:"d M Y" }}</td>
+                            <td style="color: var(--text-muted);">{{ c.date_joined|date:"d M Y" }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     {% else %}
-        <div style="text-align: center; padding: 24px; color: #9ca3af; font-size: 12px;">
+        <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 12px;">
             Belum ada pelanggan terdaftar.
         </div>
     {% endif %}

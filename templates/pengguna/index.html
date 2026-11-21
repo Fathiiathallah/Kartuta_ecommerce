@@ -57,7 +57,7 @@
             </div>
 
             <a href="{% url 'app:profile_pengguna' %}" class="btn-edit-profile">
-                <span>✏️</span>
+                <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-pencil"/></svg></span>
                 <span>Edit Profil</span>
             </a>
         </div>
@@ -74,15 +74,15 @@
                 <div class="binder-card">
                     <div class="img-box">
                         {% if item.product.image_utama %}
-                            <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}">
+                            <img src="{{ item.product.image_utama.url }}" alt="{{ item.product.name }}" width="600" height="900">
                         {% else %}
                             Slot #{{ item.slot_number }}
                         {% endif %}
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         {{ item.product.name }}
                     </div>
-                    <div style="font-size: 10px; color: #94A3B8; text-transform: uppercase; margin-top: 2px;">
+                    <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase; margin-top: 2px;">
                         {{ item.era_album_template }}
                     </div>
                     <span class="badge-tag badge-unlocked" style="margin-top: 6px;">Ready Stock</span>
@@ -90,10 +90,10 @@
             {% endfor %}
         </div>
     {% else %}
-        <div style="text-align: center; padding: 36px 16px; background: #222834; border-radius: 8px; border: 1px dashed #2a3346;">
-            <div style="font-size: 28px; margin-bottom: 6px;">🎴</div>
-            <div style="font-size: 13px; font-weight: 600; color: #FFFFFF;">Virtual Binder Masih Kosong</div>
-            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">Slot kartu digital otomatis terisi dan berwarna saat pembelian photocard official terkonfirmasi.</div>
+        <div style="text-align: center; padding: 36px 16px; background: var(--input-bg); border-radius: 8px; border: 1px dashed var(--border-light);">
+            <div style="font-size: 28px; margin-bottom: 6px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></div>
+            <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">Virtual Binder Masih Kosong</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Slot kartu digital otomatis terisi dan berwarna saat pembelian photocard official terkonfirmasi.</div>
         </div>
     {% endif %}
 </div>
@@ -123,7 +123,7 @@
                             <td>{{ p.display_products }}</td>
                             <td>Rp{{ p.amount|floatformat:0 }}</td>
                             <td>{{ p.payment_method }}</td>
-                            <td style="font-family: monospace; color: #8B5CF6;">{{ p.tracking_number_awb|default:"-" }}</td>
+                            <td style="font-family: monospace; color: var(--primary);">{{ p.tracking_number_awb|default:"-" }}</td>
                             <td>
                                 <span class="badge-tag {% if p.status == 'Completed' %}badge-unlocked{% elif p.status == 'Shipped' %}badge-tag{% else %}badge-urgent{% endif %}">
                                     {{ p.get_status_display|default:p.status }}
@@ -131,7 +131,7 @@
                             </td>
                             <td style="text-align: center;">
                                 <a href="{% url 'app:pesanan_detail' p.invoice_number %}" class="btn-primary-save" style="padding: 5px 10px; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-                                    <span>🔍</span>
+                                    <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-search"/></svg></span>
                                     <span>Lacak</span>
                                 </a>
                             </td>
@@ -141,7 +141,7 @@
             </table>
         </div>
     {% else %}
-        <div style="text-align: center; padding: 24px 16px; color: #94A3B8; font-size: 12px;">
+        <div style="text-align: center; padding: 24px 16px; color: var(--text-secondary); font-size: 12px;">
             Belum ada riwayat transaksi.
         </div>
     {% endif %}

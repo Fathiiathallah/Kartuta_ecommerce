@@ -5,15 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.3">
 </head>
 <body class="pro-body">
+{% include 'partials/icons.html' %}
 
     <!-- Top Announcement Micro Bar -->
     <aside class="announcement-bar">
         <div class="announcement-inner">
             <span class="announcement-pill">OFFICIAL STORE</span>
-            <span>GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</span>
+            {% if info_page %}
+                <a href="{% url 'halaman_detail' info_page.slug %}" class="announcement-claim">GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</a>
+            {% else %}
+                <span>GARANSI 100% KEASLIAN FISIK ATAU REFUND PENUH</span>
+            {% endif %}
             <span class="announcement-bullet">•</span>
             <span>GRATIS INNER SLEEVE & ULTRA-PRO TOPLOADER</span>
             <span class="announcement-bullet">•</span>
@@ -33,25 +38,24 @@
 
             <!-- Center Navigation Links -->
             <nav class="pro-nav-links" style="display: flex; align-items: center; gap: 24px;">
-                <a href="{% url 'home' %}" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Home</a>
-                <a href="{% url 'home' %}#katalog-etalase" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Produk</a>
-                <a href="{% url 'home' %}#artikel-kolektor" class="nav-link-item active-nav-link" style="color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Artikel</a>
-                <a href="{% url 'home' %}#mitra-kerjasama" class="nav-link-item" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
+                <a href="{% url 'home' %}" class="nav-link-item" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Home</a>
+                <a href="{% url 'home' %}#katalog-etalase" class="nav-link-item" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Produk</a>
+                <a href="{% url 'home' %}#artikel-kolektor" class="nav-link-item active-nav-link" style="color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Artikel</a>
+                <a href="{% url 'home' %}#mitra-kerjasama" class="nav-link-item" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
             </nav>
 
             <div class="pro-nav-actions">
-                <a href="{% url 'home' %}#artikel-kolektor" class="btn-pro-ghost">
-                    ← Kembali ke Beranda
+                <a href="{% url 'home' %}#artikel-kolektor" class="btn-pro-ghost"> Kembali ke Beranda
                 </a>
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.last_name == 'Super Admin' %}
                         <a href="{% url 'app:dashboard_admin' %}" class="btn-pro-icon-user" title="Dashboard Admin ({{ request.user.first_name|default:request.user.username }})">
-                            <span style="font-size: 15px;">🛡️</span>
+                            <span style="font-size: 15px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
                         </a>
                     {% else %}
                         <a href="{% url 'app:dashboard_pengguna' %}" class="btn-pro-icon-user" title="Dashboard & Virtual Binder ({{ request.user.first_name|default:request.user.username }})">
                             <span class="user-live-dot"></span>
-                            <span style="font-size: 15px;">👤</span>
+                            <span style="font-size: 15px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-user"/></svg></span>
                         </a>
                     {% endif %}
                     <a href="{% url 'logout' %}" class="btn-pro-ghost" title="Keluar / Logout">Keluar</a>
@@ -66,12 +70,12 @@
     <main class="pro-container" style="gap: 36px; padding-top: 24px; max-width: 960px;">
 
         <!-- Breadcrumbs Navigation -->
-        <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94A3B8;">
-            <a href="{% url 'home' %}" style="color: #94A3B8; text-decoration: none;">Beranda</a>
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+            <a href="{% url 'home' %}" style="color: var(--text-secondary); text-decoration: none;">Beranda</a>
             <span>/</span>
-            <a href="{% url 'home' %}#artikel-kolektor" style="color: #94A3B8; text-decoration: none;">Panduan Kolektor</a>
+            <a href="{% url 'home' %}#artikel-kolektor" style="color: var(--text-secondary); text-decoration: none;">Panduan Kolektor</a>
             <span>/</span>
-            <span style="color: #C4B5FD;">{{ artikel.kategori.nama_kategori }}</span>
+            <span style="color: var(--text-hint);">{{ artikel.kategori.nama_kategori }}</span>
         </nav>
 
         <!-- Article Editorial Header -->
@@ -82,21 +86,21 @@
                 </span>
             </div>
 
-            <h1 style="font-family: var(--font-display); font-size: 34px; font-weight: 800; line-height: 1.25; color: #FFFFFF; letter-spacing: -0.02em; margin: 0;">
+            <h1 style="font-family: var(--font-display); font-size: 34px; font-weight: 800; line-height: 1.25; color: var(--text-main); letter-spacing: -0.02em; margin: 0;">
                 {{ artikel.judul }}
             </h1>
 
-            <div style="display: flex; align-items: center; gap: 18px; font-size: 12px; color: #94A3B8; flex-wrap: wrap;">
-                <span>✍️ Ditulis oleh: <strong style="color: #FFFFFF;">{{ artikel.penulis.first_name|default:artikel.penulis.username|default:"Editor Resmi KartuTa" }}</strong></span>
+            <div style="display: flex; align-items: center; gap: 18px; font-size: 12px; color: var(--text-secondary); flex-wrap: wrap;">
+                <span>Ditulis oleh: <strong style="color: var(--text-main);">{{ artikel.penulis.first_name|default:artikel.penulis.username|default:"Editor Resmi KartuTa" }}</strong></span>
                 <span>•</span>
-                <span>📅 {{ artikel.created_at|date:"d F Y" }}</span>
+                <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg> {{ artikel.created_at|date:"d F Y" }}</span>
                 <span>•</span>
-                <span style="display: inline-flex; align-items: center; background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); padding: 3px 10px; border-radius: 6px; font-weight: 700;">
+                <span style="display: inline-flex; align-items: center; background: rgba(139, 92, 246, 0.15); color: var(--text-hint); border: 1px solid rgba(139, 92, 246, 0.35); padding: 3px 10px; border-radius: 6px; font-weight: 700;">
                     {{ artikel.views_count }} views
                 </span>
                 <span>•</span>
-                <span style="background: rgba(16, 185, 129, 0.12); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 4px; font-weight: 700;">
-                    ✓ Terverifikasi Tim Kurasi
+                <span style="background: rgba(16, 185, 129, 0.12); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 4px; font-weight: 700;">
+                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Terverifikasi Tim Kurasi
                 </span>
             </div>
         </header>
@@ -109,30 +113,19 @@
         {% endif %}
 
         <!-- Article Content Body -->
-        <article style="background: #111622; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 16px; padding: 36px 40px; line-height: 1.85; font-size: 15px; color: #CBD5E1;">
+        <article style="background: var(--surface); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 16px; padding: 36px 40px; line-height: 1.85; font-size: 15px; color: var(--text-soft);">
             
-            <div style="font-size: 16px; color: #E2E8F0; margin-bottom: 24px;">
+            <div style="font-size: 16px; color: var(--text-main); margin-bottom: 24px;">
                 {{ artikel.konten|linebreaks }}
             </div>
 
-            <!-- Authentic Collector Callout Box -->
-            <div style="margin: 32px 0; background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(236, 72, 153, 0.08)); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 12px; padding: 20px 24px; display: flex; align-items: flex-start; gap: 16px;">
-                <span style="font-size: 26px;">💡</span>
-                <div>
-                    <strong style="color: #FFFFFF; font-size: 14px; display: block; margin-bottom: 4px;">Pesan Keamanan Kolektor KartuTa</strong>
-                    <p style="font-size: 13px; color: #C4B5FD; margin: 0; line-height: 1.6;">
-                        Selalu rekam video unboxing tanpa jeda (cut) saat paket photocard tiba. KartuTa memberikan garansi penggantian atau refund 100% jika kondisi kartu tidak sesuai dengan grade fisik yang dicantumkan.
-                    </p>
-                </div>
-            </div>
-
             <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-                <div style="font-size: 12px; color: #94A3B8;">
-                    Kategori Panduan: <strong style="color: #FFFFFF;">{{ artikel.kategori.nama_kategori }}</strong>
+                <div style="font-size: 12px; color: var(--text-secondary);">
+                    Kategori Panduan: <strong style="color: var(--text-main);">{{ artikel.kategori.nama_kategori }}</strong>
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <a href="{% url 'home' %}#katalog-etalase" class="btn-hero-solid" style="padding: 9px 18px; font-size: 12px;">
-                        🛒 Cari Photocard di Etalase
+                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cart"/></svg> Cari Photocard di Etalase
                     </a>
                 </div>
             </div>
@@ -154,14 +147,14 @@
                         <article class="article-card-editorial">
                             <div>
                                 <span class="side-chip" style="margin-bottom: 12px; font-size: 10px;">{{ art.kategori.nama_kategori }}</span>
-                                <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF; line-height: 1.4; margin-bottom: 8px;">
+                                <h3 style="font-size: 16px; font-weight: 800; color: var(--text-main); line-height: 1.4; margin-bottom: 8px;">
                                     <a href="{% url 'artikel_detail' art.slug %}" style="color: inherit; text-decoration: none;">{{ art.judul }}</a>
                                 </h3>
-                                <p style="font-size: 12px; color: #94A3B8; line-height: 1.6; margin-bottom: 16px;">{{ art.konten|truncatewords:20 }}</p>
+                                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">{{ art.konten|truncatewords:20 }}</p>
                             </div>
-                            <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748B;">
-                                <span>📅 {{ art.created_at|date:"d M Y" }}</span>
-                                <a href="{% url 'artikel_detail' art.slug %}" style="color: #8B5CF6; text-decoration: none; font-weight: 700;">Baca Selengkapnya &rarr;</a>
+                            <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">
+                                <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg> {{ art.created_at|date:"d M Y" }}</span>
+                                <a href="{% url 'artikel_detail' art.slug %}" style="color: var(--primary); text-decoration: none; font-weight: 700;">Baca Selengkapnya</a>
                             </div>
                         </article>
                     {% endfor %}

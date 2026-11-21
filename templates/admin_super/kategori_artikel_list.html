@@ -7,7 +7,7 @@
     <div class="card-title-bar">
         <span>Daftar Kategori Artikel & Panduan Edukasi</span>
         <a href="{% url 'app:kategori_artikel_tambah' %}" class="btn-primary-save" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-            <span>➕</span>
+            <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></span>
             <span>Tambah Kategori Baru</span>
         </a>
     </div>
@@ -29,18 +29,18 @@
                 <tbody>
                     {% for item in kategori_list %}
                         <tr>
-                            <td style="color: #94A3B8;">{{ forloop.counter }}</td>
+                            <td style="color: var(--text-secondary);">{{ forloop.counter }}</td>
                             <td>
-                                <strong style="color: #FFFFFF; font-size: 13px;">{{ item.nama_kategori }}</strong>
+                                <strong style="color: var(--text-main); font-size: 13px;">{{ item.nama_kategori }}</strong>
                             </td>
-                            <td style="color: #8B5CF6; font-size: 12px; font-family: monospace;">
+                            <td style="color: var(--primary); font-size: 12px; font-family: monospace;">
                                 /{{ item.slug }}
                             </td>
-                            <td style="color: #94A3B8; font-size: 12px;">
+                            <td style="color: var(--text-secondary); font-size: 12px;">
                                 {{ item.deskripsi|default:"-" }}
                             </td>
                             <td>
-                                <span class="badge-tag" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #8B5CF6;">
+                                <span class="badge-tag" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: var(--primary);">
                                     {{ item.artikel_list.count }} Artikel
                                 </span>
                             </td>
@@ -48,16 +48,16 @@
                                 {% if item.aktif %}
                                     <span class="badge-tag badge-unlocked">Aktif</span>
                                 {% else %}
-                                    <span class="badge-tag" style="background: #222834; color: #94A3B8;">Nonaktif</span>
+                                    <span class="badge-tag" style="background: var(--input-bg); color: var(--text-secondary);">Nonaktif</span>
                                 {% endif %}
                             </td>
                             <td style="text-align: center;">
                                 <div style="display: inline-flex; gap: 8px;">
                                     <a href="{% url 'app:kategori_artikel_edit' item.id %}" class="btn-secondary" style="padding: 6px 12px; font-size: 11px;">
-                                        ✏️ Edit
+                                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-pencil"/></svg> Edit
                                     </a>
-                                    <a href="{% url 'app:kategori_artikel_hapus' item.id %}" onclick="return confirm('Hapus kategori {{ item.nama_kategori }}? Semua artikel dalam kategori ini juga akan terhapus.');" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: #f87171;">
-                                        🗑️ Hapus
+                                    <a href="{% url 'app:kategori_artikel_hapus' item.id %}" onclick="return confirm('Hapus kategori {{ item.nama_kategori }}? Semua artikel dalam kategori ini juga akan terhapus.');" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: var(--danger);">
+                                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-trash"/></svg> Hapus
                                     </a>
                                 </div>
                             </td>
@@ -67,14 +67,14 @@
             </table>
         </div>
     {% else %}
-        <div style="text-align: center; padding: 48px 16px; background: #222834; border-radius: 8px; border: 1px dashed #2a3346;">
-            <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
-            <div style="font-size: 14px; font-weight: 700; color: #FFFFFF;">Belum Ada Kategori Artikel</div>
-            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px; margin-bottom: 16px;">
+        <div style="text-align: center; padding: 48px 16px; background: var(--input-bg); border-radius: 8px; border: 1px dashed var(--border-light);">
+            <div style="font-size: 32px; margin-bottom: 8px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-folder"/></svg></div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">Belum Ada Kategori Artikel</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 16px;">
                 Tambahkan kategori pertama untuk mengelompokkan artikel dan tips edukasi kolektor.
             </div>
             <a href="{% url 'app:kategori_artikel_tambah' %}" class="btn-primary-save" style="text-decoration: none;">
-                ➕ Tambah Kategori Artikel Baru
+                <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg> Tambah Kategori Artikel Baru
             </a>
         </div>
     {% endif %}

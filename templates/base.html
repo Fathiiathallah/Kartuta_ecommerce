@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KartuTa Platform{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.3">
 </head>
 <body>
+{% include 'partials/icons.html' %}
 
 {% if request.user.is_authenticated %}
 <div class="app-layout">
@@ -27,91 +28,91 @@
                 {% if request.user.last_name == 'Super Admin' or request.user.is_staff %}
                     <li>
                         <a href="{% url 'home' %}">
-                            <span class="icon">🏠</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>
                             <span>Lihat Beranda Toko</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:dashboard_admin' %}" class="{% if request.resolver_match.url_name == 'dashboard_admin' or request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'index' %}active{% endif %}">
-                            <span class="icon">📊</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>
                             <span>Dashboard Admin</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:profile_admin' %}" class="{% if request.resolver_match.url_name == 'profile_admin' %}active{% endif %}">
-                            <span class="icon">🛡️</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
                             <span>Profil Admin</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:kategori_list' %}" class="{% if 'kategori' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">📂</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-folder"/></svg></span>
                             <span>Kelola Kategori</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:produk_list' %}" class="{% if 'produk' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">🎴</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></span>
                             <span>Kelola Produk</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:pesanan_admin_list' %}" class="{% if 'pesanan_admin' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">📦</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg></span>
                             <span>Kelola Pesanan & Resi</span>
                         </a>
                     </li>
 
                     <!-- ARTIKEL & HALAMAN -->
-                    <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: #64748B; letter-spacing: 0.8px; text-transform: uppercase;">
+                    <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase;">
                         ARTIKEL & HALAMAN
                     </li>
                     <li>
                         <a href="{% url 'app:artikel_list' %}" class="{% if 'artikel' in request.resolver_match.url_name and 'kategori' not in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">📝</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-file"/></svg></span>
                             <span>Kelola Artikel</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:kategori_artikel_list' %}" class="{% if 'kategori_artikel' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">📁</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-folder"/></svg></span>
                             <span>Kategori Artikel</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:halaman_list' %}" class="{% if 'halaman' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">📄</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-file"/></svg></span>
                             <span>Kelola Halaman</span>
                         </a>
                     </li>
 
                     <!-- TAMPILAN & MITRA -->
-                    <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: #64748B; letter-spacing: 0.8px; text-transform: uppercase;">
+                    <li style="margin-top: 14px; padding: 6px 12px 2px 12px; font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase;">
                         TAMPILAN & MITRA
                     </li>
                     <li>
                         <a href="{% url 'app:hero_slide_list' %}" class="{% if 'hero_slide' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">🖼️</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-image"/></svg></span>
                             <span>Hero Slide</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:kerjasama_list' %}" class="{% if 'kerjasama' in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">🤝</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-handshake"/></svg></span>
                             <span>Kerja Sama</span>
                         </a>
                     </li>
 
                     <li>
                         <a href="/admin/" target="_blank">
-                            <span class="icon">⚙️</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-gear"/></svg></span>
                             <span>Django Admin</span>
                         </a>
                     </li>
                 {% else %}
                     <li>
                         <a href="{% url 'home' %}">
-                            <span class="icon">🏠</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>
                             <span>Beranda Toko</span>
                         </a>
                     </li>
@@ -123,30 +124,30 @@
                     </li>
                     <li>
                         <a href="{% url 'app:profile_pengguna' %}" class="{% if request.resolver_match.url_name == 'profile_pengguna' %}active{% endif %}">
-                            <span class="icon">👤</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-user"/></svg></span>
                             <span>Profil Pengguna</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:katalog_pengguna' %}" class="{% if request.resolver_match.url_name == 'katalog_pengguna' %}active{% endif %}">
-                            <span class="icon">🎴</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></span>
                             <span>Katalog Photocard</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:cart_list' %}" class="{% if request.resolver_match.url_name == 'cart_list' %}active{% endif %}" style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span class="icon">🛒</span>
+                                <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cart"/></svg></span>
                                 <span>Keranjang</span>
                             </div>
                             {% if cart_count > 0 %}
-                                <span class="badge-tag" style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 800;">{{ cart_count }}</span>
+                                <span class="badge-tag" style="background: var(--primary); color: var(--text-main); font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 800;">{{ cart_count }}</span>
                             {% endif %}
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'app:pesanan_saya' %}" class="{% if 'pesanan' in request.resolver_match.url_name and 'admin' not in request.resolver_match.url_name %}active{% endif %}">
-                            <span class="icon">📦</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg></span>
                             <span>Pesanan & Tracking</span>
                         </a>
                     </li>
@@ -156,7 +157,7 @@
 
         <div class="sidebar-footer">
             <a href="{% url 'logout' %}" class="btn-logout">
-                <span>🚪</span>
+                <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-logout"/></svg></span>
                 <span>Keluar / Logout</span>
             </a>
             <div class="sidebar-version">
@@ -169,25 +170,24 @@
     <div class="main-wrapper">
         <header class="topbar">
             <div class="topbar-left">
-                <button class="topbar-toggle" type="button">☰</button>
+                <button class="topbar-toggle" type="button"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-menu"/></svg></button>
                 <div class="topbar-title">{% block page_title %}Dashboard Pengguna{% endblock %}</div>
             </div>
             <div class="topbar-right">
                 {% if not request.user.is_staff and request.user.last_name != 'Super Admin' %}
-                    <a href="{% url 'app:cart_list' %}" title="Keranjang Belanja" style="display: inline-flex; align-items: center; gap: 6px; background: #161B26; border: 1px solid var(--border-dark); padding: 6px 12px; border-radius: 8px; color: #FFFFFF; text-decoration: none; font-size: 12px; margin-right: 12px;">
-                        <span>🛒</span>
-                        <span>Keranjang</span>
+                    <a href="{% url 'app:cart_list' %}" class="btn-pro-icon-cart" aria-label="Keranjang belanja{% if cart_count > 0 %}, {{ cart_count }} item{% endif %}" title="Keranjang belanja">
+                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cart"/></svg>
                         {% if cart_count > 0 %}
-                            <span style="background: #8B5CF6; color: #FFFFFF; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 800;">{{ cart_count }}</span>
+                            <span class="cart-badge">{{ cart_count }}</span>
                         {% endif %}
                     </a>
                 {% endif %}
                 <span class="notif-badge-pill">100% OFFICIAL</span>
                 <div class="topbar-user">
-                    <span style="font-size: 13px; font-weight: 600; color: #FFFFFF;">{{ request.user.first_name|default:request.user.username }}</span>
+                    <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">{{ request.user.first_name|default:request.user.username }}</span>
                     <div class="topbar-avatar">
                         {% if photo %}
-                            <img src="{{ photo.url }}" alt="Avatar">
+                            <img src="{{ photo.url }}" alt="Avatar" width="64" height="64">
                         {% else %}
                             {{ request.user.username|slice:":1"|upper }}
                         {% endif %}
@@ -201,7 +201,7 @@
                 {% for message in messages %}
                     <div class="status-banner {% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}warning{% endif %}">
                         <div class="banner-icon">
-                            {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% else %}!{% endif %}
+                            {% if message.tags == 'success' %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>{% elif message.tags == 'error' %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>{% else %}!{% endif %}
                         </div>
                         <div>
                             <div class="banner-text-title">
@@ -225,6 +225,26 @@
         {% block auth_content %}{% endblock %}
     </div>
 {% endif %}
+
+<script>
+// Loading state untuk semua form POST: tombol dinonaktifkan dan labelnya berubah
+// supaya pengguna tahu permintaan sedang diproses, bukan diam karena klik pertama gagal.
+document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!form.matches('form[method="POST"], form[method="post"]')) return;
+    if (form.dataset.submitting === '1') { e.preventDefault(); return; }
+    form.dataset.submitting = '1';
+    var btn = form.querySelector('button[type="submit"], input[type="submit"]');
+    if (btn) {
+        btn.disabled = true;
+        btn.setAttribute('aria-busy', 'true');
+        if (btn.tagName === 'BUTTON') {
+            btn.dataset.originalLabel = btn.textContent;
+            btn.textContent = 'Memproses…';
+        }
+    }
+});
+</script>
 
 </body>
 </html>

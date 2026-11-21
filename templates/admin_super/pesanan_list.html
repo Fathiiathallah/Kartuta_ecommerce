@@ -7,8 +7,8 @@
     <!-- Top Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-dark); padding-bottom: 14px; flex-wrap: wrap; gap: 12px;">
         <div>
-            <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
-                <span>📦</span>
+            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg></span>
                 <span>Manajemen Pesanan Masuk & Pengiriman</span>
             </h2>
             <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
@@ -21,13 +21,13 @@
             {% if status_filter %}
                 <input type="hidden" name="status" value="{{ status_filter }}">
             {% endif %}
-            <input type="text" name="q" value="{{ search_query }}" placeholder="Cari invoice / pelanggan / resi..." class="form-control" style="padding: 8px 12px; background: #0B0E14; border: 1px solid var(--border-dark); border-radius: 8px; color: #FFFFFF; font-size: 12px; width: 240px;">
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Cari invoice / pelanggan / resi..." class="form-control" style="padding: 8px 12px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 12px; width: 240px;">
             <button type="submit" class="btn-hero-outline" style="padding: 8px 14px; font-size: 12px; cursor: pointer;">
                 Cari
             </button>
             {% if search_query %}
-                <a href="{% url 'app:pesanan_admin_list' %}" class="btn-hero-outline" style="padding: 8px 10px; font-size: 12px; color: #f87171; text-decoration: none;">
-                    ✕ Reset
+                <a href="{% url 'app:pesanan_admin_list' %}" class="btn-hero-outline" style="padding: 8px 10px; font-size: 12px; color: var(--danger); text-decoration: none;">
+                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Reset
                 </a>
             {% endif %}
         </form>
@@ -35,26 +35,26 @@
 
     <!-- Status Tabs Filter -->
     <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px;">
-        <a href="{% url 'app:pesanan_admin_list' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if not status_filter %}background: #8B5CF6; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+        <a href="{% url 'app:pesanan_admin_list' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if not status_filter %}background: var(--primary); color: var(--text-main); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
             Semua ({{ counts.all }})
         </a>
-        <a href="{% url 'app:pesanan_admin_list' %}?status=Pending{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Pending' %}background: #F59E0B; color: #000000; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Pending{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Pending' %}background: var(--amber); color: var(--canvas-bg); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
             ⏳ Menunggu Bayar ({{ counts.pending }})
         </a>
-        <a href="{% url 'app:pesanan_admin_list' %}?status=Completed{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Completed' %}background: #10B981; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
-            ✓ Lunas Terverifikasi ({{ counts.completed }})
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Completed{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Completed' %}background: var(--emerald); color: var(--text-main); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Lunas Terverifikasi ({{ counts.completed }})
         </a>
-        <a href="{% url 'app:pesanan_admin_list' %}?status=Packing{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Packing' %}background: #3B82F6; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
-            🎁 Sedang Dipacking ({{ counts.packing }})
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Packing{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Packing' %}background: var(--accent-info); color: var(--text-main); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-gift"/></svg> Sedang Dipacking ({{ counts.packing }})
         </a>
-        <a href="{% url 'app:pesanan_admin_list' %}?status=Shipped{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Shipped' %}background: #8B5CF6; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
-            🚚 Dalam Pengiriman ({{ counts.shipped }})
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Shipped{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Shipped' %}background: var(--primary); color: var(--text-main); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-truck"/></svg> Dalam Pengiriman ({{ counts.shipped }})
         </a>
-        <a href="{% url 'app:pesanan_admin_list' %}?status=Delivered{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Delivered' %}background: #065F46; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
-            🎉 Selesai Diterima ({{ counts.delivered }})
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Delivered{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Delivered' %}background: var(--emerald-dark); color: var(--text-main); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Selesai Diterima ({{ counts.delivered }})
         </a>
-        <a href="{% url 'app:pesanan_admin_list' %}?status=Failed{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Failed' %}background: #EF4444; color: #FFFFFF; font-weight: 800;{% else %}background: #161B26; color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
-            ✕ Batal ({{ counts.failed }})
+        <a href="{% url 'app:pesanan_admin_list' %}?status=Failed{% if search_query %}&q={{ search_query }}{% endif %}" class="badge-tag" style="text-decoration: none; padding: 8px 14px; font-size: 12px; border-radius: 8px; {% if status_filter == 'Failed' %}background: var(--danger-solid); color: var(--text-main); font-weight: 800;{% else %}background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-dark);{% endif %}">
+            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Batal ({{ counts.failed }})
         </a>
     </div>
 
@@ -79,46 +79,46 @@
                         <tr>
                             <td style="color: var(--text-muted);">{{ forloop.counter }}</td>
                             <td>
-                                <strong style="color: #FFFFFF; font-family: monospace; font-size: 12px; display: block;">{{ order.invoice_number }}</strong>
+                                <strong style="color: var(--text-main); font-family: monospace; font-size: 12px; display: block;">{{ order.invoice_number }}</strong>
                                 <span style="font-size: 11px; color: var(--text-muted);">{{ order.payment_date|date:"d M Y, H:i" }}</span>
                             </td>
                             <td>
-                                <strong style="color: #FFFFFF; font-size: 13px; display: block;">{{ order.shipping_name|default:order.user_client.username }}</strong>
+                                <strong style="color: var(--text-main); font-size: 13px; display: block;">{{ order.shipping_name|default:order.user_client.username }}</strong>
                                 <span style="font-size: 11px; color: var(--text-secondary);">@{{ order.user_client.username }} • {{ order.shipping_phone|default:order.user_client.telp|default:"-" }}</span>
                             </td>
                             <td style="max-width: 200px;">
-                                <div style="font-size: 12px; color: #FFFFFF; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <div style="font-size: 12px; color: var(--text-main); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     {{ order.display_products }}
                                 </div>
                                 <span style="font-size: 10px; color: var(--text-muted);">Total: {{ order.total_quantity }} pcs</span>
                             </td>
                             <td>
-                                <div style="font-size: 12px; color: #FFFFFF; font-weight: 600;">{{ order.courier_service }}</div>
+                                <div style="font-size: 12px; color: var(--text-main); font-weight: 600;">{{ order.courier_service }}</div>
                                 {% if order.tracking_number_awb %}
-                                    <span style="font-family: monospace; color: #8B5CF6; font-size: 11px; font-weight: 700;">{{ order.tracking_number_awb }}</span>
+                                    <span style="font-family: monospace; color: var(--primary); font-size: 11px; font-weight: 700;">{{ order.tracking_number_awb }}</span>
                                 {% else %}
-                                    <span style="font-size: 10px; color: #F59E0B; font-weight: 700;">● Belum Ada Resi</span>
+                                    <span style="font-size: 10px; color: var(--amber); font-weight: 700;">● Belum Ada Resi</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <strong style="color: #8B5CF6; font-size: 13px;">Rp {{ order.amount|floatformat:0 }}</strong>
+                                <strong style="color: var(--primary); font-size: 13px;">Rp {{ order.amount|floatformat:0 }}</strong>
                                 <span style="font-size: 10px; color: var(--text-muted); display: block;">{{ order.payment_method }}</span>
                             </td>
                             <td>
                                 {% if order.status == 'Pending' %}
-                                    <span class="badge-tag" style="background: #F59E0B; color: #000000; font-weight: 800; font-size: 10px;">
+                                    <span class="badge-tag" style="background: var(--amber); color: var(--canvas-bg); font-weight: 800; font-size: 10px;">
                                         Menunggu Bayar
                                     </span>
                                 {% elif order.status == 'Completed' %}
-                                    <span class="badge-tag" style="background: #10B981; color: #FFFFFF; font-size: 10px;">
+                                    <span class="badge-tag" style="background: var(--emerald); color: var(--text-main); font-size: 10px;">
                                         Lunas
                                     </span>
                                 {% elif order.status == 'Packing' %}
-                                    <span class="badge-tag" style="background: #3B82F6; color: #FFFFFF; font-size: 10px;">
+                                    <span class="badge-tag" style="background: var(--accent-info); color: var(--text-main); font-size: 10px;">
                                         Packing
                                     </span>
                                 {% elif order.status == 'Shipped' %}
-                                    <span class="badge-tag" style="background: #8B5CF6; color: #FFFFFF; font-size: 10px;">
+                                    <span class="badge-tag" style="background: var(--primary); color: var(--text-main); font-size: 10px;">
                                         Dikirim Kurir
                                     </span>
                                 {% elif order.status == 'Delivered' %}
@@ -126,14 +126,14 @@
                                         Selesai
                                     </span>
                                 {% else %}
-                                    <span class="badge-tag" style="background: #EF4444; color: #FFFFFF; font-size: 10px;">
+                                    <span class="badge-tag" style="background: var(--danger-solid); color: var(--text-main); font-size: 10px;">
                                         Batal
                                     </span>
                                 {% endif %}
                             </td>
                             <td style="text-align: center;">
                                 <a href="{% url 'app:pesanan_admin_detail' order.invoice_number %}" class="btn-primary-save" style="padding: 6px 12px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-                                    <span>⚙️</span>
+                                    <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-gear"/></svg></span>
                                     <span>Kelola / Resi</span>
                                 </a>
                             </td>
@@ -143,9 +143,9 @@
             </table>
         </div>
     {% else %}
-        <div style="text-align: center; padding: 48px 20px; background: #161B26; border-radius: 12px; border: 1px dashed var(--border-dark);">
-            <div style="font-size: 40px; margin-bottom: 10px;">📭</div>
-            <h3 style="font-size: 15px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Tidak Ada Pesanan</h3>
+        <div style="text-align: center; padding: 48px 20px; background: var(--surface); border-radius: 12px; border: 1px dashed var(--border-dark);">
+            <div style="font-size: 40px; margin-bottom: 10px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-inbox"/></svg></div>
+            <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Tidak Ada Pesanan</h3>
             <p style="font-size: 12px; color: var(--text-secondary);">
                 {% if search_query %}
                     Tidak ada pesanan yang sesuai dengan kata kunci "{{ search_query }}".

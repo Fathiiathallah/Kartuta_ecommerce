@@ -6,7 +6,7 @@
 <div class="dashboard-card">
     <div class="card-title-bar" style="display: flex; justify-content: space-between; align-items: center;">
         <span>Pengaturan Akun & Divisi Staf</span>
-        <span class="badge-tag" style="background: #0f172a; color: #fff;">Staff Internal</span>
+        <span class="badge-tag" style="background: var(--canvas-bg); color: #fff;">Staff Internal</span>
     </div>
 
     <form method="POST" enctype="multipart/form-data">
@@ -50,17 +50,16 @@
                 {% if photo %}
                     <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
                         <img src="{{ photo.url }}" alt="Admin Photo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
-                        <span style="font-size: 11px; color: #6b7280;">Foto aktif staf terpasang.</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">Foto aktif staf terpasang.</span>
                     </div>
                 {% endif %}
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-            <a href="{% url 'app:dashboard' %}" class="btn-secondary">
-                &larr; Kembali ke Dashboard
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border-soft);">
+            <a href="{% url 'app:dashboard' %}" class="btn-secondary"> Kembali ke Dashboard
             </a>
-            <button type="submit" class="btn-primary-save" style="background: #0f172a;">
+            <button type="submit" class="btn-primary-save" style="background: var(--canvas-bg);">
                 Simpan Profil Admin
             </button>
         </div>

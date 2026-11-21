@@ -4,8 +4,8 @@
 {% block auth_content %}
 <div class="auth-card">
     <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="font-size: 26px; font-weight: 800; color: #FFFFFF;"><span class="logo-box" style="margin-right: 6px;">KT</span>Kartu<span style="color: #EC4899;">Ta</span></h1>
-        <p style="font-size: 13px; color: #94A3B8; margin-top: 6px;">Masuk ke Akun Platform E-Commerce Photocard</p>
+        <h1 style="font-size: 26px; font-weight: 800; color: var(--text-main);"><span class="logo-box" style="margin-right: 6px;">KT</span>Kartu<span style="color: var(--magenta);">Ta</span></h1>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;">Masuk ke Akun Platform E-Commerce Photocard</p>
     </div>
 
     {% if messages %}
@@ -33,9 +33,9 @@
         </button>
     </form>
 
-    <div style="text-align: center; margin-top: 20px; font-size: 13px; color: #94A3B8;">
+    <div style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-secondary);">
         Belum punya akun? 
-        <a href="{% url 'register' %}" style="color: #8B5CF6; font-weight: 600; text-decoration: none;">Daftar Akun Baru</a>
+        <a href="{% url 'register' %}" style="color: var(--primary); font-weight: 600; text-decoration: none;">Daftar Akun Baru</a>
     </div>
 </div>
 {% endblock %}

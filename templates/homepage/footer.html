@@ -12,12 +12,12 @@
                     <span class="pro-brand-text">{{ web_setting.nama_organisasi|default:"KartuTa" }}</span>
                 {% endif %}
             </div>
-            <p style="font-size: 13px; color: #94A3B8; line-height: 1.7; margin: 0 0 12px 0;">
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 12px 0;">
                 Platform etalase photocard terverifikasi dengan grading fisik standar kolektor dan integrasi Virtual Binder.
             </p>
             {% if web_setting.alamat %}
-                <div style="font-size: 12px; color: #64748B; line-height: 1.6; display: flex; align-items: flex-start; gap: 8px;">
-                    <span>📍</span>
+                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6; display: flex; align-items: flex-start; gap: 8px;">
+                    <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>
                     <span>{{ web_setting.alamat }}</span>
                 </div>
             {% endif %}
@@ -25,23 +25,23 @@
 
         <!-- Kolom 2: Kontak Langsung -->
         <div class="footer-col footer-links-col">
-            <h5 style="color: #FFFFFF; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Kontak Kami</h5>
+            <h5 style="color: var(--text-main); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Kontak Kami</h5>
             <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
                 {% if web_setting.no_telp %}
-                    <a href="tel:{{ web_setting.no_telp }}" style="color: #94A3B8; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                        <span>📞</span>
+                    <a href="tel:{{ web_setting.no_telp }}" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg></span>
                         <span>{{ web_setting.no_telp }}</span>
                     </a>
                 {% endif %}
                 {% if web_setting.email %}
-                    <a href="mailto:{{ web_setting.email }}" style="color: #94A3B8; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                        <span>✉️</span>
+                    <a href="mailto:{{ web_setting.email }}" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg></span>
                         <span>{{ web_setting.email }}</span>
                     </a>
                 {% endif %}
                 {% if web_setting.link_maps %}
-                    <a href="{{ web_setting.link_maps }}" target="_blank" rel="noopener noreferrer" style="color: #8B5CF6; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 600;">
-                        <span>🗺️</span>
+                    <a href="{{ web_setting.link_maps }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                        <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>
                         <span>Buka di Google Maps</span>
                     </a>
                 {% endif %}
@@ -50,34 +50,38 @@
 
         <!-- Kolom 3: Media Sosial & Navigasi -->
         <div class="footer-col footer-links-col">
-            <h5 style="color: #FFFFFF; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Ikuti & Navigasi</h5>
+            <h5 style="color: var(--text-main); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Ikuti & Navigasi</h5>
             <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
                 {% if web_setting.link_instagram %}
-                    <a href="{{ web_setting.link_instagram }}" target="_blank" rel="noopener noreferrer" style="color: #EC4899; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                    <a href="{{ web_setting.link_instagram }}" target="_blank" rel="noopener noreferrer" style="color: var(--magenta); text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 600;">
                         
                         <span>Instagram Resmi</span>
                     </a>
                 {% endif %}
-                <a href="{% url 'home' %}#katalog-etalase" style="color: #94A3B8; text-decoration: none;">Etalase Produk</a>
-                <a href="{% url 'home' %}#artikel-kolektor" style="color: #94A3B8; text-decoration: none;">Panduan & Edukasi</a>
-                <a href="{% url 'app:index' %}" style="color: #94A3B8; text-decoration: none;">Virtual Binder Kolektor</a>
+                <a href="{% url 'home' %}#katalog-etalase" style="color: var(--text-secondary); text-decoration: none;">Etalase Produk</a>
+                <a href="{% url 'home' %}#artikel-kolektor" style="color: var(--text-secondary); text-decoration: none;">Panduan & Edukasi</a>
+                <a href="{% url 'app:index' %}" style="color: var(--text-secondary); text-decoration: none;">Virtual Binder Kolektor</a>
             </div>
         </div>
 
         <!-- Kolom 4: Jaminan Keamanan -->
         <div class="footer-col footer-links-col">
-            <h5 style="color: #FFFFFF; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Keamanan & Layanan</h5>
-            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #94A3B8;">
-                <span style="display: flex; align-items: center; gap: 6px;">🛡️ Garansi Keaslian 100%</span>
-                <span style="display: flex; align-items: center; gap: 6px;">📦 4-Layer Safe Packaging</span>
-                <span style="display: flex; align-items: center; gap: 6px;">✨ Standar Grading Mint</span>
+            <h5 style="color: var(--text-main); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Keamanan & Layanan</h5>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+                {% if info_page %}
+                    <a href="{% url 'halaman_detail' info_page.slug %}" style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary); text-decoration: none;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg> Garansi Keaslian 100%</a>
+                {% else %}
+                    <span style="display: flex; align-items: center; gap: 6px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg> Garansi Keaslian 100%</span>
+                {% endif %}
+                <span style="display: flex; align-items: center; gap: 6px;"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg> 4-Layer Safe Packaging</span>
+                <span style="display: flex; align-items: center; gap: 6px;">Standar Grading Mint</span>
             </div>
         </div>
 
     </div>
 
     <!-- Sub-footer Bottom Bar -->
-    <div class="footer-bottom-bar" style="max-width: 1360px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #64748B;">
+    <div class="footer-bottom-bar" style="max-width: 1360px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 11px; color: var(--text-muted);">
         <span>&copy; {% now "Y" %} {{ web_setting.nama_organisasi|default:"KartuTa" }}. Seluruh hak cipta dilindungi undang-undang.</span>
         <span>Built with Django 5.2 • PostgreSQL</span>
     </div>
