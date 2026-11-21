@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Tidak Ditemukan • KartuTa</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.3">
+</head>
+<body class="pro-body">
+    <main class="pro-container" style="max-width: 640px; padding-top: 96px; gap: 16px;">
+        <p style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-hint); margin: 0;">Error 404</p>
+        <h1 style="font-family: var(--font-display); font-size: 34px; font-weight: 800; line-height: 1.25; color: var(--text-main); letter-spacing: -0.02em; margin: 0;">
+            Halaman ini tidak ada di arsip.
+        </h1>
+        <p style="font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin: 0;">
+            Alamat yang Anda buka mungkin sudah dipindahkan, atau photocard yang Anda cari sudah terjual dan halamannya ditarik.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+            <a href="{% url 'home' %}" class="btn-hero-solid">Kembali ke etalase</a>
+            <a href="{% url 'app:katalog_pengguna' %}" class="btn-pro-ghost">Lihat semua katalog</a>
+        </div>
+    </main>
+</body>
+</html>

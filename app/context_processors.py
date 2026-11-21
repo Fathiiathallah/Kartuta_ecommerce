@@ -1,11 +1,14 @@
-from django.db.models import Sum
-from .models import WebSetting, CartItem
+from .models import WebSetting, Halaman
 
+
+# ponytail: satu query tambahan per request untuk halaman kebijakan; pindah ke cache kalau traffic naik
 def web_setting(request):
-    cart_count = 0
-    if request.user.is_authenticated:
-        cart_count = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
+    # Hanya tautkan klaim garansi kalau halaman kebijakannya benar-benar ada.
+    # Tanpa fallback: lebih baik klaim tampil tanpa tautan daripada menautkan ke halaman yang tidak relevan.
+    info_page = Halaman.objects.filter(
+        aktif=True, slug__iregex=r'(garansi|refund|kebijakan|syarat)'
+    ).order_by('id').first()
     return {
         'web_setting': WebSetting.objects.first(),
-        'cart_count': cart_count,
+        'info_page': info_page,
     }

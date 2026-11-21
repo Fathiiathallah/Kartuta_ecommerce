@@ -13,6 +13,7 @@ urlpatterns = [
     path('home/', views.homeView, name='home'),
     path('produk/<int:id>/', views.produkDetailView, name='produk_detail'),
     path('artikel/<slug:slug>/', views.artikelDetailView, name='artikel_detail'),
+    path('halaman/<slug:slug>/', views.halamanDetailView, name='halaman_detail'),
     path('', views.loginView, name='index'),
 ]
 

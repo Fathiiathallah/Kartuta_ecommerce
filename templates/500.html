@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ada gangguan di server • KartuTa</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.3">
+</head>
+<body class="pro-body">
+    <main class="pro-container" style="max-width: 640px; padding-top: 96px; gap: 16px;">
+        <p style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); margin: 0;">Error 500</p>
+        <h1 style="font-family: var(--font-display); font-size: 34px; font-weight: 800; line-height: 1.25; color: var(--text-main); letter-spacing: -0.02em; margin: 0;">
+            Permintaan Anda tidak selesai diproses.
+        </h1>
+        <p style="font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin: 0;">
+            Kesalahan ini tercatat di log server. Tidak ada data pesanan yang hilang. Coba muat ulang halaman ini satu kali; kalau tetap gagal, hubungi kami dengan menyertakan waktu kejadiannya.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+            <a href="{% url 'home' %}" class="btn-hero-solid">Kembali ke etalase</a>
+            {% if web_setting.email %}<a href="mailto:{{ web_setting.email }}" class="btn-pro-ghost">Laporkan ke admin</a>{% endif %}
+        </div>
+    </main>
+</body>
+</html>

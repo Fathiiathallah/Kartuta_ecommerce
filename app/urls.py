@@ -49,7 +49,7 @@ urlpatterns = [
 
     # KELOLA PESANAN & TRACKING (ADMIN)
     path('admin-pesanan/', views_admin.pesanan_admin_list, name='pesanan_admin_list'),
-    path('admin-pesanan/<str:invoice_number>/', views_admin.pesanan_admin_detail, name='pesanan_admin_detail'),
+    path('admin-pesanan/<path:invoice_number>/', views_admin.pesanan_admin_detail, name='pesanan_admin_detail'),
 
     ###### PENGGUNA/CLIENTS ######
     path('profile/pengguna', views_pengguna.profile_pengguna, name='profile_pengguna'),
@@ -65,9 +65,9 @@ urlpatterns = [
 
     # TRACKING PESANAN (PENGGUNA)
     path('pesanan/', views_pengguna.pesanan_saya, name='pesanan_saya'),
-    path('pesanan/<str:invoice_number>/', views_pengguna.pesanan_detail, name='pesanan_detail'),
-    path('pesanan/<str:invoice_number>/bayar/', views_pengguna.pesanan_bayar_simulasi, name='pesanan_bayar_simulasi'),
-    path('pesanan/<str:invoice_number>/terima/', views_pengguna.pesanan_konfirmasi_terima, name='pesanan_konfirmasi_terima'),
+    path('pesanan/<path:invoice_number>/bayar/', views_pengguna.pesanan_bayar_simulasi, name='pesanan_bayar_simulasi'),
+    path('pesanan/<path:invoice_number>/terima/', views_pengguna.pesanan_konfirmasi_terima, name='pesanan_konfirmasi_terima'),
+    path('pesanan/<path:invoice_number>/', views_pengguna.pesanan_detail, name='pesanan_detail'),
 
     # MIDTRANS WEBHOOK
     path('midtrans-notification/', views_pengguna.midtrans_notification, name='midtrans_notification'),

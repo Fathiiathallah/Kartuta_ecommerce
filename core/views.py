@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import F
+from django.db.models import F, Q
 from app.models import UserAdmin, UserPengguna, Product, Category, HeroSlide, Artikel, KategoriArtikel, Halaman, KerjaSama
 
 
@@ -37,12 +37,28 @@ def artikelDetailView(request, slug):
     return render(request, 'homepage/detail_artikel.html', context)
 
 
+def halamanDetailView(request, slug):
+    halaman = get_object_or_404(Halaman, slug=slug, aktif=True)
+    context = {
+        'title': f'{halaman.judul} • KartuTa',
+        'halaman': halaman,
+    }
+    return render(request, 'homepage/detail_halaman.html', context)
+
+
 def homeView(request):
     category_id = request.GET.get('category')
+    search_query = request.GET.get('q', '').strip()
+
+    products = Product.objects.select_related('category').all().order_by('-created_at')
     if category_id:
-        products = Product.objects.filter(category_id=category_id).select_related('category').order_by('-created_at')
-    else:
-        products = Product.objects.select_related('category').all().order_by('-created_at')
+        products = products.filter(category_id=category_id)
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query)
+            | Q(fandom_group__icontains=search_query)
+            | Q(category__name__icontains=search_query)
+        )
 
     categories = Category.objects.all()
     hero_slides = HeroSlide.objects.filter(aktif=True).order_by('urutan')
@@ -55,6 +71,7 @@ def homeView(request):
         'products': products,
         'categories': categories,
         'active_category': category_id,
+        'search_query': search_query,
         'hero_slides': hero_slides,
         'first_slide': hero_slides.first(),
         'artikel_list': artikel_list,
