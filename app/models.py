@@ -170,6 +170,11 @@ class HistoryPayment(models.Model):
         }
         return mapping.get(self.status, 1)
 
+    @property
+    def status_progress(self):
+        """Persen progres stepper (0/25/50/75/100) untuk garis penghubung."""
+        return min(max((self.status_step - 1) * 25, 0), 100)
+
     def restore_stock(self):
         """Kembalikan stok produk pesanan ini (dipakai saat pesanan dibatalkan)."""
         for item in self.items.select_related('product'):
@@ -254,6 +259,11 @@ class OrderTrackingLog(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+    @property
+    def status_label(self):
+        """Label ramah baca untuk kode status mentah (Pending, Shipped, ...)."""
+        return dict(HistoryPayment.PAYMENT_STATUS).get(self.status, self.status)
 
     def __str__(self):
         return f"{self.order.invoice_number} - {self.status}"

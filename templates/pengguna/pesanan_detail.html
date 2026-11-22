@@ -22,160 +22,144 @@
 
     <!-- Tracking Stepper Card -->
     <div class="dashboard-card" style="padding: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
-            <div>
-                <span class="badge-tag" style="background: var(--primary-purple-dark); color: var(--text-main); font-size: 10px; margin-bottom: 6px; display: inline-block;">
-                    LIVE TRACKING
-                </span>
-                <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main);">
-                    Status Pengiriman: <span style="color: var(--primary);">{{ order.get_status_display }}</span>
+
+        <!-- Header: status + aksi utama -->
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between;">
+            <div style="min-width: 0;">
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                    <span class="badge-tag" style="background: var(--primary-purple-dark); color: var(--text-main); font-size: 10px;">LIVE TRACKING</span>
+                </div>
+                <h2 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin: 0; line-height: 1.35;">
+                    {{ order.get_status_display }}
                 </h2>
-                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
-                    Dipesan pada {{ order.payment_date|date:"l, d F Y - H:i" }} WIB
+                <p style="font-size: 12px; color: var(--text-secondary); margin: 6px 0 0 0;">
+                    Dipesan {{ order.payment_date|date:"d F Y" }}, pukul {{ order.payment_date|date:"H:i" }} WIB
                 </p>
             </div>
 
-            <!-- Contextual Action Buttons -->
-            <div>
-                {% if order.status == 'Pending' %}
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        {% if snap_token %}
-                            <button type="button" onclick="payWithSnap()" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 20px; font-size: 13px; font-weight: 800; background: var(--primary); display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);">
-                                <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg></span>
-                                <span>Bayar via Midtrans (QRIS / VA)</span>
-                            </button>
-                        {% endif %}
-                    </div>
-                    <p style="margin: 10px 0 0 0; font-size: 11px; color: var(--text-secondary);">
-                        Selesaikan pembayaran sebelum <strong style="color: var(--text-main);">{{ batas_bayar|date:"H:i" }} WIB</strong> ({{ menit_bayar }} menit). Lewat dari itu pesanan dibatalkan otomatis dan stok dikembalikan.
-                    </p>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; margin-left: auto;">
+                {% if order.status == 'Pending' and snap_token %}
+                    <button type="button" onclick="payWithSnap()" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 20px; font-size: 13px; font-weight: 800; background: var(--primary); color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; white-space: nowrap;">
+                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
+                        <span>Bayar Sekarang</span>
+                    </button>
                 {% elif order.status == 'Shipped' %}
-                    <form method="POST" action="{% url 'app:pesanan_konfirmasi_terima' order.invoice_number %}">
+                    <form method="POST" action="{% url 'app:pesanan_konfirmasi_terima' order.invoice_number %}" style="margin: 0;">
                         {% csrf_token %}
-                        <button type="submit" onclick="return confirm('Apakah Anda yakin paket telah diterima dengan kondisi baik?');" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 18px; font-size: 13px; font-weight: 800; background: var(--primary); display: inline-flex; align-items: center; gap: 8px;">
-                            <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg></span>
-                            <span>Konfirmasi Paket Telah Diterima</span>
+                        <button type="submit" onclick="return confirm('Apakah Anda yakin paket telah diterima dengan kondisi baik?');" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 18px; font-size: 13px; font-weight: 800; background: var(--primary); color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; white-space: nowrap;">
+                            <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg>
+                            <span>Paket Sudah Diterima</span>
                         </button>
                     </form>
                 {% elif order.status == 'Delivered' %}
-                    <span class="badge-tag badge-unlocked" style="padding: 10px 16px; font-size: 12px; font-weight: 800;">
-                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Pesanan Telah Selesai
+                    <span class="badge-tag badge-unlocked" style="padding: 9px 14px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="icon-svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Pesanan Selesai
                     </span>
                 {% endif %}
+                <span style="font-size: 11px; color: var(--text-muted);">{{ order.payment_method }}</span>
+            </div>
+        </div>
+
+        {% if order.status == 'Pending' %}
+        <!-- Batas waktu bayar -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border-dark); border-radius: 8px;">
+            <svg class="icon-svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="flex: 0 0 auto; color: var(--amber);"><use href="#i-calendar"/></svg>
+            <p style="margin: 0; font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+                Bayar sebelum <strong style="color: var(--text-main);">{{ batas_bayar|date:"H:i" }} WIB</strong> ({{ menit_bayar }} menit sejak pesanan dibuat). Lewat dari itu pesanan dibatalkan otomatis dan stok dikembalikan.
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- Stepper 5 langkah -->
+        <div style="position: relative; margin: 30px 0 4px 0;">
+            <div style="position: absolute; top: 17px; left: 10%; right: 10%; height: 2px; background: var(--input-bg); border-radius: 2px;"></div>
+            <div style="position: absolute; top: 17px; left: 10%; right: 10%; height: 2px; border-radius: 2px; overflow: hidden;">
+                <div style="height: 100%; width: {{ order.status_progress }}%; background: var(--primary);"></div>
+            </div>
+
+            <div style="position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center;">
+                {% for step in "12345" %}
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; border: 2px solid {% if forloop.counter <= order.status_step %}var(--primary){% else %}var(--input-bg){% endif %}; {% if forloop.counter <= order.status_step %}background: var(--primary); color: var(--text-main);{% else %}background: var(--canvas-bg); color: var(--text-muted);{% endif %}">
+                        {% if forloop.counter < order.status_step %}
+                            <svg class="icon-svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+                        {% elif forloop.counter == 5 and order.status_step == 5 %}
+                            <svg class="icon-svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+                        {% else %}
+                            {{ forloop.counter }}
+                        {% endif %}
+                    </div>
+                    <div style="font-size: 11px; font-weight: {% if forloop.counter == order.status_step %}800{% else %}600{% endif %}; margin-top: 8px; color: {% if forloop.counter <= order.status_step %}var(--text-main){% else %}var(--text-muted){% endif %}; line-height: 1.3;">
+                        {% if forloop.counter == 1 %}Pesanan Dibuat
+                        {% elif forloop.counter == 2 %}Pembayaran
+                        {% elif forloop.counter == 3 %}QC &amp; Packing
+                        {% elif forloop.counter == 4 %}Dikirim Kurir
+                        {% else %}Paket Diterima{% endif %}
+                    </div>
+                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px; line-height: 1.3;">
+                        {% if forloop.counter == 1 %}Menunggu bayar
+                        {% elif forloop.counter == 2 %}Lunas otomatis
+                        {% elif forloop.counter == 3 %}Packing aman
+                        {% elif forloop.counter == 4 %}Resi aktif
+                        {% else %}Selesai{% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Ekspedisi & resi -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0; background: var(--surface); border: 1px solid var(--border-dark); border-radius: 10px; margin-top: 22px; overflow: hidden;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px;">
+                <svg class="icon-svg" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="color: var(--text-secondary);"><use href="#i-truck"/></svg>
+                <div>
+                    <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em;">EKSPEDISI</div>
+                    <strong style="color: var(--text-main); font-size: 13px;">{{ order.courier_service }}</strong>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-left: 1px solid var(--border-dark);">
+                <div style="min-width: 0;">
+                    <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em;">NOMOR RESI (AWB)</div>
+                    {% if order.tracking_number_awb %}
+                        <strong style="font-family: monospace; font-size: 14px; color: var(--text-main);">{{ order.tracking_number_awb }}</strong>
+                    {% else %}
+                        <span style="font-size: 12px; color: var(--text-muted);">Belum tersedia</span>
+                    {% endif %}
+                </div>
+                {% if order.tracking_number_awb %}
+                    <button type="button" onclick="navigator.clipboard.writeText('{{ order.tracking_number_awb }}'); alert('Nomor resi {{ order.tracking_number_awb }} disalin!');" class="btn-hero-outline" style="padding: 6px 12px; font-size: 11px; cursor: pointer; flex: 0 0 auto;">Salin</button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Aksi sekunder -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-dark);">
+            <div>
                 {% if order.status == 'Pending' %}
-                <details style="margin-bottom: 12px;">
-                    <summary class="btn-hero-outline" style="padding: 12px 16px; font-size: 12px; font-weight: 700; cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px;">
-                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+                <details>
+                    <summary class="btn-hero-outline" style="padding: 10px 14px; font-size: 12px; font-weight: 700; cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="icon-svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
                         <span>Batalkan Pesanan</span>
                     </summary>
                     <form method="POST" action="{% url 'app:pesanan_batal' order.invoice_number %}" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
                         {% csrf_token %}
-                        <select name="alasan" class="form-control" style="padding: 10px 12px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 12px;">
+                        <select name="alasan" class="form-control" style="padding: 9px 12px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 12px;">
                             <option value="Salah pilih produk">Salah pilih produk</option>
                             <option value="Mau ganti alamat kirim">Mau ganti alamat kirim</option>
                             <option value="Tidak jadi membeli">Tidak jadi membeli</option>
                             <option value="Metode pembayaran tidak cocok">Metode pembayaran tidak cocok</option>
                         </select>
-                        <button type="submit" onclick="return confirm('Batalkan pesanan {{ order.invoice_number }}? Stok produk akan dikembalikan dan pesanan tidak bisa dilanjutkan.');" class="btn-primary-save" style="padding: 10px 16px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px;">
+                        <button type="submit" onclick="return confirm('Batalkan pesanan {{ order.invoice_number }}? Stok produk akan dikembalikan dan pesanan tidak bisa dilanjutkan.');" class="btn-primary-save" style="padding: 9px 14px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px;">
                             Ya, batalkan
                         </button>
                     </form>
                 </details>
                 {% endif %}
-                <a href="{% url 'app:pesanan_invoice' order.invoice_number %}" target="_blank" rel="noopener" class="btn-hero-outline" style="padding: 12px 16px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-file"/></svg>
-                    <span>Cetak Invoice</span>
-                </a>
             </div>
-        </div>
-
-        <!-- 5-Step Visual Stepper -->
-        <div style="margin: 30px 0 20px 0; padding: 0 10px;">
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; position: relative; text-align: center;">
-                <!-- Step 1: Pending -->
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 1 %}background: var(--primary); color: var(--text-main); box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);{% else %}background: var(--input-bg); color: var(--text-muted);{% endif %}">
-                        {% if order.status_step > 1 %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>{% else %}1{% endif %}
-                    </div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 1 %}var(--text-main){% else %}var(--text-muted){% endif %};">
-                        Pesanan Dibuat
-                    </div>
-                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Menunggu Bayar</div>
-                </div>
-
-                <!-- Step 2: Completed -->
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 2 %}background: var(--emerald); color: var(--text-main); box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);{% else %}background: var(--input-bg); color: var(--text-muted);{% endif %}">
-                        {% if order.status_step > 2 %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>{% else %}2{% endif %}
-                    </div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 2 %}var(--text-main){% else %}var(--text-muted){% endif %};">
-                        Pembayaran Lunas
-                    </div>
-                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Terverifikasi Instan</div>
-                </div>
-
-                <!-- Step 3: Packing -->
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 3 %}background: var(--accent-info); color: var(--text-main); box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);{% else %}background: var(--input-bg); color: var(--text-muted);{% endif %}">
-                        {% if order.status_step > 3 %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>{% else %}3{% endif %}
-                    </div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 3 %}var(--text-main){% else %}var(--text-muted){% endif %};">
-                        QC & Packing
-                    </div>
-                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">4-Layer Protocol</div>
-                </div>
-
-                <!-- Step 4: Shipped -->
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 4 %}background: var(--primary); color: var(--text-main); box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);{% else %}background: var(--input-bg); color: var(--text-muted);{% endif %}">
-                        {% if order.status_step > 4 %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>{% else %}4{% endif %}
-                    </div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 4 %}var(--text-main){% else %}var(--text-muted){% endif %};">
-                        Pengiriman Kurir
-                    </div>
-                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Dalam Perjalanan</div>
-                </div>
-
-                <!-- Step 5: Delivered -->
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; z-index: 2; {% if order.status_step >= 5 %}background: var(--emerald-dark); color: var(--text-main); box-shadow: 0 0 12px rgba(6, 95, 70, 0.6);{% else %}background: var(--input-bg); color: var(--text-muted);{% endif %}">
-                        {% if order.status_step >= 5 %}<svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>{% else %}5{% endif %}
-                    </div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 10px; color: {% if order.status_step >= 5 %}var(--text-main){% else %}var(--text-muted){% endif %};">
-                        Paket Diterima
-                    </div>
-                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Selesai</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ekspedisi & Nomor Resi Bar -->
-        <div style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 20px;">
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <span style="font-size: 26px;"><svg class="icon-svg icon-svg--lg" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-truck"/></svg></span>
-                <div>
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">EKSPEDISI & KURIR</div>
-                    <strong style="color: var(--text-main); font-size: 14px;">{{ order.courier_service }}</strong>
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <div>
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right;">NOMOR RESI PENGIRIMAN (AWB)</div>
-                    <div style="font-family: monospace; font-size: 16px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px;">
-                        {% if order.tracking_number_awb %}
-                            {{ order.tracking_number_awb }}
-                        {% else %}
-                            <span style="font-size: 12px; color: var(--text-secondary); font-style: italic;">Sedang diproses oleh warehouse</span>
-                        {% endif %}
-                    </div>
-                </div>
-                {% if order.tracking_number_awb %}
-                    <button type="button" onclick="navigator.clipboard.writeText('{{ order.tracking_number_awb }}'); alert('Nomor resi {{ order.tracking_number_awb }} disalin!');" class="btn-hero-outline" style="padding: 6px 12px; font-size: 11px; cursor: pointer;">
-                        Salin Resi
-                    </button>
-                {% endif %}
-            </div>
+            <a href="{% url 'app:pesanan_invoice' order.invoice_number %}" target="_blank" rel="noopener" class="btn-hero-outline" style="padding: 10px 14px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <svg class="icon-svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-file"/></svg>
+                <span>Cetak Invoice</span>
+            </a>
         </div>
 
     </div>
@@ -186,8 +170,8 @@
         <!-- Left: Activity Tracking Logs -->
         <div class="dashboard-card" style="padding: 24px;">
             <h3 style="font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 16px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                <span>⏱️</span>
-                <span>Riwayat Aktivitas & Perjalanan Paket</span>
+                <svg class="icon-svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-truck"/></svg>
+                <span>Riwayat Perjalanan Paket</span>
             </h3>
 
             {% if logs %}
@@ -197,7 +181,7 @@
                             <!-- Bullet Dot -->
                             <div style="position: absolute; left: -27px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 2px solid var(--canvas-bg);"></div>
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;">
-                                <strong style="color: var(--text-main); font-size: 13px;">{{ log.status }}</strong>
+                                <strong style="color: var(--text-main); font-size: 13px;">{{ log.status_label }}</strong>
                                 <span style="font-size: 11px; color: var(--text-muted);">{{ log.created_at|date:"d M, H:i" }} WIB</span>
                             </div>
                             <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">

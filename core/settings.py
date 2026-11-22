@@ -123,7 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Waktu tampil di UI pakai WITA (Makassar), bukan UTC
+TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Makassar')
 
 USE_I18N = True
 
