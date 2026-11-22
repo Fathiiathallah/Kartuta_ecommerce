@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.4">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.1">
 </head>
 <body class="pro-body">
 
@@ -19,8 +19,7 @@
     <header class="pro-navbar">
         <div class="pro-navbar-container">
             <a href="{% url 'home' %}" class="pro-brand">
-                <span class="pro-logo-badge">KT</span>
-                <span class="pro-brand-text">Kartu<span class="pro-accent">Ta</span></span>
+                <img src="{% static 'img/kartuta-logo.png' %}" alt="KartuTa" class="pro-brand-logo" width="112" height="40" fetchpriority="high">
             </a>
             <div class="pro-nav-actions">
                 <a href="{% url 'home' %}" class="btn-pro-ghost"> Kembali ke Beranda</a>

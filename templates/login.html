@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Masuk ke KartuTa{% endblock %}
 
 {% block auth_content %}
 <div class="auth-card">
     <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="font-size: 26px; font-weight: 800; color: var(--text-main);"><span class="logo-box" style="margin-right: 6px;">KT</span>Kartu<span style="color: var(--magenta);">Ta</span></h1>
+        <img src="{% static 'img/kartuta-logo.png' %}" alt="KartuTa" width="140" height="50" style="display: block; margin: 0 auto;">
         <p style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;">Masuk ke Akun Platform E-Commerce Photocard</p>
     </div>
 

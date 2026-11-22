@@ -111,7 +111,7 @@ def loginView(request):
 
 def registerView(request):
     if request.user.is_authenticated:
-        return redirect('app:index')
+        return redirect('home')
 
     if request.method == 'POST':
         name = request.POST.get('first_name', '').strip()
