@@ -405,7 +405,7 @@
             <ul class="mitra-list">
                 {% for m in mitra_list %}
                     <li>
-                        {% if m.logo %}<img class="mitra-logo" src="{{ m.logo.url }}" alt="{{ m.nama_mitra }}" loading="lazy">{% endif %}
+                        {% if m.logo_src %}<img class="mitra-logo" src="{{ m.logo_src }}" alt="{{ m.nama_mitra }}" loading="lazy">{% endif %}
                         <span class="mitra-name">{{ m.nama_mitra }}</span>
                         <span class="mitra-tag">{{ m.kategori_mitra }}</span>
                     </li>

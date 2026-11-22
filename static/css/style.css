@@ -2038,8 +2038,9 @@ input.nav-search-input:focus,
 }
 
 .mitra-logo {
-  width: 20px;
-  height: 20px;
+  height: 22px;
+  width: auto;
+  max-width: 120px;
   object-fit: contain;
   flex: 0 0 auto;
 }
