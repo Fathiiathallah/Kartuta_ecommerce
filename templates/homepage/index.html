@@ -399,12 +399,13 @@
         {% if mitra_list %}
         <section id="mitra-kerjasama" class="mitra-section">
             <div class="mitra-copy">
-                <h2 class="mitra-title">Pengiriman dan resi</h2>
-                <p class="mitra-desc">Nomor resi tercatat otomatis di halaman pesanan Anda begitu paket diserahkan ke kurir.</p>
+                <h2 class="mitra-title">Mitra pengiriman &amp; pembayaran</h2>
+                <p class="mitra-desc">Paket dikirim lewat ekspedisi rekanan, pembayaran diproses lewat gate/rekening resmi mitra.</p>
             </div>
             <ul class="mitra-list">
                 {% for m in mitra_list %}
                     <li>
+                        {% if m.logo %}<img class="mitra-logo" src="{{ m.logo.url }}" alt="{{ m.nama_mitra }}" loading="lazy">{% endif %}
                         <span class="mitra-name">{{ m.nama_mitra }}</span>
                         <span class="mitra-tag">{{ m.kategori_mitra }}</span>
                     </li>

@@ -2030,11 +2030,18 @@ input.nav-search-input:focus,
 
 .mitra-list li {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
   border: 1px solid var(--border-light);
   border-radius: 8px;
   padding: 10px 16px;
+}
+
+.mitra-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 .mitra-name {
