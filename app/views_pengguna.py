@@ -15,7 +15,7 @@ from .models import (
     Product, Category, CartItem, OrderItem, OrderTrackingLog
 )
 from .decorators_admin import pengguna_required
-from .midtrans_service import create_snap_transaction, verify_midtrans_signature
+from .midtrans_service import create_snap_transaction, verify_midtrans_signature, fetch_transaction_status
 from . import rajaongkir_service
 
 
@@ -399,6 +399,40 @@ def pesanan_saya(request):
     return render(request, 'pengguna/pesanan_list.html', context)
 
 
+def sync_pending_payment(order):
+    """
+    Cadangan webhook Midtrans: cek status transaksi saat halaman pesanan dibuka.
+    Di localhost notifikasi Midtrans tidak bisa menghubungi server, jadi tanpa ini
+    status tetap Pending walau pembeli sudah bayar.
+    """
+    if order.status != 'Pending':
+        return
+    data = fetch_transaction_status(order.invoice_number)
+    if not data:
+        return
+    trx = (data.get('transaction_status') or '').lower()
+    fraud = (data.get('fraud_status') or '').lower()
+    if trx in ('settlement', 'capture') and fraud in ('', 'accept'):
+        payment_type = (data.get('payment_type') or 'QRIS').upper()
+        order.status = 'Completed'
+        order.payment_method = f'Midtrans ({payment_type})'
+        order.save(update_fields=['status', 'payment_method', 'updated_at'])
+        OrderTrackingLog.objects.create(
+            order=order,
+            status='Completed',
+            note=f'Pembayaran Midtrans {payment_type} terverifikasi otomatis.'
+        )
+        order.unlock_virtual_binder()
+    elif trx in ('expire', 'cancel', 'deny', 'failure'):
+        order.status = 'Failed'
+        order.save(update_fields=['status', 'updated_at'])
+        OrderTrackingLog.objects.create(
+            order=order,
+            status='Failed',
+            note=f'Transaksi Midtrans {trx}: pesanan dibatalkan otomatis.'
+        )
+
+
 @login_required
 def pesanan_detail(request, invoice_number):
     user_client = get_or_create_user_client(request.user)
@@ -414,6 +448,8 @@ def pesanan_detail(request, invoice_number):
             invoice_number=invoice_number,
             user_client=user_client
         )
+
+    sync_pending_payment(order)  # tarik status dari Midtrans kalau webhook tidak sampai
 
     snap_token = None
     snap_redirect_url = None

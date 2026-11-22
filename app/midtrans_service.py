@@ -1,6 +1,7 @@
 import json
 import base64
 import hashlib
+import urllib.parse
 import urllib.request
 import urllib.error
 from django.conf import settings
@@ -88,6 +89,40 @@ def create_snap_transaction(order):
     except Exception as e:
         print(f"[Midtrans] Error creating Snap transaction: {e}")
         return None, None
+
+
+MIDTRANS_STATUS_URL = (
+    'https://api.midtrans.com/v2/{}/status' if settings.MIDTRANS_IS_PRODUCTION
+    else 'https://api.sandbox.midtrans.com/v2/{}/status'
+)
+
+
+def fetch_transaction_status(order_id):
+    """
+    Ambil status transaksi langsung dari Midtrans (GET /v2/{order_id}/status).
+    Dipakai sebagai cadangan webhook: di localhost notifikasi Midtrans tidak bisa
+    masuk, jadi status pesanan dicek ulang saat halaman pesanan dibuka.
+    """
+    req = urllib.request.Request(
+        MIDTRANS_STATUS_URL.format(urllib.parse.quote(str(order_id))),
+        headers={
+            "Accept": "application/json",
+            "Authorization": get_midtrans_headers()["Authorization"],
+            "User-Agent": "Kartuta/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as e:
+        # 404 = transaksi belum ada di Midtrans (pesanan belum dibayar)
+        if e.code == 404:
+            return None
+        print(f"[Midtrans] Status check HTTP {e.code}: {e.read()[:200]}")
+        return None
+    except Exception as e:
+        print(f"[Midtrans] Status check error: {e}")
+        return None
 
 
 def verify_midtrans_signature(order_id, status_code, gross_amount, signature_key):
