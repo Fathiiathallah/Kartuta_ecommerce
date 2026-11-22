@@ -34,7 +34,9 @@ if _ENV_FILE.exists():
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-*=%1psjfac(ruc^b0fsav^fl8%=8y_1wx=^%9cvushwj+cym#y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
+# Vercel menyetel VERCEL=1 di setiap deployment; di sana DEBUG harus mati.
+_default_debug = 'False' if os.getenv('VERCEL') else 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', _default_debug).lower() in ('1', 'true', 'yes')
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
