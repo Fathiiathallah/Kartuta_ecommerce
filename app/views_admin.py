@@ -758,6 +758,8 @@ def pesanan_admin_detail(request, invoice_number):
             return redirect('app:pesanan_admin_detail', invoice_number=order.invoice_number)
 
         if new_status:
+            if new_status == 'Cancelled' and old_status != 'Cancelled':
+                order.restore_stock()
             order.status = new_status
         if new_awb:
             order.tracking_number_awb = new_awb

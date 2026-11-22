@@ -121,6 +121,7 @@ class HistoryPayment(models.Model):
         ('Packing', 'Sedang Dipacking (4-Layer Gold Safety)'),
         ('Shipped', 'Dalam Pengiriman Kurir (J&T/JNE)'),
         ('Delivered', 'Paket Diterima Customer'),
+        ('Cancelled', 'Dibatalkan'),
         ('Failed', 'Batal / Waktu Habis'),
     ]
     user_client = models.ForeignKey(UserClient, on_delete=models.CASCADE, related_name='payments')
@@ -164,9 +165,36 @@ class HistoryPayment(models.Model):
             'Packing': 3,
             'Shipped': 4,
             'Delivered': 5,
+            'Cancelled': 0,
             'Failed': 0,
         }
         return mapping.get(self.status, 1)
+
+    def restore_stock(self):
+        """Kembalikan stok produk pesanan ini (dipakai saat pesanan dibatalkan)."""
+        for item in self.items.select_related('product'):
+            product = item.product
+            if product is None:
+                continue
+            product.stock = product.stock + item.quantity
+            product.save(update_fields=['stock'])
+
+    def cancel(self, reason=''):
+        """
+        Batalkan pesanan + kembalikan stok. False kalau status tidak boleh dibatalkan
+        (sudah dikirim/diterima/sudah dibatalkan).
+        """
+        if self.status in ('Shipped', 'Delivered', 'Cancelled'):
+            return False
+        self.restore_stock()
+        self.status = 'Cancelled'
+        self.save(update_fields=['status', 'updated_at'])
+        OrderTrackingLog.objects.create(
+            order=self,
+            status='Cancelled',
+            note=(reason or 'Pesanan dibatalkan.')[:255],
+        )
+        return True
 
     def unlock_virtual_binder(self):
         if not self.user_client:

@@ -474,6 +474,25 @@ def pesanan_detail(request, invoice_number):
 
 
 @login_required
+def pesanan_batal(request, invoice_number):
+    """Pembeli membatalkan pesanan yang belum dibayar; stok produk dikembalikan."""
+    user_client = get_or_create_user_client(request.user)
+    order = get_object_or_404(HistoryPayment, invoice_number=invoice_number, user_client=user_client)
+
+    if request.method != 'POST':
+        return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
+
+    if order.status != 'Pending':
+        messages.error(request, 'Pesanan ini sudah diproses, tidak bisa dibatalkan sendiri. Hubungi admin untuk pembatalan/refund.')
+        return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
+
+    alasan = (request.POST.get('alasan') or '').strip()[:150]
+    order.cancel(f'Dibatalkan pembeli. {alasan}'.strip())
+    messages.success(request, f'Pesanan #{order.invoice_number} dibatalkan. Stok produk sudah dikembalikan.')
+    return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
+
+
+@login_required
 def pesanan_invoice(request, invoice_number):
     """Invoice siap cetak (A4) — bisa diakses pembeli pemilik pesanan maupun admin."""
     user_client = get_or_create_user_client(request.user)
@@ -551,6 +570,10 @@ def midtrans_notification(request):
     order = HistoryPayment.objects.filter(invoice_number=order_id).first()
     if not order:
         return JsonResponse({"status": "error", "message": "Order not found"}, status=404)
+
+    if order.status == 'Cancelled':
+        # Pesanan sudah dibatalkan pembeli: notifikasi lama diabaikan, jangan hidupkan lagi
+        return JsonResponse({"status": "ok", "message": "Order cancelled, notification ignored"})
 
     if transaction_status in ['capture', 'settlement']:
         if fraud_status is None or fraud_status == 'accept':

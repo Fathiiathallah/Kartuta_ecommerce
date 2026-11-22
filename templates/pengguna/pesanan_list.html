@@ -80,6 +80,10 @@
                                 <span class="badge-tag badge-unlocked">
                                     <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Selesai Diterima
                                 </span>
+                            {% elif order.status == 'Cancelled' %}
+                                <span class="badge-tag" style="background: var(--danger-solid); color: var(--text-main);">
+                                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Dibatalkan
+                                </span>
                             {% else %}
                                 <span class="badge-tag" style="background: var(--danger-solid); color: var(--text-main);">
                                     <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Batal / Gagal
