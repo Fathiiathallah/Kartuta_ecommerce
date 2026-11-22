@@ -1,4 +1,8 @@
-"""Entri serverless Vercel. Vercel Python runtime mencari variabel `handler`."""
+"""Entri serverless untuk preset Django di Vercel.
+
+Preset Django mencari variabel `app` di `core/wsgi.py`, tapi sebagian deployment
+memakai `api/index.py`. File ini menyediakan keduanya tanpa mengubah struktur proyek.
+"""
 
 import os
 import sys
@@ -12,3 +16,4 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 from core.wsgi import application  # noqa: E402
 
 handler = application
+app = application
