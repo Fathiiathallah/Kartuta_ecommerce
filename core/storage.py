@@ -12,8 +12,8 @@ from django.utils.deconstruct import deconstructible
 @deconstructible
 class SupabaseMediaStorage(Storage):
     def __init__(self, **kwargs):
-        self.supabase_url = getattr(settings, 'SUPABASE_URL', 'https://tbdqyckxugzornkzhbgq.supabase.co').rstrip('/')
-        self.supabase_key = getattr(settings, 'SUPABASE_KEY', 'sb_publishable_uopLb-jrYVKjsvQTh89Y2w_8DKdw6iq')
+        self.supabase_url = getattr(settings, 'SUPABASE_URL', '').rstrip('/')
+        self.supabase_key = getattr(settings, 'SUPABASE_KEY', '')
         self.bucket = getattr(settings, 'SUPABASE_BUCKET', 'media')
         self.base_url = f"{self.supabase_url}/storage/v1/object/public/{self.bucket}"
 

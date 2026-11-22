@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,12 +31,28 @@ if _ENV_FILE.exists():
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*=%1psjfac(ruc^b0fsav^fl8%=8y_1wx=^%9cvushwj+cym#y'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-*=%1psjfac(ruc^b0fsav^fl8%=8y_1wx=^%9cvushwj+cym#y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Vercel menyetel VERCEL=1 di setiap deployment; di sana DEBUG harus mati.
+_default_debug = 'False' if os.getenv('VERCEL') else 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', _default_debug).lower() in ('1', 'true', 'yes')
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.vercel.app',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+# Di produksi (Vercel) pakai HTTPS penuh; di lokal tetap HTTP.
+if not DEBUG:
+    SECURE_SSL_REDIRECT = os.getenv('DJANGO_SECURE_SSL', 'True').lower() in ('1', 'true', 'yes')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -53,6 +70,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -94,7 +112,11 @@ DATABASES = {
         'USER': os.getenv('DB_USER', ''),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', ''),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'PORT': os.getenv('DB_PORT', '6543'),
+        # Supabase pooler menutup koneksi idle; 60 detik cukup untuk satu instance
+        # serverless tanpa memicu "connection closed" saat request berikutnya.
+        'CONN_MAX_AGE': 60,
+        'CONN_HEALTH_CHECKS': True,
     }
 }
 
@@ -136,6 +158,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -146,7 +169,6 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'app:dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
-import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
@@ -154,8 +176,8 @@ STATICFILES_DIRS = [
 ]
 
 # Supabase Cloud Storage (PaaS Media Bucket)
-SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://tbdqyckxugzornkzhbgq.supabase.co')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY', 'sb_publishable_uopLb-jrYVKjsvQTh89Y2w_8DKdw6iq')
+SUPABASE_URL = os.getenv('SUPABASE_URL', '')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY', '')
 SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET', 'media')
 
 STORAGES = {
@@ -163,7 +185,12 @@ STORAGES = {
         "BACKEND": "core.storage.SupabaseMediaStorage",
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        # Manifest hanya dipakai di produksi (butuh collectstatic); di dev/test pakai storage biasa
+        "BACKEND": (
+            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            if not DEBUG else
+            "django.contrib.staticfiles.storage.StaticFilesStorage"
+        ),
     },
 }
 DEFAULT_FILE_STORAGE = 'core.storage.SupabaseMediaStorage'

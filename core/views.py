@@ -62,7 +62,7 @@ def homeView(request):
 
     categories = Category.objects.all()
     hero_slides = HeroSlide.objects.filter(aktif=True).order_by('urutan')
-    artikel_list = Artikel.objects.filter(is_published=True).select_related('kategori')[:3]
+    artikel_list = Artikel.objects.filter(is_published=True).select_related('kategori', 'penulis')[:3]
     mitra_list = KerjaSama.objects.filter(aktif=True)
 
     context = {
