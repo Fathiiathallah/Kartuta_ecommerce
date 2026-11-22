@@ -672,41 +672,13 @@ body {
 /* --------------------------------------------------------------------------
    Virtual Binder & Store Cards
    -------------------------------------------------------------------------- */
-.binder-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 16px;
-}
 
-.binder-card {
-  background: var(--input-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  transition: all 0.2s ease;
-}
 
 .binder-card:hover {
   transform: translateY(-2px);
   border-color: var(--primary);
 }
 
-.binder-card .img-box {
-  width: 100%;
-  aspect-ratio: 2/3;
-  background: #161B26;
-  border-radius: 6px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: var(--primary);
-  font-weight: 700;
-  margin-bottom: 8px;
-  border: 1px solid var(--border-dark);
-}
 
 .binder-card .img-box img {
   width: 100%;
@@ -2163,5 +2135,215 @@ input.nav-search-input:focus,
   .pro-product-grid {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   VIRTUAL BINDER
+   Satu halaman = satu album, 9 pocket. Slot kosong ditampilkan sebagai progres.
+   Proporsi kartu 55 x 85 mm (2:3.09) mengikuti ukuran photocard asli.
+   -------------------------------------------------------------------------- */
+.binder-summary {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  padding: 0 0 20px 0;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 24px;
+}
+
+.binder-summary-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.binder-summary-value {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.binder-summary-link {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 2px;
+}
+
+.binder-summary-link:hover {
+  border-color: var(--text-main);
+}
+
+.binder-page {
+  margin-bottom: 24px;
+}
+
+.binder-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.binder-page-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 3px 0;
+  letter-spacing: -0.01em;
+}
+
+.binder-page-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.binder-progress {
+  width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--input-bg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.binder-progress span {
+  display: block;
+  height: 100%;
+  background: var(--primary-hover);
+}
+
+.binder-pocket-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  /* Lebar dibatasi supaya 9 pocket terbaca sebagai satu halaman binder,
+     bukan sembilan kartu raksasa yang harus di-scroll. */
+  max-width: 640px;
+}
+
+.binder-pocket {
+  aspect-ratio: 55 / 85;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.binder-pocket.is-filled {
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+}
+
+.binder-pocket.is-filled img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.binder-pocket.is-empty {
+  border: 1px dashed var(--border-light);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.binder-pocket-slot {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.binder-pocket-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* Nama kartu menumpang di kaki gambar, bukan di bawahnya, supaya grid tetap rapat */
+.binder-pocket-meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 18px 8px 7px 8px;
+  background: linear-gradient(180deg, rgba(5, 7, 11, 0) 0%, rgba(5, 7, 11, 0.88) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.binder-pocket-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.binder-pocket-date {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.binder-empty {
+  text-align: left;
+}
+
+.binder-empty .binder-page-sub {
+  max-width: 46ch;
+  line-height: 1.6;
+  margin: 6px 0 18px 0;
+}
+
+@media (max-width: 768px) {
+  .binder-pocket-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .binder-summary {
+    gap: 24px;
+  }
+
+  .binder-progress {
+    width: 80px;
+  }
+}
+
+.binder-teaser {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.binder-teaser-copy p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 14px 0;
+  max-width: 62ch;
+}
+
+@media (max-width: 768px) {
+  .binder-teaser {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }

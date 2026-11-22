@@ -55,6 +55,7 @@ urlpatterns = [
     path('profile/pengguna', views_pengguna.profile_pengguna, name='profile_pengguna'),
     path('dashboard/pengguna', views_pengguna.dashboard_pengguna, name='dashboard_pengguna'),
     path('katalog/', views_pengguna.katalog_pengguna, name='katalog_pengguna'),
+    path('binder/', views_pengguna.binder_pengguna, name='binder_pengguna'),
 
     # KERANJANG & CHECKOUT (PENGGUNA)
     path('keranjang/', views_pengguna.cart_list, name='cart_list'),
