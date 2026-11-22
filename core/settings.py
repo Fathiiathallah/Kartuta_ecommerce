@@ -185,9 +185,11 @@ STORAGES = {
         "BACKEND": "core.storage.SupabaseMediaStorage",
     },
     "staticfiles": {
-        # Manifest hanya dipakai di produksi (butuh collectstatic); di dev/test pakai storage biasa
+        # Manifest dimatikan: collectstatic di build Vercel sempat berjalan tanpa manifest,
+        # akibatnya semua halaman 500 saat runtime (Missing staticfiles manifest entry).
+        # CompressedStaticFilesStorage tidak bergantung pada staticfiles.json.
         "BACKEND": (
-            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            "whitenoise.storage.CompressedStaticFilesStorage"
             if not DEBUG else
             "django.contrib.staticfiles.storage.StaticFilesStorage"
         ),
