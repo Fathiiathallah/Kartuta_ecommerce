@@ -111,7 +111,11 @@ DATABASES = {
         'USER': os.getenv('DB_USER', 'postgres.tbdqyckxugzornkzhbgq'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'kartuta951123'),
         'HOST': os.getenv('DB_HOST', 'aws-0-ap-northeast-2.pooler.supabase.com'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'PORT': os.getenv('DB_PORT', '6543'),
+        # Supabase pooler menutup koneksi idle; 60 detik cukup untuk satu instance
+        # serverless tanpa memicu "connection closed" saat request berikutnya.
+        'CONN_MAX_AGE': 60,
+        'CONN_HEALTH_CHECKS': True,
     }
 }
 
