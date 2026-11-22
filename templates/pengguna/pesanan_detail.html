@@ -284,6 +284,40 @@
                 </div>
             </div>
 
+            {% if is_manual and order.status == 'Pending' %}
+            <!-- Pembayaran Transfer Manual -->
+            <div class="dashboard-card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 14px; border-bottom: 1px solid var(--border-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
+                    <span>Pembayaran Transfer Manual</span>
+                </h3>
+
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">
+                    Transfer tepat <strong style="color: var(--primary);">Rp {{ order.amount|floatformat:0 }}</strong> ke salah satu rekening berikut, lalu unggah bukti transfernya.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+                    {% for rek in bank_accounts %}
+                    <div style="background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--text-main); font-family: monospace;">{{ rek }}</div>
+                    {% endfor %}
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" action="{% url 'app:pesanan_upload_bukti' order.invoice_number %}">
+                    {% csrf_token %}
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">BUKTI TRANSFER (FOTO / SCREENSHOT)</label>
+                    <input type="file" name="payment_proof" accept="image/*" required class="form-control" style="width: 100%; padding: 10px 14px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 12px; margin-bottom: 10px;">
+                    <button type="submit" class="btn-primary-save" style="padding: 11px 18px; font-size: 13px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;">
+                        <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+                        <span>Kirim Bukti Transfer</span>
+                    </button>
+                </form>
+
+                {% if order.payment_proof %}
+                <p style="font-size: 11px; color: var(--emerald); margin-top: 10px;">Bukti transfer sudah diunggah. Menunggu verifikasi admin (maks. 1x24 jam).</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
         </div>
 
     </div>

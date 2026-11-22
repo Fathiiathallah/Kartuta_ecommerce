@@ -129,6 +129,7 @@ class HistoryPayment(models.Model):
     payment_method = models.CharField(max_length=50, default='QRIS Midtrans')
     courier_service = models.CharField(max_length=50, default='J&T Express Reguler')
     tracking_number_awb = models.CharField(max_length=100, blank=True, null=True)
+    payment_proof = models.ImageField(upload_to='payment_proofs/', blank=True, null=True, verbose_name='Bukti Transfer')
     status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='Pending')
     shipping_name = models.CharField(max_length=150, blank=True, null=True)
     shipping_phone = models.CharField(max_length=30, blank=True, null=True)

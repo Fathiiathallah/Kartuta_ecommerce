@@ -181,3 +181,11 @@ MIDTRANS_SNAP_JS = 'https://app.midtrans.com/snap/snap.js' if MIDTRANS_IS_PRODUC
 # ==============================================================================
 RAJAONGKIR_KEY = os.getenv('RAJAONGKIR_KEY', '')
 RAJAONGKIR_ORIGIN_ID = os.getenv('RAJAONGKIR_ORIGIN_ID', '')  # ID kecamatan asal (gudang Kartuta)
+
+# Rekening tujuan transfer manual, pisahkan antar rekening dengan tanda |
+BANK_ACCOUNTS = [
+    r.strip() for r in os.getenv(
+        'BANK_ACCOUNTS',
+        'BCA 1234567890 a.n. KartuTa Indonesia | Mandiri 0987654321 a.n. KartuTa Indonesia',
+    ).split('|') if r.strip()
+]

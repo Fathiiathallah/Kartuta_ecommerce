@@ -225,6 +225,18 @@
                         <div style="font-size: 20px; font-weight: 900; color: var(--primary);">Rp {{ order.amount|floatformat:0 }}</div>
                     </div>
                 </div>
+
+                {% if order.payment_proof %}
+                <div style="margin-top: 14px; border-top: 1px dashed var(--border-dark); padding-top: 12px;">
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px;">BUKTI TRANSFER DARI PEMBELI</div>
+                    <a href="{{ order.payment_proof.url }}" target="_blank" rel="noopener" style="display: inline-block;">
+                        <img src="{{ order.payment_proof.url }}" alt="Bukti transfer {{ order.invoice_number }}" style="max-width: 220px; border-radius: 8px; border: 1px solid var(--border-dark);">
+                    </a>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Klik gambar untuk membuka ukuran penuh, lalu ubah status ke Completed setelah dana masuk.</p>
+                </div>
+                {% elif order.payment_method == 'Transfer Bank Manual' %}
+                <p style="font-size: 11px; color: var(--text-secondary); margin-top: 12px;">Pembeli belum mengunggah bukti transfer.</p>
+                {% endif %}
             </div>
 
         </div>
