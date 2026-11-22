@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KartuTa Platform{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.4">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.1">
 </head>
 <body>
 {% include 'partials/icons.html' %}
@@ -17,9 +17,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="{% url 'home' %}" class="sidebar-brand" title="Kembali ke Beranda Toko">
-                <span class="logo-box">KT</span>
-                <span>Kartu<span class="tag">Ta</span></span>
-                <span class="badge-store">OFFICIAL</span>
+                <img src="{% static 'img/kartuta-logo.png' %}" alt="KartuTa" class="sidebar-logo" width="95" height="34">
             </a>
         </div>
 

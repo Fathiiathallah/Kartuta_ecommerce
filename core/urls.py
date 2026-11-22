@@ -14,7 +14,8 @@ urlpatterns = [
     path('produk/<int:id>/', views.produkDetailView, name='produk_detail'),
     path('artikel/<slug:slug>/', views.artikelDetailView, name='artikel_detail'),
     path('halaman/<slug:slug>/', views.halamanDetailView, name='halaman_detail'),
-    path('', views.loginView, name='index'),
+    # Halaman pertama yang dibuka pengunjung adalah etalase, bukan formulir masuk.
+    path('', views.homeView, name='index'),
 ]
 
 if settings.DEBUG:

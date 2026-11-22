@@ -8,8 +8,7 @@
                 {% if web_setting.logo %}
                     <img src="{{ web_setting.logo.url }}" alt="{{ web_setting.nama_organisasi }}" style="max-height: 38px; width: auto; object-fit: contain;">
                 {% else %}
-                    <span class="pro-logo-badge">KT</span>
-                    <span class="pro-brand-text">{{ web_setting.nama_organisasi|default:"KartuTa" }}</span>
+                    <img src="{% static 'img/kartuta-logo.png' %}" alt="KartuTa" class="pro-footer-logo" width="112" height="40" loading="lazy">
                 {% endif %}
             </div>
             <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 12px 0;">

@@ -2355,3 +2355,34 @@ input.nav-search-input:focus,
     gap: 16px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   LOGO GAMBAR
+   Satu file, tinggi tetap, lebar mengikuti rasio asli (logo 837 x 227).
+   Tidak memakai filter: latar PNG sudah transparan, jadi menyatu dengan
+   navbar gelap maupun kartu auth tanpa halo.
+   -------------------------------------------------------------------------- */
+.pro-brand-logo {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+
+.sidebar-logo {
+  display: block;
+  height: 34px;
+  width: auto;
+}
+
+.pro-footer-logo {
+  display: block;
+  height: 40px;
+  width: auto;
+  opacity: 0.92;
+}
+
+@media (max-width: 768px) {
+  .pro-brand-logo {
+    height: 32px;
+  }
+}
