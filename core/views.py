@@ -151,3 +151,46 @@ def LogoutView(request):
     logout(request)
     messages.success(request, 'Anda telah berhasil logout!')
     return redirect('login')
+
+
+# Pemeriksaan sementara untuk mencari penyebab 500 di produksi.
+# Dilindungi kunci, kembalikan hanya status dan nama exception. Hapus setelah selesai.
+def diagView(request):
+    import os
+    from django.conf import settings
+    from django.http import JsonResponse, Http404
+
+    kunci = os.getenv('DIAG_KEY', 'kartuta-diag-2026')
+    if request.GET.get('k') != kunci:
+        raise Http404()
+
+    hasil = {'debug': settings.DEBUG}
+    hasil['env'] = {
+        nama: bool(os.getenv(nama))
+        for nama in ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME', 'DB_PORT',
+                     'SUPABASE_URL', 'SUPABASE_KEY', 'DJANGO_SECRET_KEY']
+    }
+
+    try:
+        from django.db import connection
+        with connection.cursor() as cur:
+            cur.execute('select 1')
+            cur.fetchone()
+        hasil['db'] = 'ok'
+    except Exception as e:
+        hasil['db'] = type(e).__name__ + ': ' + str(e)[:220]
+
+    try:
+        from django.templatetags.static import static
+        hasil['static_css'] = static('css/style.css')
+    except Exception as e:
+        hasil['static_css'] = type(e).__name__ + ': ' + str(e)[:220]
+
+    try:
+        from django.test import Client
+        r = Client().get('/home/')
+        hasil['home'] = r.status_code
+    except Exception as e:
+        hasil['home'] = type(e).__name__ + ': ' + str(e)[:300]
+
+    return JsonResponse(hasil)
