@@ -269,9 +269,7 @@ def checkout(request):
         shipping_address = request.POST.get('shipping_address', '').strip() or user_client.alamat or ''
         shipping_city = request.POST.get('shipping_city', '').strip()
         courier_service = request.POST.get('courier_service', '')
-        payment_method = request.POST.get('payment_method', 'QRIS Midtrans')
-        if payment_method not in ('QRIS Midtrans', 'Transfer Bank Manual'):
-            payment_method = 'QRIS Midtrans'
+        payment_method = 'QRIS Midtrans'  # satu-satunya metode: Midtrans Snap
         notes = request.POST.get('notes', '').strip()
 
         if not shipping_address or not shipping_phone:
@@ -338,9 +336,6 @@ def checkout(request):
         cart_items.delete()
 
         detail_url = reverse('app:pesanan_detail', args=[order.invoice_number])
-        if payment_method == 'Transfer Bank Manual':
-            messages.success(request, f'Pesanan #{order.invoice_number} dibuat. Transfer ke rekening KartuTa, lalu upload bukti di halaman pesanan.')
-            return redirect(detail_url)
         messages.success(request, f'Pesanan #{order.invoice_number} berhasil dibuat. Lanjutkan pembayaran.')
         return redirect(f'{detail_url}?autopay=1')
 
@@ -422,8 +417,7 @@ def pesanan_detail(request, invoice_number):
 
     snap_token = None
     snap_redirect_url = None
-    is_manual = order.payment_method == 'Transfer Bank Manual'
-    if order.status == 'Pending' and not is_manual:
+    if order.status == 'Pending':
         snap_token, snap_redirect_url = create_snap_transaction(order)
 
     context = {
@@ -437,61 +431,10 @@ def pesanan_detail(request, invoice_number):
         'snap_redirect_url': snap_redirect_url,
         'autopay': request.GET.get('autopay') == '1' and bool(snap_token),
         'debug': settings.DEBUG,
-        'is_manual': is_manual,
-        'bank_accounts': settings.BANK_ACCOUNTS,
         'midtrans_client_key': settings.MIDTRANS_CLIENT_KEY,
         'midtrans_snap_js': settings.MIDTRANS_SNAP_JS,
     }
     return render(request, 'pengguna/pesanan_detail.html', context)
-
-
-@login_required
-def pesanan_bayar_simulasi(request, invoice_number):
-    user_client = get_or_create_user_client(request.user)
-    order = get_object_or_404(HistoryPayment, invoice_number=invoice_number, user_client=user_client)
-
-    if order.status == 'Pending':
-        order.status = 'Completed'
-        order.save(update_fields=['status', 'updated_at'])
-        OrderTrackingLog.objects.create(
-            order=order,
-            status='Completed',
-            note='Pembayaran QRIS Midtrans berhasil diverifikasi secara instan.'
-        )
-        order.unlock_virtual_binder()
-        messages.success(request, 'Pembayaran berhasil dikonfirmasi! Slot Virtual Binder koleksi Anda telah terbuka.')
-    else:
-        messages.info(request, 'Status pesanan ini sudah bukan menunggu pembayaran.')
-
-    return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
-
-
-@login_required
-def pesanan_upload_bukti(request, invoice_number):
-    """Upload bukti transfer untuk pesanan dengan metode Transfer Bank Manual."""
-    user_client = get_or_create_user_client(request.user)
-    order = get_object_or_404(HistoryPayment, invoice_number=invoice_number, user_client=user_client)
-
-    if request.method != 'POST':
-        return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
-    if order.payment_method != 'Transfer Bank Manual' or order.status != 'Pending':
-        messages.info(request, 'Pesanan ini tidak menunggu bukti transfer manual.')
-        return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
-
-    bukti = request.FILES.get('payment_proof')
-    if not bukti:
-        messages.error(request, 'Pilih file gambar bukti transfer dulu.')
-        return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
-
-    order.payment_proof = bukti
-    order.save(update_fields=['payment_proof', 'updated_at'])
-    OrderTrackingLog.objects.create(
-        order=order,
-        status=order.status,
-        note='Bukti transfer diunggah pembeli. Menunggu verifikasi admin.'
-    )
-    messages.success(request, 'Bukti transfer terkirim. Admin akan memverifikasi maksimal 1x24 jam.')
-    return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
 
 
 @login_required

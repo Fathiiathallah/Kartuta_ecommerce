@@ -66,8 +66,6 @@ urlpatterns = [
 
     # TRACKING PESANAN (PENGGUNA)
     path('pesanan/', views_pengguna.pesanan_saya, name='pesanan_saya'),
-    path('pesanan/<path:invoice_number>/bayar/', views_pengguna.pesanan_bayar_simulasi, name='pesanan_bayar_simulasi'),
-    path('pesanan/<path:invoice_number>/bukti/', views_pengguna.pesanan_upload_bukti, name='pesanan_upload_bukti'),
     path('pesanan/<path:invoice_number>/invoice/', views_pengguna.pesanan_invoice, name='pesanan_invoice'),
     path('pesanan/<path:invoice_number>/terima/', views_pengguna.pesanan_konfirmasi_terima, name='pesanan_konfirmasi_terima'),
     path('pesanan/<path:invoice_number>/', views_pengguna.pesanan_detail, name='pesanan_detail'),
