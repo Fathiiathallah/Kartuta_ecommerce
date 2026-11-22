@@ -9,6 +9,7 @@ Kalau RAJAONGKIR_KEY / RAJAONGKIR_ORIGIN_ID kosong di settings, semua fungsi di
 sini mengembalikan kosong dan checkout memakai tarif statis COURIER_RATES.
 """
 import json
+import re
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -20,6 +21,12 @@ BASE = "https://rajaongkir.komerce.id/api/v1"
 COURIERS = ("jne", "jnt", "sicepat")
 LABEL = {"jne": "JNE", "jnt": "J&T Express", "sicepat": "SiCepat"}
 TIMEOUT = 15
+
+
+def _bersihkan_etd(etd):
+    """RajaOngkir kirim '1 day' / '1-2 days' / '1 Hari' — sisakan angkanya saja."""
+    teks = re.sub(r'(?i)\b(days?|hari)\b', '', str(etd or '')).strip()
+    return teks.rstrip(' -')
 
 
 def is_enabled():
@@ -94,15 +101,18 @@ def shipping_options(destination_id, weight_gram):
             continue  # kurir tidak melayani rute ini
         for d in data.get("data") or []:
             cost = int(d.get("cost") or 0)
+            service_name = (d.get("service") or "").upper()
             # Lewati layanan kargo/truk (JNE JTR, SiCepat GOKIL) yang minimum ~10 kg
+            if "GOKIL" in service_name or service_name.startswith("JTR"):
+                continue
             if weight_gram <= 5000 and cost > 50000:
                 continue
             options.append({
-                "label": f"{LABEL.get(d.get('code'), d.get('code', '').upper())} {d.get('service', '')}".strip(),
+                "label": f"{LABEL.get(d.get('code'), d.get('code', '').upper())} {(d.get('service') or '').replace('CTCEYES', 'CTC YES').replace('CTCYES', 'CTC YES')}".strip(),
                 "courier": d.get("code", ""),
                 "service": d.get("service", ""),
                 "cost": cost,
-                "etd": str(d.get("etd") or ""),
+                "etd": _bersihkan_etd(d.get("etd")),
             })
     if options:
         cache.set(cache_key, options, 600)

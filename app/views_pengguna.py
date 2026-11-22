@@ -285,11 +285,15 @@ COURIER_RATES = {
 
 
 def _cart_shipping_options(user_client, cart_items):
-    """Opsi ongkir live dari RajaOngkir; fallback tarif statis kalau API belum aktif."""
+    """Opsi ongkir live dari RajaOngkir; fallback tarif statis hanya kalau API belum aktif."""
     total_weight = sum((item.product.weight or 500) * item.quantity for item in cart_items)
     options = rajaongkir_service.shipping_options(user_client.destination_id, total_weight)
     if options:
         return options, total_weight
+    if rajaongkir_service.is_enabled() and not user_client.destination_id:
+        # API aktif tapi kecamatan tujuan belum dipilih: jangan tampilkan tarif karangan
+        return [], total_weight
+    # API mati / kuota habis: pembeli tetap bisa checkout dengan tarif statis
     fallback = [{"label": k, "courier": "", "service": k, "cost": v, "etd": ""}
                 for k, v in COURIER_RATES.items()]
     return fallback, total_weight

@@ -5,6 +5,14 @@ from app.models import Product, Category, CartItem, HistoryPayment, VirtualBinde
 
 class EcommerceFlowTest(TestCase):
     def setUp(self):
+        # Tarif kurir dikunci di test supaya tidak memanggil RajaOngkir sungguhan
+        from unittest.mock import patch
+        self._ship = patch('app.rajaongkir_service.shipping_options', return_value=[
+            {'label': 'J&T Express Reguler', 'courier': 'jnt', 'service': 'REG', 'cost': 18000, 'etd': '2'},
+        ])
+        self._ship.start()
+        self.addCleanup(self._ship.stop)
+
         self.category = Category.objects.create(name='Test Era')
         self.product = Product.objects.create(
             name='Test Card',

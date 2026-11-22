@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize rupiah %}
 {% block title %}Checkout Pengiriman - KartuTa{% endblock %}
 {% block page_title %}Checkout & Konfirmasi Pengiriman{% endblock %}
 
@@ -74,14 +75,20 @@
                             <div>
                                 <strong style="color: var(--text-main); font-size: 13px; display: block;">{{ opt.label }}</strong>
                                 <span style="font-size: 11px; color: var(--text-secondary);">
-                                    {% if opt.etd %}Estimasi {{ opt.etd }} Hari Kerja{% else %}Tarif berat {{ total_weight }} g{% endif %} • Termasuk Resi AWB
+                                    {% if opt.etd %}Estimasi {{ opt.etd }} hari kerja{% else %}Berat {{ total_weight }} g{% endif %} &middot; Resi AWB
                                 </span>
                             </div>
                         </div>
-                        <strong style="color: var(--primary); font-size: 13px;">Rp {{ opt.cost|floatformat:0 }}</strong>
+                        <strong style="color: var(--primary); font-size: 13px; white-space: nowrap;">Rp {{ opt.cost|rupiah }}</strong>
                     </label>
                     {% empty %}
-                    <p style="font-size: 12px; color: var(--text-secondary);">Layanan kurir belum tersedia. Pilih kecamatan tujuan di atas dulu.</p>
+                    <p style="font-size: 12px; color: var(--text-secondary);">
+                        {% if ongkir_live %}
+                            Tarif muncul setelah kamu memilih kecamatan tujuan di bagian alamat di atas.
+                        {% else %}
+                            Layanan kurir belum tersedia. Pilih kecamatan tujuan di atas dulu.
+                        {% endif %}
+                    </p>
                     {% endfor %}
                 </div>
                 {% if not ongkir_live %}
@@ -132,10 +139,10 @@
                         </div>
                         <div style="flex: 1; min-width: 0;">
                             <div style="font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.product.name }}</div>
-                            <div style="font-size: 11px; color: var(--text-secondary);">{{ item.quantity }} x Rp {{ item.product.price|floatformat:0 }}</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">{{ item.quantity }} x Rp {{ item.product.price|rupiah }}</div>
                         </div>
                         <div style="font-weight: 800; color: var(--text-hint);">
-                            Rp {{ item.subtotal|floatformat:0 }}
+                            Rp {{ item.subtotal|rupiah }}
                         </div>
                     </div>
                 {% endfor %}
@@ -145,7 +152,7 @@
             <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; border-top: 1px solid var(--border-dark); padding-top: 14px;">
                 <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
                     <span>Subtotal Produk</span>
-                    <strong style="color: var(--text-main);">Rp {{ subtotal|floatformat:0 }}</strong>
+                    <strong style="color: var(--text-main);">Rp {{ subtotal|rupiah }}</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
                     <span>4-Layer Packaging</span>
@@ -153,14 +160,14 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
                     <span>Ongkos Kirim</span>
-                    <strong style="color: var(--text-main);" id="shipping-display">Rp {{ default_shipping_cost|floatformat:0 }}</strong>
+                    <strong style="color: var(--text-main);" id="shipping-display">Rp {{ default_shipping_cost|rupiah }}</strong>
                 </div>
             </div>
 
             <!-- Grand Total -->
             <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-dark); display: flex; justify-content: space-between; align-items: baseline;">
                 <span style="font-size: 14px; font-weight: 800; color: var(--text-main);">Total Pembayaran</span>
-                <span style="font-size: 22px; font-weight: 900; color: var(--primary);" id="grand-total-display">Rp {{ grand_total|floatformat:0 }}</span>
+                <span style="font-size: 22px; font-weight: 900; color: var(--primary);" id="grand-total-display">Rp {{ grand_total|rupiah }}</span>
             </div>
 
             <!-- Submit Button -->
@@ -185,6 +192,18 @@
         const grandTotal = subtotal + cost;
         document.getElementById('grand-total-display').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
     }
+
+    // Jangan biarkan submit tanpa layanan kurir (mis. kecamatan belum dipilih)
+    (function () {
+        const form = document.querySelector('form[method="POST"]');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            if (!document.querySelector('input[name="courier_service"]:checked')) {
+                e.preventDefault();
+                alert('Pilih kecamatan tujuan dulu, lalu pilih layanan kurir yang muncul.');
+            }
+        });
+    })();
 
     // Autocomplete kecamatan tujuan -> reload dengan ongkir sesuai rute
     (function () {
