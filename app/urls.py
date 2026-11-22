@@ -62,6 +62,7 @@ urlpatterns = [
     path('keranjang/update/<int:item_id>/', views_pengguna.cart_update, name='cart_update'),
     path('keranjang/hapus/<int:item_id>/', views_pengguna.cart_remove, name='cart_remove'),
     path('checkout/', views_pengguna.checkout, name='checkout'),
+    path('ongkir/cari/', views_pengguna.ongkir_search, name='ongkir_search'),
 
     # TRACKING PESANAN (PENGGUNA)
     path('pesanan/', views_pengguna.pesanan_saya, name='pesanan_saya'),

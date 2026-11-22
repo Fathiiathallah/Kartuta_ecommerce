@@ -15,6 +15,16 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Muat variabel dari .env (loader stdlib, tanpa python-dotenv)
+import os as _os
+_ENV_FILE = BASE_DIR / '.env'
+if _ENV_FILE.exists():
+    for _line in _ENV_FILE.read_text(encoding='utf-8').splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith('#') and '=' in _line:
+            _k, _v = _line.split('=', 1)
+            _os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -164,3 +174,10 @@ MIDTRANS_CLIENT_KEY = os.getenv('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-3DG3cH33zP
 MIDTRANS_IS_PRODUCTION = os.getenv('MIDTRANS_IS_PRODUCTION', 'False').lower() == 'true'
 MIDTRANS_SNAP_URL = 'https://app.midtrans.com/snap/v1/transactions' if MIDTRANS_IS_PRODUCTION else 'https://app.sandbox.midtrans.com/snap/v1/transactions'
 MIDTRANS_SNAP_JS = 'https://app.midtrans.com/snap/snap.js' if MIDTRANS_IS_PRODUCTION else 'https://app.sandbox.midtrans.com/snap/snap.js'
+
+# ==============================================================================
+# SHIPPING API (RAJAONGKIR / KOMERCE) — JNE, J&T, SiCepat
+# Kosongkan RAJAONGKIR_KEY untuk memakai tarif statis COURIER_RATES.
+# ==============================================================================
+RAJAONGKIR_KEY = os.getenv('RAJAONGKIR_KEY', '')
+RAJAONGKIR_ORIGIN_ID = os.getenv('RAJAONGKIR_ORIGIN_ID', '')  # ID kecamatan asal (gudang Kartuta)

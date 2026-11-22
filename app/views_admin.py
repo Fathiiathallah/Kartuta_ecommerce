@@ -11,6 +11,32 @@ from .form_admin import (
     KategoriArtikelForm, ArtikelForm, HalamanForm, HeroSlideForm, KerjaSamaForm
 )
 from .decorators_admin import admin_required
+from . import rajaongkir_service
+
+
+COURIER_CODES = (('j&t', 'jnt'), ('jnt', 'jnt'), ('jne', 'jne'), ('sicepat', 'sicepat'), ('anteraja', 'anteraja'))
+
+
+def sync_courier_tracking(order, last_phone=''):
+    """Tarik riwayat AWB dari RajaOngkir, simpan yang baru jadi OrderTrackingLog."""
+    if not order.tracking_number_awb:
+        return 0, 'Isi nomor resi AWB dulu sebelum sinkron.'
+    if not rajaongkir_service.is_enabled():
+        return 0, 'API RajaOngkir belum aktif (RAJAONGKIR_KEY / RAJAONGKIR_ORIGIN_ID kosong).'
+    label = (order.courier_service or '').lower()
+    code = next((c for key, c in COURIER_CODES if key in label), '')
+    if not code:
+        return 0, f'Kurir "{order.courier_service}" belum dipetakan ke kode RajaOngkir.'
+    data = rajaongkir_service.track(order.tracking_number_awb, code, (last_phone or '')[-5:])
+    entries = rajaongkir_service.track_history(data)
+    if not entries:
+        return 0, 'Riwayat kurir belum tersedia untuk resi ini.'
+    added = 0
+    for entry in entries:
+        if not OrderTrackingLog.objects.filter(order=order, status=entry['status'], note=entry['note']).exists():
+            OrderTrackingLog.objects.create(order=order, status=entry['status'], note=entry['note'])
+            added += 1
+    return added, (f'{added} riwayat tracking baru tersimpan.' if added else 'Tidak ada riwayat baru.')
 
 
 def get_admin_data(request):
@@ -723,6 +749,13 @@ def pesanan_admin_detail(request, invoice_number):
 
         old_status = order.status
         old_awb = order.tracking_number_awb
+
+        if request.POST.get('action') == 'sync_tracking':
+            added, msg = sync_courier_tracking(
+                order, last_phone=request.POST.get('last_phone', '') or (order.shipping_phone or '')
+            )
+            (messages.success if added else messages.warning)(request, msg)
+            return redirect('app:pesanan_admin_detail', invoice_number=order.invoice_number)
 
         if new_status:
             order.status = new_status

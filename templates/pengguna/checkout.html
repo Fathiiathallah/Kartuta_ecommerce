@@ -32,8 +32,17 @@
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">KOTA / KABUPATEN PENGIRIMAN *</label>
-                    <input type="text" name="shipping_city" value="{{ userdetail.provinsi_anggota.nama_provinsi|default:'Makassar' }}" required placeholder="Contoh: Makassar, Sulawesi Selatan" class="form-control" style="width: 100%; padding: 10px 14px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 13px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">KECAMATAN / KOTA TUJUAN (UNTUK ONGKIR KURIR) *</label>
+                    <input type="text" id="dest-search" value="{{ dest_label }}" required placeholder="Ketik minimal 3 huruf, mis: Tanete Rilau" autocomplete="off" class="form-control" style="width: 100%; padding: 10px 14px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 13px;">
+                    <input type="hidden" name="destination_id" id="dest-id" value="{{ dest_id }}">
+                    <input type="hidden" name="destination_label" id="dest-label" value="{{ dest_label }}">
+                    <div id="dest-results" style="max-height: 220px; overflow-y: auto; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; margin-top: 6px;"></div>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Pilih dari daftar agar ongkir JNE/J&amp;T dihitung sesuai rute asli.</p>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">KOTA / KABUPATEN PENGIRIMAN</label>
+                    <input type="text" name="shipping_city" value="{{ userdetail.provinsi_anggota.nama_provinsi|default:'Makassar' }}" placeholder="Contoh: Makassar, Sulawesi Selatan" class="form-control" style="width: 100%; padding: 10px 14px; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-main); font-size: 13px;">
                 </div>
 
                 <div style="margin-bottom: 16px;">
@@ -58,39 +67,26 @@
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% for opt in courier_options %}
                     <label style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" class="courier-option">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <input type="radio" name="courier_service" value="J&T Express Reguler" data-cost="18000" checked onchange="updateShipping(18000)">
+                            <input type="radio" name="courier_service" value="{{ opt.label }}" data-cost="{{ opt.cost }}" {% if forloop.first %}checked{% endif %} onchange="updateShipping({{ opt.cost }})">
                             <div>
-                                <strong style="color: var(--text-main); font-size: 13px; display: block;">J&T Express Reguler</strong>
-                                <span style="font-size: 11px; color: var(--text-secondary);">Estimasi 2-3 Hari Kerja • Termasuk Resi AWB</span>
+                                <strong style="color: var(--text-main); font-size: 13px; display: block;">{{ opt.label }}</strong>
+                                <span style="font-size: 11px; color: var(--text-secondary);">
+                                    {% if opt.etd %}Estimasi {{ opt.etd }} Hari Kerja{% else %}Tarif berat {{ total_weight }} g{% endif %} • Termasuk Resi AWB
+                                </span>
                             </div>
                         </div>
-                        <strong style="color: var(--primary); font-size: 13px;">Rp 18.000</strong>
+                        <strong style="color: var(--primary); font-size: 13px;">Rp {{ opt.cost|floatformat:0 }}</strong>
                     </label>
-
-                    <label style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" class="courier-option">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <input type="radio" name="courier_service" value="JNE Reguler" data-cost="20000" onchange="updateShipping(20000)">
-                            <div>
-                                <strong style="color: var(--text-main); font-size: 13px; display: block;">JNE Reguler</strong>
-                                <span style="font-size: 11px; color: var(--text-secondary);">Estimasi 2-3 Hari Kerja • Termasuk Resi AWB</span>
-                            </div>
-                        </div>
-                        <strong style="color: var(--primary); font-size: 13px;">Rp 20.000</strong>
-                    </label>
-
-                    <label style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" class="courier-option">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <input type="radio" name="courier_service" value="SiCepat BEST" data-cost="25000" onchange="updateShipping(25000)">
-                            <div>
-                                <strong style="color: var(--text-main); font-size: 13px; display: block;">SiCepat BEST (Next Day)</strong>
-                                <span style="font-size: 11px; color: var(--text-secondary);">Estimasi 1-2 Hari Kerja (Kilat Prioritas)</span>
-                            </div>
-                        </div>
-                        <strong style="color: var(--primary); font-size: 13px;">Rp 25.000</strong>
-                    </label>
+                    {% empty %}
+                    <p style="font-size: 12px; color: var(--text-secondary);">Layanan kurir belum tersedia. Pilih kecamatan tujuan di atas dulu.</p>
+                    {% endfor %}
                 </div>
+                {% if not ongkir_live %}
+                <p style="font-size: 11px; color: #F59E0B; margin-top: 10px;">Catatan: masih tarif statis — isi RAJAONGKIR_KEY &amp; RAJAONGKIR_ORIGIN_ID di .env untuk ongkir live JNE/J&amp;T.</p>
+                {% endif %}
             </div>
 
             <!-- 3. Metode Pembayaran -->
@@ -213,5 +209,41 @@
         const grandTotal = subtotal + cost;
         document.getElementById('grand-total-display').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
     }
+
+    // Autocomplete kecamatan tujuan -> reload dengan ongkir sesuai rute
+    (function () {
+        const input = document.getElementById('dest-search');
+        const box = document.getElementById('dest-results');
+        if (!input || !box) return;
+        let timer;
+        input.addEventListener('input', function () {
+            clearTimeout(timer);
+            const q = input.value.trim();
+            if (q.length < 3) { box.innerHTML = ''; return; }
+            timer = setTimeout(function () {
+                fetch("{% url 'app:ongkir_search' %}?q=" + encodeURIComponent(q))
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        const rows = d.results || [];
+                        if (d.error) {
+                            box.innerHTML = '<div style="padding:8px 12px;font-size:12px;color:#F59E0B;">' + d.error + '</div>';
+                            return;
+                        }
+                        box.innerHTML = rows.length
+                            ? rows.map(function (x) {
+                                return '<div class="dest-item" data-id="' + x.id + '" data-label="' + x.label.replace(/"/g, '&quot;') + '" style="padding:8px 12px;cursor:pointer;font-size:12px;color:var(--primary);border-bottom:1px solid var(--border-dark);">' + x.label + '</div>';
+                              }).join('')
+                            : '<div style="padding:8px 12px;font-size:12px;color:var(--text-secondary);">Kecamatan tidak ditemukan</div>';
+                    })
+                    .catch(function () { box.innerHTML = ''; });
+            }, 350);
+        });
+        box.addEventListener('click', function (e) {
+            const item = e.target.closest('.dest-item');
+            if (!item) return;
+            const p = new URLSearchParams({ dest: item.dataset.id, dest_label: item.dataset.label });
+            window.location.search = p.toString();
+        });
+    })();
 </script>
 {% endblock %}

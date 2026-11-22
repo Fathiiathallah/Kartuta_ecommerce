@@ -14,6 +14,7 @@ from .models import (
 )
 from .decorators_admin import pengguna_required
 from .midtrans_service import create_snap_transaction, verify_midtrans_signature
+from . import rajaongkir_service
 
 
 def get_or_create_user_client(user):
@@ -225,6 +226,23 @@ COURIER_RATES = {
     'SiCepat BEST': 25000,
 }
 
+
+def _cart_shipping_options(user_client, cart_items):
+    """Opsi ongkir live dari RajaOngkir; fallback tarif statis kalau API belum aktif."""
+    total_weight = sum((item.product.weight or 500) * item.quantity for item in cart_items)
+    options = rajaongkir_service.shipping_options(user_client.destination_id, total_weight)
+    if options:
+        return options, total_weight
+    fallback = [{"label": k, "courier": "", "service": k, "cost": v, "etd": ""}
+                for k, v in COURIER_RATES.items()]
+    return fallback, total_weight
+
+
+@login_required
+def ongkir_search(request):
+    """Autocomplete kecamatan tujuan (dipakai form checkout)."""
+    return JsonResponse(rajaongkir_service.search_destination(request.GET.get('q', '').strip()))
+
 @login_required
 def checkout(request):
     user_client = get_or_create_user_client(request.user)
@@ -248,7 +266,7 @@ def checkout(request):
         shipping_phone = request.POST.get('shipping_phone', '').strip() or user_client.telp or ''
         shipping_address = request.POST.get('shipping_address', '').strip() or user_client.alamat or ''
         shipping_city = request.POST.get('shipping_city', '').strip()
-        courier_service = request.POST.get('courier_service', 'J&T Express Reguler')
+        courier_service = request.POST.get('courier_service', '')
         payment_method = request.POST.get('payment_method', 'QRIS Midtrans')
         notes = request.POST.get('notes', '').strip()
 
@@ -256,7 +274,20 @@ def checkout(request):
             messages.error(request, 'Mohon lengkapi nomor telepon dan alamat pengiriman!')
             return redirect('app:checkout')
 
-        shipping_cost = COURIER_RATES.get(courier_service, 18000)
+        # Simpan kecamatan tujuan (ID RajaOngkir) supaya tarif berikutnya presisi
+        destination_id = request.POST.get('destination_id', '').strip()
+        if destination_id and destination_id != (user_client.destination_id or ''):
+            user_client.destination_id = destination_id
+            user_client.destination_label = request.POST.get('destination_label', '').strip()[:150]
+            user_client.save(update_fields=['destination_id', 'destination_label'])
+
+        options, _ = _cart_shipping_options(user_client, cart_items)
+        chosen = next((o for o in options if o['label'] == courier_service), None)
+        if not chosen:
+            messages.error(request, 'Layanan kurir tidak tersedia untuk alamat ini. Silakan pilih kurir lain.')
+            return redirect('app:checkout')
+        courier_service = chosen['label']
+        shipping_cost = chosen['cost']
         total_amount = subtotal + shipping_cost
 
         # Generate Invoice
@@ -305,8 +336,12 @@ def checkout(request):
         messages.success(request, f'Pesanan #{order.invoice_number} berhasil dibuat!')
         return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
 
-    default_courier = 'J&T Express Reguler'
-    default_shipping_cost = COURIER_RATES.get(default_courier, 18000)
+    # Halaman GET: ?dest=ID dari pilihan kecamatan di form (belum disimpan permanen)
+    dest_id = request.GET.get('dest', '').strip() or (user_client.destination_id or '')
+    if request.GET.get('dest'):
+        user_client.destination_id = dest_id  # in-memory saja, disimpan saat POST
+    courier_options, total_weight = _cart_shipping_options(user_client, cart_items)
+    default_shipping_cost = courier_options[0]['cost'] if courier_options else 0
 
     context = {
         'title': 'Checkout Pengiriman',
@@ -314,7 +349,11 @@ def checkout(request):
         'cart_items': cart_items,
         'subtotal': subtotal,
         'total_qty': total_qty,
-        'courier_rates': COURIER_RATES,
+        'total_weight': total_weight,
+        'courier_options': courier_options,
+        'ongkir_live': rajaongkir_service.is_enabled(),
+        'dest_id': dest_id,
+        'dest_label': request.GET.get('dest_label', '') or (user_client.destination_label or ''),
         'default_shipping_cost': default_shipping_cost,
         'grand_total': subtotal + default_shipping_cost,
         'userdetail': user_client,
