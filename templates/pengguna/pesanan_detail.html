@@ -68,6 +68,10 @@
                         <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Pesanan Telah Selesai
                     </span>
                 {% endif %}
+                <a href="{% url 'app:pesanan_invoice' order.invoice_number %}" target="_blank" rel="noopener" class="btn-hero-outline" style="padding: 12px 16px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-file"/></svg>
+                    <span>Cetak Invoice</span>
+                </a>
             </div>
         </div>
 

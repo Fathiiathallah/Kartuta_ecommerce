@@ -3,6 +3,7 @@ import uuid
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -491,6 +492,32 @@ def pesanan_upload_bukti(request, invoice_number):
     )
     messages.success(request, 'Bukti transfer terkirim. Admin akan memverifikasi maksimal 1x24 jam.')
     return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
+
+
+@login_required
+def pesanan_invoice(request, invoice_number):
+    """Invoice siap cetak (A4) — bisa diakses pembeli pemilik pesanan maupun admin."""
+    user_client = get_or_create_user_client(request.user)
+    order = get_object_or_404(
+        HistoryPayment.objects.select_related('user_client').prefetch_related('items', 'items__product'),
+        invoice_number=invoice_number
+    )
+    if not (request.user.is_staff or order.user_client_id == getattr(user_client, 'id', None)):
+        raise PermissionDenied
+
+    items = list(order.items.all())
+    items_total = sum(item.subtotal() for item in items)
+    shipping_cost = max(order.amount - items_total, 0)
+
+    context = {
+        'order': order,
+        'items': items,
+        'items_total': items_total,
+        'shipping_cost': shipping_cost,
+        'is_manual': order.payment_method == 'Transfer Bank Manual',
+        'bank_accounts': settings.BANK_ACCOUNTS,
+    }
+    return render(request, 'pengguna/invoice_print.html', context)
 
 
 @login_required

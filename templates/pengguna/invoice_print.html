@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Invoice {{ order.invoice_number }} — {{ web_setting.nama_organisasi|default:"KartuTa" }}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 24px; background: #f4f5f7; color: #111827;
+            font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 13px; line-height: 1.5;
+        }
+        .sheet { max-width: 210mm; margin: 0 auto; background: #fff; padding: 18mm 16mm; border-radius: 6px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+        .head { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid #111827; padding-bottom: 14px; }
+        .brand { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+        .brand small { display: block; font-size: 11px; font-weight: 400; color: #4b5563; margin-top: 4px; }
+        .doc { text-align: right; }
+        .doc h1 { margin: 0; font-size: 22px; letter-spacing: 2px; }
+        .doc .no { font-family: "Consolas", monospace; font-size: 13px; font-weight: 700; }
+        .meta { display: flex; gap: 24px; margin: 18px 0 6px; }
+        .meta > div { flex: 1; }
+        .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: #6b7280; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+        th, td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+        th { background: #f3f4f6; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: #374151; }
+        td.num, th.num { text-align: right; white-space: nowrap; }
+        .totals { margin-top: 14px; margin-left: auto; width: 60%; }
+        .totals div { display: flex; justify-content: space-between; padding: 5px 10px; }
+        .totals .grand { border-top: 2px solid #111827; margin-top: 6px; padding-top: 8px; font-size: 15px; font-weight: 800; }
+        .box { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 14px; margin-top: 16px; }
+        .box h2 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+        .rek { font-family: "Consolas", monospace; font-size: 13px; }
+        .note { font-size: 11px; color: #4b5563; margin-top: 6px; }
+        .foot { margin-top: 22px; padding-top: 12px; border-top: 1px dashed #d1d5db; display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; }
+        .toolbar { max-width: 210mm; margin: 0 auto 14px; display: flex; gap: 10px; justify-content: flex-end; }
+        .btn { padding: 9px 16px; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; color: #111827; }
+        .btn.primary { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+        @media print {
+            body { background: #fff; padding: 0; font-size: 12px; }
+            .toolbar { display: none; }
+            .sheet { box-shadow: none; border-radius: 0; max-width: none; padding: 0; }
+            @page { size: A4; margin: 14mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <a class="btn" href="{% url 'app:pesanan_detail' order.invoice_number %}">Kembali ke Pesanan</a>
+        <button class="btn primary" onclick="window.print()">Cetak / Simpan PDF</button>
+    </div>
+
+    <div class="sheet">
+        <div class="head">
+            <div class="brand">
+                {{ web_setting.nama_organisasi|default:"KartuTa Indonesia" }}
+                <small>
+                    {{ web_setting.alamat|default:"Makassar, Sulawesi Selatan" }}<br>
+                    {{ web_setting.no_telp|default:"-" }} &middot; {{ web_setting.email|default:"contact@kartuta.id" }}
+                </small>
+            </div>
+            <div class="doc">
+                <h1>INVOICE</h1>
+                <div class="no">{{ order.invoice_number }}</div>
+                <div class="note">{{ order.payment_date|date:"d F Y, H:i" }} WIB</div>
+            </div>
+        </div>
+
+        <div class="meta">
+            <div>
+                <div class="lbl">Ditagihkan Kepada</div>
+                <strong>{{ order.shipping_name|default:order.user_client.username }}</strong><br>
+                {{ order.shipping_phone|default:order.user_client.telp|default:"-" }}<br>
+                {{ order.shipping_address|default:order.user_client.alamat|default:"-" }}
+            </div>
+            <div>
+                <div class="lbl">Status Pesanan</div>
+                {{ order.get_status_display }}<br>
+                <span class="lbl" style="display:block; margin-top:6px;">Kurir</span>
+                {{ order.courier_service }}{% if order.tracking_number_awb %} &middot; Resi {{ order.tracking_number_awb }}{% endif %}
+            </div>
+            <div>
+                <div class="lbl">Metode Pembayaran</div>
+                {{ order.payment_method }}<br>
+                {% if order.tracking_number_awb %}
+                <span class="lbl" style="display:block; margin-top:6px;">No. Resi</span>
+                {{ order.tracking_number_awb }}
+                {% endif %}
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="num">Qty</th>
+                    <th class="num">Harga</th>
+                    <th class="num">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}{% if item.product.card_grade %} <span class="note">({{ item.product.card_grade }})</span>{% endif %}</td>
+                    <td class="num">{{ item.quantity }}</td>
+                    <td class="num">Rp {{ item.price|floatformat:0 }}</td>
+                    <td class="num">Rp {{ item.subtotal|floatformat:0 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>{{ order.display_products }}</td>
+                    <td class="num">{{ order.total_quantity }}</td>
+                    <td class="num">Rp {{ order.amount|floatformat:0 }}</td>
+                    <td class="num">Rp {{ order.amount|floatformat:0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totals">
+            <div><span>Subtotal Produk</span><span>Rp {{ items_total|default:order.amount|floatformat:0 }}</span></div>
+            <div><span>Ongkos Kirim ({{ order.courier_service }})</span><span>Rp {{ shipping_cost|floatformat:0 }}</span></div>
+            <div class="grand"><span>TOTAL</span><span>Rp {{ order.amount|floatformat:0 }}</span></div>
+        </div>
+
+        {% if is_manual and order.status == 'Pending' %}
+        <div class="box">
+            <h2>Instruksi Transfer</h2>
+            <div class="note">Transfer tepat Rp {{ order.amount|floatformat:0 }} ke salah satu rekening berikut, lalu unggah bukti transfer di halaman pesanan.</div>
+            <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+                {% for rek in bank_accounts %}<div class="rek">{{ rek }}</div>{% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if order.notes %}
+        <div class="box">
+            <h2>Catatan Pembeli</h2>
+            <div class="note">{{ order.notes }}</div>
+        </div>
+        {% endif %}
+
+        <div class="foot">
+            <span>Dokumen ini dibuat otomatis oleh sistem {{ web_setting.nama_organisasi|default:"KartuTa" }}.</span>
+            <span>Invoice {{ order.invoice_number }}</span>
+        </div>
+    </div>
+</body>
+</html>

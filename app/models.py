@@ -115,8 +115,8 @@ class Product(models.Model):
 
 class HistoryPayment(models.Model):
     PAYMENT_STATUS = [
-        ('Pending', 'Menunggu Pembayaran QRIS'),
-        ('Completed', 'Lunas Terverifikasi (Midtrans)'),
+        ('Pending', 'Menunggu Pembayaran'),
+        ('Completed', 'Lunas Terverifikasi'),
         ('Packing', 'Sedang Dipacking (4-Layer Gold Safety)'),
         ('Shipped', 'Dalam Pengiriman Kurir (J&T/JNE)'),
         ('Delivered', 'Paket Diterima Customer'),

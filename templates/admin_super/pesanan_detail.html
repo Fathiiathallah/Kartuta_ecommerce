@@ -13,6 +13,9 @@
         </a>
 
         <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="{% url 'app:pesanan_invoice' order.invoice_number %}" target="_blank" rel="noopener" class="btn-hero-outline" style="text-decoration: none; padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px;">
+                <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-file"/></svg> Cetak Invoice
+            </a>
             <a href="{% url 'app:pesanan_detail' order.invoice_number %}" target="_blank" class="btn-hero-outline" style="text-decoration: none; padding: 6px 12px; font-size: 11px;">
                 <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg> Tampilan Sisi Pengguna
             </a>
