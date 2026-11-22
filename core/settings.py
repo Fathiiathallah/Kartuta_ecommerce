@@ -107,12 +107,15 @@ import os
 
 DATABASES = {
     'default': {
+        # Nilai host/user/nama/port bukan rahasia (password tetap dari env).
+        # Dipakai sebagai cadangan karena panel Vercel proyek ini hanya menyimpan
+        # DB_PASSWORD; tanpa cadangan ini Django jatuh ke soket lokal dan 500.
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME', 'postgres'),
-        'USER': os.getenv('DB_USER', ''),
+        'USER': os.getenv('DB_USER', 'postgres.tbdqyckxugzornkzhbgq'),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', ''),
-        'PORT': os.getenv('DB_PORT', '6543'),
+        'HOST': os.getenv('DB_HOST', 'aws-0-ap-northeast-2.pooler.supabase.com'),
+        'PORT': os.getenv('DB_PORT', '5432'),
         # Supabase pooler menutup koneksi idle; 60 detik cukup untuk satu instance
         # serverless tanpa memicu "connection closed" saat request berikutnya.
         'CONN_MAX_AGE': 60,
@@ -176,7 +179,7 @@ STATICFILES_DIRS = [
 ]
 
 # Supabase Cloud Storage (PaaS Media Bucket)
-SUPABASE_URL = os.getenv('SUPABASE_URL', '')
+SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://tbdqyckxugzornkzhbgq.supabase.co')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY', '')
 SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET', 'media')
 
