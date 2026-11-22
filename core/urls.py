@@ -16,7 +16,6 @@ urlpatterns = [
     path('halaman/<slug:slug>/', views.halamanDetailView, name='halaman_detail'),
     # Halaman pertama yang dibuka pengunjung adalah etalase, bukan formulir masuk.
     path('', views.homeView, name='index'),
-    path('_diag/', views.diagView, name='diag'),
 ]
 
 if settings.DEBUG:
