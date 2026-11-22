@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KartuTa Platform{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.3">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5.4">
 </head>
 <body>
 {% include 'partials/icons.html' %}
@@ -118,8 +118,14 @@
                     </li>
                     <li>
                         <a href="{% url 'app:dashboard_pengguna' %}" class="{% if request.resolver_match.url_name == 'dashboard_pengguna' or request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'index' %}active{% endif %}">
-                            <span class="icon">⊞</span>
-                            <span>Dashboard & Binder</span>
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'app:binder_pengguna' %}" class="{% if request.resolver_match.url_name == 'binder_pengguna' %}active{% endif %}">
+                            <span class="icon"><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-cards"/></svg></span>
+                            <span>Virtual Binder</span>
                         </a>
                     </li>
                     <li>

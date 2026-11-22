@@ -101,6 +101,58 @@ def dashboard_pengguna(request):
 
 @login_required
 @pengguna_required
+def binder_pengguna(request):
+    """Halaman binder: satu halaman = satu album/era, 9 pocket per halaman.
+
+    Slot kosong sengaja ditampilkan supaya koleksi yang belum lengkap terlihat
+    sebagai progres, bukan disembunyikan.
+    """
+    userpengguna = UserPengguna.objects.filter(user=request.user).first()
+    if not userpengguna:
+        userpengguna = UserPengguna.objects.filter(username=request.user.username).first()
+
+    SLOT_PER_HALAMAN = 9
+    binder_qs = (
+        VirtualBinder.objects
+        .filter(user_client=userpengguna)
+        .select_related('product', 'product__category')
+        .order_by('era_album_template', 'slot_number')
+    ) if userpengguna else []
+
+    # Kelompokkan per era, lalu potong jadi halaman 9 slot.
+    era_map = {}
+    for item in binder_qs:
+        era_map.setdefault(item.era_album_template, []).append(item)
+
+    halaman = []
+    for era, items in era_map.items():
+        per_page = {}
+        for item in items:
+            idx = (item.slot_number - 1) // SLOT_PER_HALAMAN
+            per_page.setdefault(idx, {})[((item.slot_number - 1) % SLOT_PER_HALAMAN) + 1] = item
+        for idx in sorted(per_page):
+            isi = per_page[idx]
+            halaman.append({
+                'era': era,
+                'nomor': idx + 1,
+                'terisi': len(isi),
+                'total': SLOT_PER_HALAMAN,
+                'slot': [isi.get(n) for n in range(1, SLOT_PER_HALAMAN + 1)],
+            })
+
+    context = {
+        'title': 'Virtual Binder',
+        'heading': 'Virtual Binder',
+        'userdetail': userpengguna,
+        'photo': userpengguna.photo if userpengguna and userpengguna.photo else None,
+        'halaman_binder': halaman,
+        'total_kartu': sum(h['terisi'] for h in halaman),
+    }
+    return render(request, 'pengguna/binder.html', context)
+
+
+@login_required
+@pengguna_required
 def katalog_pengguna(request):
     userpengguna = UserPengguna.objects.filter(user=request.user).first()
     if not userpengguna:

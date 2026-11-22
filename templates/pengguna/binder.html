@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Virtual Binder - KartuTa{% endblock %}
+{% block page_title %}Virtual Binder{% endblock %}
+
+{% block content %}
+{% if halaman_binder %}
+    <!-- Ringkasan koleksi -->
+    <div class="binder-summary">
+        <div>
+            <div class="binder-summary-label">Kartu tersimpan</div>
+            <div class="binder-summary-value">{{ total_kartu }}</div>
+        </div>
+        <div>
+            <div class="binder-summary-label">Halaman binder</div>
+            <div class="binder-summary-value">{{ halaman_binder|length }}</div>
+        </div>
+        <a href="{% url 'home' %}#katalog-etalase" class="binder-summary-link">Cari kartu lain</a>
+    </div>
+
+    {% for h in halaman_binder %}
+        <div class="dashboard-card binder-page">
+            <div class="binder-page-head">
+                <div>
+                    <h2 class="binder-page-title">{{ h.era|capfirst }}</h2>
+                    <p class="binder-page-sub">Halaman {{ h.nomor }} &middot; {{ h.terisi }} dari {{ h.total }} slot terisi</p>
+                </div>
+                <div class="binder-progress" role="img" aria-label="{{ h.terisi }} dari {{ h.total }} slot terisi">
+                    <span style="width: {% widthratio h.terisi h.total 100 %}%"></span>
+                </div>
+            </div>
+
+            <div class="binder-pocket-grid">
+                {% for kartu in h.slot %}
+                    {% if kartu %}
+                        <article class="binder-pocket is-filled">
+                            {% if kartu.product.image_utama %}
+                                <img src="{{ kartu.product.image_utama.url }}" alt="{{ kartu.product.name }}" width="550" height="850" loading="lazy">
+                            {% else %}
+                                <div class="binder-pocket-fallback">{{ kartu.product.name|slice:":2"|upper }}</div>
+                            {% endif %}
+                            <div class="binder-pocket-meta">
+                                <span class="binder-pocket-name">{{ kartu.product.name }}</span>
+                                <span class="binder-pocket-date">{{ kartu.unlocked_at|date:"j M Y" }}</span>
+                            </div>
+                        </article>
+                    {% else %}
+                        <article class="binder-pocket is-empty">
+                            <span class="binder-pocket-slot">Slot {{ forloop.counter }}</span>
+                        </article>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="dashboard-card binder-empty">
+        <h2 class="binder-page-title">Binder masih kosong</h2>
+        <p class="binder-page-sub">Binder terisi otomatis begitu pembayaran pesanan Anda terkonfirmasi. Satu halaman menampung 9 kartu dari album yang sama.</p>
+        <a href="{% url 'home' %}#katalog-etalase" class="btn-edit-profile">Lihat etalase</a>
+    </div>
+{% endif %}
+{% endblock %}
