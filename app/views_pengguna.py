@@ -2,6 +2,7 @@ import datetime
 import uuid
 import json
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -267,7 +268,7 @@ def checkout(request):
         shipping_address = request.POST.get('shipping_address', '').strip() or user_client.alamat or ''
         shipping_city = request.POST.get('shipping_city', '').strip()
         courier_service = request.POST.get('courier_service', '')
-        payment_method = request.POST.get('payment_method', 'QRIS Midtrans')
+        payment_method = 'QRIS Midtrans'  # metode final (QRIS/VA/e-wallet) dipilih di jendela Midtrans
         notes = request.POST.get('notes', '').strip()
 
         if not shipping_address or not shipping_phone:
@@ -333,8 +334,8 @@ def checkout(request):
         # Kosongkan keranjang
         cart_items.delete()
 
-        messages.success(request, f'Pesanan #{order.invoice_number} berhasil dibuat!')
-        return redirect('app:pesanan_detail', invoice_number=order.invoice_number)
+        messages.success(request, f'Pesanan #{order.invoice_number} berhasil dibuat. Lanjutkan pembayaran.')
+        return redirect(f"{reverse('app:pesanan_detail', args=[order.invoice_number])}?autopay=1")
 
     # Halaman GET: ?dest=ID dari pilihan kecamatan di form (belum disimpan permanen)
     dest_id = request.GET.get('dest', '').strip() or (user_client.destination_id or '')
@@ -426,6 +427,8 @@ def pesanan_detail(request, invoice_number):
         'photo': user_client.photo if user_client and user_client.photo else None,
         'snap_token': snap_token,
         'snap_redirect_url': snap_redirect_url,
+        'autopay': request.GET.get('autopay') == '1' and bool(snap_token),
+        'debug': settings.DEBUG,
         'midtrans_client_key': settings.MIDTRANS_CLIENT_KEY,
         'midtrans_snap_js': settings.MIDTRANS_SNAP_JS,
     }
