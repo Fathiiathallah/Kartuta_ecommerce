@@ -32,3 +32,8 @@ media/
 
 # Catatan kerja internal (audit desain, skrip verifikasi lokal)
 anti-slop/
+.vercel
+
+# Hasil collectstatic (dibuat ulang saat build)
+staticfiles_build/
+.vercel/
