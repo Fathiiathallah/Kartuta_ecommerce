@@ -223,7 +223,6 @@ Daftar ini spesifik untuk KartuTa, diturunkan dari apa yang sudah salah sekali:
 3. Kalau butuh nilai yang tidak ada di sini, tambahkan ke dokumen ini dulu, dengan alasannya, baru pakai.
 4. Kalau sebuah keputusan tidak bisa dijelaskan dalam satu baris, keputusan itu belum siap dipakai.
 
-Audit kondisi saat ini: `anti-slop/audit-001-2026-11-16.md`
 ---
 
 ## 14. Struktur Beranda (Batch 4)
