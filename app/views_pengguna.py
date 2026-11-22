@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
+from datetime import timedelta
+
 from django.conf import settings
 from .form_pengguna import formProfile
 from .models import (
@@ -17,6 +19,7 @@ from .models import (
 from .decorators_admin import pengguna_required
 from .midtrans_service import create_snap_transaction, verify_midtrans_signature, fetch_transaction_status
 from . import rajaongkir_service
+from .order_expiry import expire_unpaid_orders
 
 
 def get_or_create_user_client(user):
@@ -371,6 +374,7 @@ def checkout(request):
 
 @login_required
 def pesanan_saya(request):
+    expire_unpaid_orders()  # sapu pesanan Pending yang lewat 20 menit
     user_client = get_or_create_user_client(request.user)
     status_filter = request.GET.get('status')
 
@@ -435,6 +439,7 @@ def sync_pending_payment(order):
 
 @login_required
 def pesanan_detail(request, invoice_number):
+    expire_unpaid_orders()  # pesanan lewat batas waktu dibatalkan sebelum ditampilkan
     user_client = get_or_create_user_client(request.user)
     # Staf/Admin juga diizinkan melihat jika mengakses link ini
     if request.user.is_staff or request.user.last_name == 'Super Admin':
@@ -469,6 +474,8 @@ def pesanan_detail(request, invoice_number):
         'debug': settings.DEBUG,
         'midtrans_client_key': settings.MIDTRANS_CLIENT_KEY,
         'midtrans_snap_js': settings.MIDTRANS_SNAP_JS,
+        'batas_bayar': order.payment_date + timedelta(minutes=settings.UNPAID_TIMEOUT_MINUTES),
+        'menit_bayar': settings.UNPAID_TIMEOUT_MINUTES,
     }
     return render(request, 'pengguna/pesanan_detail.html', context)
 
@@ -572,7 +579,13 @@ def midtrans_notification(request):
         return JsonResponse({"status": "error", "message": "Order not found"}, status=404)
 
     if order.status == 'Cancelled':
-        # Pesanan sudah dibatalkan pembeli: notifikasi lama diabaikan, jangan hidupkan lagi
+        # Pesanan sudah dibatalkan (manual / auto-cancel 20 menit): jangan hidupkan lagi
+        if transaction_status in ('capture', 'settlement'):
+            OrderTrackingLog.objects.create(
+                order=order,
+                status='Cancelled',
+                note=f'Pembayaran {payment_type.upper()} masuk setelah pesanan dibatalkan — perlu refund manual.'
+            )
         return JsonResponse({"status": "ok", "message": "Order cancelled, notification ignored"})
 
     if transaction_status in ['capture', 'settlement']:

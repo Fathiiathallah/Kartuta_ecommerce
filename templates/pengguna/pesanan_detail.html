@@ -46,6 +46,9 @@
                             </button>
                         {% endif %}
                     </div>
+                    <p style="margin: 10px 0 0 0; font-size: 11px; color: var(--text-secondary);">
+                        Selesaikan pembayaran sebelum <strong style="color: var(--text-main);">{{ batas_bayar|date:"H:i" }} WIB</strong> ({{ menit_bayar }} menit). Lewat dari itu pesanan dibatalkan otomatis dan stok dikembalikan.
+                    </p>
                 {% elif order.status == 'Shipped' %}
                     <form method="POST" action="{% url 'app:pesanan_konfirmasi_terima' order.invoice_number %}">
                         {% csrf_token %}

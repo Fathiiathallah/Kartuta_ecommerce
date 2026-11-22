@@ -175,6 +175,9 @@ MIDTRANS_IS_PRODUCTION = os.getenv('MIDTRANS_IS_PRODUCTION', 'False').lower() ==
 MIDTRANS_SNAP_URL = 'https://app.midtrans.com/snap/v1/transactions' if MIDTRANS_IS_PRODUCTION else 'https://app.sandbox.midtrans.com/snap/v1/transactions'
 MIDTRANS_SNAP_JS = 'https://app.midtrans.com/snap/snap.js' if MIDTRANS_IS_PRODUCTION else 'https://app.sandbox.midtrans.com/snap/snap.js'
 
+# Batas waktu bayar: pesanan Pending yang lewat batas ini dibatalkan otomatis (stok kembali)
+UNPAID_TIMEOUT_MINUTES = int(os.getenv('UNPAID_TIMEOUT_MINUTES', '20'))
+
 # ==============================================================================
 # SHIPPING API (RAJAONGKIR / KOMERCE) — JNE, J&T, SiCepat
 # Kosongkan RAJAONGKIR_KEY untuk memakai tarif statis COURIER_RATES.
