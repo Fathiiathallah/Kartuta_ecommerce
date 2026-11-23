@@ -223,8 +223,10 @@ UNPAID_TIMEOUT_MINUTES = int(os.getenv('UNPAID_TIMEOUT_MINUTES', '20'))
 # SHIPPING API (RAJAONGKIR / KOMERCE) — JNE, J&T, SiCepat
 # Kosongkan RAJAONGKIR_KEY untuk memakai tarif statis COURIER_RATES.
 # ==============================================================================
-RAJAONGKIR_KEY = os.getenv('RAJAONGKIR_KEY', '')
-RAJAONGKIR_ORIGIN_ID = os.getenv('RAJAONGKIR_ORIGIN_ID', '')  # ID kecamatan asal (gudang Kartuta)
+# Kunci sandbox/demo RajaOngkir (Komerce). Env var tetap didahulukan supaya
+# bisa diganti tanpa mengubah kode.
+RAJAONGKIR_KEY = os.getenv('RAJAONGKIR_KEY', 'GZ9sycABc3b7865276cd3b67q7N6Hv4L')
+RAJAONGKIR_ORIGIN_ID = os.getenv('RAJAONGKIR_ORIGIN_ID', '79173')  # ID kecamatan asal (gudang Kartuta)
 
 # Rekening tujuan transfer manual, pisahkan antar rekening dengan tanda |
 BANK_ACCOUNTS = [
