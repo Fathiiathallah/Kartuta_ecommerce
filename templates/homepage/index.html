@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:"KartuTa • Official K-Pop Photocard Store & Virtual Binder Platform" }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7.1">
     <style>
         /* Transisi Halus (Smooth Cross-Fade & Scale) Hero Slide */
         .hero-side-slider-wrap {
@@ -60,11 +60,11 @@
             </a>
 
             <!-- Center Navigation Links (Clean, Spaced, No Underline) -->
-            <nav class="pro-nav-links" style="display: flex; align-items: center; gap: 24px;">
-                <a href="{% url 'home' %}" class="nav-link-item active-nav-link" id="nav-home" style="color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">Home</a>
-                <a href="#katalog-etalase" class="nav-link-item" id="nav-produk" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Produk</a>
-                <a href="#artikel-kolektor" class="nav-link-item" id="nav-artikel" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Artikel</a>
-                <a href="#mitra-kerjasama" class="nav-link-item" id="nav-mitra" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 8px;">Kerja Sama</a>
+            <nav class="pro-nav-links" aria-label="Navigasi utama">
+                <a href="{% url 'home' %}" class="nav-link-item active-nav-link" id="nav-home">Home</a>
+                <a href="#katalog-etalase" class="nav-link-item" id="nav-produk">Produk</a>
+                <a href="#artikel-kolektor" class="nav-link-item" id="nav-artikel">Artikel</a>
+                <a href="#mitra-kerjasama" class="nav-link-item" id="nav-mitra">Kerja Sama</a>
             </nav>
 
             <!-- Right Controls -->
@@ -99,7 +99,7 @@
                     <a href="{% url 'logout' %}" class="btn-pro-ghost" title="Keluar / Logout">Keluar</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="btn-pro-ghost">Masuk</a>
-                    <a href="{% url 'register' %}" class="btn-pro-primary">Daftar Kolektor</a>
+                    <a href="{% url 'register' %}" class="btn-pro-primary"><span class="label-long">Daftar Kolektor</span><span class="label-short">Daftar</span></a>
                 {% endif %}
             </div>
         </div>

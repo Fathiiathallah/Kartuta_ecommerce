@@ -912,6 +912,22 @@ body {
   color: var(--magenta);
 }
 
+.label-short {
+  display: none;
+}
+
+/* Di bawah 480px label CTA panjang diganti versi pendek supaya tidak mendesak
+   tombol lain di baris yang sama. */
+@media (max-width: 480px) {
+  .label-long {
+    display: none;
+  }
+
+  .label-short {
+    display: inline;
+  }
+}
+
 .pro-store-pill {
   font-size: 9px;
   font-weight: 800;
@@ -2738,22 +2754,49 @@ img {
   max-width: 100%;
 }
 
-/* Navbar beranda: tautan tidak disembunyikan, tapi jadi baris kedua yang bisa
-   digeser. Menu yang hilang tanpa jejak membuat navigasi buntu di ponsel. */
+/* Navbar beranda di ponsel: dua baris tetap.
+   Baris 1 = logo + aksi (keranjang, masuk/daftar). Baris 2 = menu yang bisa
+   digeser ke samping. Hanya menu yang digeser; halaman tidak pernah melebar. */
 @media (max-width: 768px) {
   .pro-navbar-container {
     flex-wrap: wrap;
-    row-gap: 6px;
+    row-gap: 10px;
+    padding: 10px 16px;
+    gap: 0;
+  }
+
+  .pro-brand {
+    order: 1;
+    min-width: 0;
+  }
+
+  .pro-store-pill {
+    display: none;
+  }
+
+  .pro-nav-actions {
+    order: 2;
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .pro-nav-actions .btn-pro-primary,
+  .pro-nav-actions .btn-pro-ghost {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 
   .pro-nav-links {
-    display: flex;
     order: 3;
+    display: flex;
     width: 100%;
-    gap: 8px;
+    gap: 4px;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 2px;
+    margin: 0 -16px;
+    padding: 0 16px 2px;
   }
 
   .pro-nav-links::-webkit-scrollbar {
@@ -2763,7 +2806,12 @@ img {
   .pro-nav-links a.nav-link-item,
   .pro-nav-links a.nav-link-item:visited {
     white-space: nowrap;
-    padding: 8px 10px;
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    font-size: 13px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
   }
 
   /* Stepper lima langkah: lingkaran 36px terlalu besar untuk 390px. */
