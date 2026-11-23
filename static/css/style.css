@@ -2481,3 +2481,153 @@ input.nav-search-input:focus,
   outline: 2px solid var(--text-hint);
   outline-offset: 2px;
 }
+
+/* --------------------------------------------------------------------------
+   MOBILE — DASHBOARD
+   Sidebar jadi laci geser dengan tirai gelap di layar kecil. Tombol menu di
+   topbar hanya berguna di bawah 768px, jadi di desktop disembunyikan.
+   -------------------------------------------------------------------------- */
+.sidebar-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 11, 0.66);
+  z-index: 45;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.sidebar-scrim.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.sidebar-open {
+  overflow: hidden;
+}
+
+@media (min-width: 769px) {
+  .topbar-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .topbar-title {
+    font-size: 14px;
+  }
+
+  .topbar-right {
+    gap: 10px;
+  }
+
+  .sidebar {
+    width: min(84vw, 300px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Judul kartu + tombol aksi cepat jadi sempit; biarkan membungkus */
+  .card-title-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-title-bar h2,
+  .card-title-bar h3 {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 560px) {
+  .pro-product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .binder-pocket-grid {
+    gap: 8px;
+  }
+
+  .footer-inner {
+    gap: 20px;
+  }
+
+  /* Area sentuh nyaman: minimal 44px tinggi */
+  .btn-pro-primary,
+  .btn-pro-ghost,
+  .btn-primary-save {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Cegah halaman melebar ke samping di layar kecil */
+@media (max-width: 768px) {
+  .pro-container,
+  .main-wrapper,
+  .dashboard-card {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Topbar sempit: lencana dan nama panjang mendorong judul keluar layar */
+@media (max-width: 768px) {
+  .notif-badge-pill {
+    display: none;
+  }
+
+  .topbar-user span {
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topbar-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Beranda: jarak dan ukuran huruf dipadatkan, tombol jadi penuh lebar */
+@media (max-width: 560px) {
+  .pro-navbar-container {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .pro-container {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .hero-main-card {
+    padding: 24px 18px;
+  }
+
+  .hero-headline {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .hero-btn-row .btn-pro-primary,
+  .hero-btn-row .btn-pro-ghost,
+  .hero-btn-row .btn-hero-outline {
+    width: 100%;
+  }
+
+  .section-heading {
+    font-size: 20px;
+  }
+
+  .protocol-step {
+    padding: 18px 16px;
+  }
+}
