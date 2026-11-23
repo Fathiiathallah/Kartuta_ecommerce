@@ -85,7 +85,7 @@
                                 </div>
                                 <form method="POST" action="{% url 'app:cart_remove' item.id %}" style="display: inline; margin-top: 8px;">
                                     {% csrf_token %}
-                                    <button type="submit" onclick="return confirm('Hapus item ini dari keranjang?');" style="background: none; border: none; color: var(--danger); font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 4px; margin-top: 6px;">
+                                    <button type="submit" data-confirm-title="Hapus dari keranjang?" data-confirm-ok="Ya, hapus" data-confirm="Item ini akan dihapus dari keranjang belanja Anda." data-confirm-danger="1" style="background: none; border: none; color: var(--danger); font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 4px; margin-top: 6px;">
                                         <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-trash"/></svg></span>
                                         <span>Hapus</span>
                                     </button>

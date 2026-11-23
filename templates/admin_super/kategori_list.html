@@ -54,7 +54,7 @@
                                     <a href="{% url 'app:kategori_edit' item.id %}" class="btn-secondary" style="padding: 6px 12px; font-size: 11px;">
                                         <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-pencil"/></svg> Edit
                                     </a>
-                                    <a href="{% url 'app:kategori_hapus' item.id %}" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori {{ item.name }}? Semua produk dalam kategori ini juga akan terhapus.');" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: var(--danger);">
+                                    <a href="{% url 'app:kategori_hapus' item.id %}" data-confirm-title="Hapus kategori?" data-confirm-ok="Ya, hapus" data-confirm="Menghapus kategori {{ item.name }}? Semua produk dalam kategori ini juga akan terhapus." data-confirm-danger="1" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: var(--danger);">
                                         <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-trash"/></svg> Hapus
                                     </a>
                                 </div>

@@ -46,7 +46,7 @@
                 {% elif order.status == 'Shipped' %}
                     <form method="POST" action="{% url 'app:pesanan_konfirmasi_terima' order.invoice_number %}" style="margin: 0;">
                         {% csrf_token %}
-                        <button type="submit" onclick="return confirm('Apakah Anda yakin paket telah diterima dengan kondisi baik?');" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 18px; font-size: 13px; font-weight: 800; background: var(--primary); color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; white-space: nowrap;">
+                        <button type="submit" data-confirm="Konfirmasi bahwa paket sudah Anda terima dalam kondisi baik. Status pesanan akan menjadi selesai." data-confirm-title="Konfirmasi terima paket" data-confirm-ok="Ya, paket sudah diterima" class="btn-primary-save" style="border: none; cursor: pointer; padding: 12px 18px; font-size: 13px; font-weight: 800; background: var(--primary); color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; white-space: nowrap;">
                             <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-package"/></svg>
                             <span>Paket Sudah Diterima</span>
                         </button>
@@ -149,7 +149,7 @@
                             <option value="Tidak jadi membeli">Tidak jadi membeli</option>
                             <option value="Metode pembayaran tidak cocok">Metode pembayaran tidak cocok</option>
                         </select>
-                        <button type="submit" onclick="return confirm('Batalkan pesanan {{ order.invoice_number }}? Stok produk akan dikembalikan dan pesanan tidak bisa dilanjutkan.');" class="btn-primary-save" style="padding: 9px 14px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px;">
+                        <button type="submit" data-confirm="Pesanan {{ order.invoice_number }} akan dibatalkan, stok dikembalikan, dan pesanan tidak bisa dilanjutkan." data-confirm-title="Batalkan pesanan?" data-confirm-ok="Ya, batalkan" data-confirm-danger="1" class="btn-primary-save" style="padding: 9px 14px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; border-radius: 8px;">
                             Ya, batalkan
                         </button>
                     </form>

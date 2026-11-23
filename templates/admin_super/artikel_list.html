@@ -71,7 +71,7 @@
                                     <a href="{% url 'app:artikel_edit' item.id %}" class="btn-secondary" style="padding: 6px 10px; font-size: 11px;">
                                         <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-pencil"/></svg> Edit
                                     </a>
-                                    <a href="{% url 'app:artikel_hapus' item.id %}" onclick="return confirm('Hapus artikel {{ item.judul }}?');" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: var(--danger);">
+                                    <a href="{% url 'app:artikel_hapus' item.id %}" data-confirm-title="Hapus artikel?" data-confirm-ok="Ya, hapus" data-confirm="Hapus artikel {{ item.judul }}?" data-confirm-danger="1" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; border-color: rgba(220, 38, 38, 0.4); color: var(--danger);">
                                         <svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-trash"/></svg> Hapus
                                     </a>
                                 </div>

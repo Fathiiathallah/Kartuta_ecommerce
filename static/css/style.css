@@ -2386,3 +2386,98 @@ input.nav-search-input:focus,
     height: 32px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   DIALOG KONFIRMASI
+   Menggantikan window.confirm. Satu dialog dipakai ulang untuk semua aksi
+   yang butuh persetujuan (hapus, batalkan pesanan, konfirmasi terima).
+   -------------------------------------------------------------------------- */
+.confirm-dialog {
+  /* `* { margin: 0 }` di awal file mematikan margin auto bawaan <dialog>,
+     jadi posisi tengah harus ditulis eksplisit. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-main);
+  padding: 24px;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(5, 7, 11, 0.72);
+}
+
+.confirm-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.01em;
+}
+
+.confirm-message {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0 0 22px 0;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-btn {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.confirm-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text-main);
+}
+
+.confirm-btn-primary {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--text-main);
+}
+
+.confirm-btn-primary:hover {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+  color: var(--text-main);
+}
+
+.confirm-btn-primary.is-danger {
+  background: var(--danger-solid);
+  border-color: var(--danger-solid);
+}
+
+.confirm-btn-primary.is-danger:hover {
+  background: #B91C1C;
+  border-color: #B91C1C;
+}
+
+.confirm-btn:focus-visible {
+  outline: 2px solid var(--text-hint);
+  outline-offset: 2px;
+}

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KartuTa Platform{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.1">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.4">
 </head>
 <body>
 {% include 'partials/icons.html' %}
@@ -229,6 +229,77 @@
         {% block auth_content %}{% endblock %}
     </div>
 {% endif %}
+
+<!-- Dialog konfirmasi (dipakai lewat data-confirm) -->
+<dialog id="confirm-dialog" class="confirm-dialog">
+    <h2 class="confirm-title" data-confirm-title>Konfirmasi</h2>
+    <p class="confirm-message" data-confirm-message></p>
+    <div class="confirm-actions">
+        <button type="button" class="confirm-btn" data-confirm-cancel>Batal</button>
+        <button type="button" class="confirm-btn confirm-btn-primary" data-confirm-ok>Ya, lanjutkan</button>
+    </div>
+</dialog>
+
+<script>
+// Dialog konfirmasi sendiri. Menggantikan window.confirm bawaan browser yang
+// tidak bisa digayakan dan tampil berbeda di tiap sistem operasi.
+// Pakai: data-confirm="Pesan" pada <button> atau <a>.
+(function () {
+    var dlg = document.getElementById('confirm-dialog');
+    if (!dlg) return;
+    var titleEl = dlg.querySelector('[data-confirm-title]');
+    var msgEl = dlg.querySelector('[data-confirm-message]');
+    var okBtn = dlg.querySelector('[data-confirm-ok]');
+    var cancelBtn = dlg.querySelector('[data-confirm-cancel]');
+    var pending = null;
+    var lastFocus = null;
+
+    function close() {
+        dlg.close ? dlg.close() : dlg.removeAttribute('open');
+        pending = null;
+        if (lastFocus) lastFocus.focus();
+    }
+
+    function ask(node) {
+        lastFocus = node;
+        titleEl.textContent = node.dataset.confirmTitle || 'Konfirmasi';
+        msgEl.textContent = node.dataset.confirm;
+        okBtn.textContent = node.dataset.confirmOk || 'Ya, lanjutkan';
+        cancelBtn.textContent = node.dataset.confirmCancel || 'Batal';
+        if (node.dataset.confirmDanger === '1') okBtn.classList.add('is-danger');
+        else okBtn.classList.remove('is-danger');
+        pending = node;
+        dlg.showModal ? dlg.showModal() : dlg.setAttribute('open', '');
+        okBtn.focus();
+    }
+
+    document.addEventListener('click', function (e) {
+        var t = e.target.closest('[data-confirm]');
+        if (!t) return;
+        e.preventDefault();
+        ask(t);
+    });
+
+    okBtn.addEventListener('click', function () {
+        var node = pending;
+        if (!node) return;
+        dlg.close ? dlg.close() : dlg.removeAttribute('open');
+        pending = null;
+        if (node.tagName === 'A') {
+            window.location.href = node.getAttribute('href');
+        } else {
+            var form = node.closest('form');
+            if (form) HTMLFormElement.prototype.submit.call(form);
+        }
+    });
+
+    cancelBtn.addEventListener('click', close);
+    dlg.addEventListener('cancel', function (e) { e.preventDefault(); close(); });
+    dlg.addEventListener('click', function (e) {
+        if (e.target === dlg) close();   // klik latar menutup
+    });
+})();
+</script>
 
 <script>
 // Loading state untuk semua form POST: tombol dinonaktifkan dan labelnya berubah

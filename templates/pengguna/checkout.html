@@ -38,7 +38,11 @@
                     <input type="hidden" name="destination_id" id="dest-id" value="{{ dest_id }}">
                     <input type="hidden" name="destination_label" id="dest-label" value="{{ dest_label }}">
                     <div id="dest-results" style="max-height: 220px; overflow-y: auto; background: var(--canvas-bg); border: 1px solid var(--border-dark); border-radius: 8px; margin-top: 6px;"></div>
+                    {% if ongkir_live %}
                     <p style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Pilih dari daftar agar ongkir JNE/J&amp;T dihitung sesuai rute asli.</p>
+                    {% else %}
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Tulis kecamatan atau kota tujuan. Ongkir dihitung dengan tarif tetap per wilayah.</p>
+                    {% endif %}
                 </div>
 
                 <div style="margin-bottom: 16px;">
@@ -92,8 +96,9 @@
                     {% endfor %}
                 </div>
                 {% if not ongkir_live %}
-                <p style="font-size: 11px; color: #F59E0B; margin-top: 10px;">Catatan: masih tarif statis — isi RAJAONGKIR_KEY &amp; RAJAONGKIR_ORIGIN_ID di .env untuk ongkir live JNE/J&amp;T.</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Ongkir memakai tarif tetap per wilayah. Nominal ini yang akan ditagihkan.</p>
                 {% endif %}
+                <p id="checkout-warning" hidden style="font-size: 12px; color: #F59E0B; margin-top: 10px;">Pilih layanan kurir dulu sebelum melanjutkan.</p>
             </div>
 
             <!-- 3. Metode Pembayaran -->
@@ -200,13 +205,16 @@
         form.addEventListener('submit', function (e) {
             if (!document.querySelector('input[name="courier_service"]:checked')) {
                 e.preventDefault();
-                alert('Pilih kecamatan tujuan dulu, lalu pilih layanan kurir yang muncul.');
+                var warn = document.getElementById('checkout-warning');
+                if (warn) { warn.hidden = false; warn.scrollIntoView({ block: 'center' }); }
             }
         });
     })();
 
-    // Autocomplete kecamatan tujuan -> reload dengan ongkir sesuai rute
+    // Autocomplete kecamatan hanya aktif kalau tarif live tersedia.
+    // Tanpa itu kolom jadi teks bebas dan ongkir memakai tarif tetap.
     (function () {
+        if (!{{ ongkir_live|yesno:"true,false" }}) return;
         const input = document.getElementById('dest-search');
         const box = document.getElementById('dest-results');
         if (!input || !box) return;

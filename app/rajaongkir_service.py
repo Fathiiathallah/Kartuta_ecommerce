@@ -50,7 +50,8 @@ def _request(path, data=None):
 def search_destination(keyword):
     """Cari ID kecamatan tujuan. Return {'results': [{'id','label'}], 'error': str|None}."""
     if not settings.RAJAONGKIR_KEY:
-        return {"results": [], "error": "RAJAONGKIR_KEY belum diisi di .env aplikasi"}
+        # Pesan ini tampil di layar pembeli, jadi jangan sebut nama env var.
+        return {"results": [], "error": "Pencarian kecamatan belum aktif. Tulis kecamatan tujuan, lalu pilih tarif kurir yang tersedia."}
     if not keyword:
         return {"results": [], "error": None}
     query = urllib.parse.urlencode({"search": keyword, "limit": 15, "offset": 0})
@@ -62,9 +63,9 @@ def search_destination(keyword):
             detail = json.loads(e.read() or b"{}").get("meta", {}).get("message", "")
         except ValueError:
             pass
-        return {"results": [], "error": f"RajaOngkir HTTP {e.code} {detail}".strip()}
+        return {"results": [], "error": "Layanan ongkir sedang tidak bisa dihubungi. Tarif tetap tetap berlaku."}
     except (urllib.error.URLError, ValueError) as e:
-        return {"results": [], "error": f"Gagal hubungi RajaOngkir: {e}"}
+        return {"results": [], "error": "Layanan ongkir sedang tidak bisa dihubungi. Tarif tetap tetap berlaku."}
     results = [
         {
             "id": str(d.get("id", "")),
