@@ -115,11 +115,16 @@ DATABASES = {
         'USER': os.getenv('DB_USER', 'postgres.tbdqyckxugzornkzhbgq'),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', 'aws-0-ap-northeast-2.pooler.supabase.com'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-        # Supabase pooler menutup koneksi idle; 60 detik cukup untuk satu instance
-        # serverless tanpa memicu "connection closed" saat request berikutnya.
-        'CONN_MAX_AGE': 60,
+        # Port 6543 = transaction pooler. Port 5432 (session pooler) hanya
+        # mengizinkan ~15 koneksi klien; di serverless tiap instance memegang
+        # satu koneksi, jadi cepat habis dan request berikutnya 500.
+        'PORT': os.getenv('DB_PORT', '6543'),
+        # Serverless tidak boleh menyimpan koneksi: container dibekukan tanpa
+        # menutup socket, dan koneksi mati itu dipakai lagi saat bangun.
+        'CONN_MAX_AGE': 0 if os.getenv('VERCEL') else 60,
         'CONN_HEALTH_CHECKS': True,
+        # Jangan menggantung 30 detik kalau pooler menolak; gagal cepat lebih baik.
+        'OPTIONS': {'connect_timeout': 5},
     }
 }
 
