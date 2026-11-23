@@ -22,12 +22,12 @@
     </div>
 
     {% if cart_items %}
-        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start;">
+        <div class="grid-sided-340">
             <!-- Cart Items List -->
             <div>
                 <div style="display: flex; flex-direction: column; gap: 14px;">
                     {% for item in cart_items %}
-                        <div style="background: var(--surface); border: 1px solid var(--border-dark); border-radius: 12px; padding: 16px; display: grid; grid-template-columns: 80px 1fr auto auto; gap: 16px; align-items: center;">
+                        <div class="cart-item-row">
                             <!-- Thumbnail -->
                             <div style="width: 80px; height: 100px; background: var(--canvas-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: center;">
                                 {% if item.product.image_utama %}

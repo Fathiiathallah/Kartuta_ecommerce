@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:product.name }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.5">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7.0">
 </head>
 <body class="pro-body">
 {% include 'partials/icons.html' %}
@@ -85,7 +85,7 @@
         </nav>
 
         <!-- Product Detail Two-Column Layout -->
-        <section style="display: grid; grid-template-columns: minmax(320px, 440px) 1fr; gap: 40px; align-items: start;">
+        <section class="pro-detail-layout">
             
             <!-- Left: Card Visual & Badges -->
             <div>
@@ -122,7 +122,7 @@
                 </div>
 
                 <!-- Trust Micro List Under Image -->
-                <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="grid-split-2" style="margin-top: 16px; gap: 10px;">
                     <div style="background: var(--surface); border: 1px solid var(--input-bg); border-radius: 8px; padding: 10px 12px; font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
                         <span><svg class="icon-svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
                         <span>Garansi Keaslian Cetakan</span>
@@ -202,7 +202,7 @@
                                     <span style="font-size: 11px; color: var(--text-muted);">Sisa stok: {{ product.stock }} pcs</span>
                                 </div>
 
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="grid-split-2" style="gap: 10px;">
                                     <button type="submit" name="add_only" value="1" class="btn-hero-outline" style="padding: 13px 16px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px;">
                                         Tambah ke Keranjang
                                     </button>
@@ -232,7 +232,7 @@
                         Spesifikasi & Kondisi Kartu
                     </h3>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; margin-bottom: 16px;">
+                    <div class="grid-split-2" style="gap: 12px; font-size: 12px; margin-bottom: 16px;">
                         <div>
                             <span style="color: var(--text-muted); display: block; font-size: 10px; font-weight: 700;">GRUP / FANDOM</span>
                             <strong style="color: var(--text-main);">{{ product.fandom_group|default:"aespa" }}</strong>

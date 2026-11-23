@@ -26,7 +26,7 @@
     </div>
 
     <!-- Main Grid -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+    <div class="grid-split-2" style="display: grid; gap: 24px; align-items: start;">
 
         <!-- Left: Form Kelola Status & Input Resi AWB -->
         <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -129,7 +129,7 @@
                         <strong style="color: var(--text-main); display: block;">{{ order.shipping_name|default:order.user_client.username }}</strong>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="grid-split-2" style="display: grid; gap: 12px;">
                         <div>
                             <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">USERNAME AKUN</span>
                             <div style="color: var(--text-hint);">@{{ order.user_client.username }}</div>

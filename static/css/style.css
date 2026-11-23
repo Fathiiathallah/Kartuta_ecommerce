@@ -2631,3 +2631,211 @@ body.sidebar-open {
     padding: 18px 16px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   MOBILE — HALAMAN TRANSAKSI & DETAIL
+   Grid dua kolom di halaman ini dulu ditulis sebagai style inline, dan style
+   inline tidak bisa ditimpa media query. Kelas di bawah menggantikannya supaya
+   kolom benar-benar turun jadi satu di layar sempit.
+   -------------------------------------------------------------------------- */
+.grid-main-side {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.grid-sided-340 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.grid-split-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cart-item-row {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto auto;
+  gap: 16px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-dark);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.pro-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+/* Tablet: kolom kanan sudah tidak cukup untuk 380px, jadi turun duluan
+   sebelum layar benar-benar selebar ponsel. */
+@media (max-width: 1024px) {
+  .grid-main-side,
+  .grid-sided-340 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pro-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-split-2 {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .grid-split-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Baris keranjang: gambar + nama tetap sebaris, jumlah dan harga turun
+     ke baris sendiri supaya tidak berdesakan. */
+  .cart-item-row {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .cart-item-row > *:nth-child(n + 3) {
+    grid-column: 1 / -1;
+  }
+
+  .pro-detail-layout {
+    gap: 22px;
+  }
+
+  /* Tombol ikon di navbar dan topbar: area sentuh 44px. */
+  .btn-pro-icon-cart,
+  .btn-pro-icon-user,
+  .topbar-toggle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Tabel panjang (admin, riwayat pesanan) bergulir sendiri, tidak melebarkan
+   halaman. Wrapper yang belum ada ditambahkan di template. */
+.table-responsive,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Gambar tidak boleh melebihi kolomnya di layar sempit. */
+img {
+  max-width: 100%;
+}
+
+/* Navbar beranda: tautan tidak disembunyikan, tapi jadi baris kedua yang bisa
+   digeser. Menu yang hilang tanpa jejak membuat navigasi buntu di ponsel. */
+@media (max-width: 768px) {
+  .pro-navbar-container {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .pro-nav-links {
+    display: flex;
+    order: 3;
+    width: 100%;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .pro-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pro-nav-links a.nav-link-item,
+  .pro-nav-links a.nav-link-item:visited {
+    white-space: nowrap;
+    padding: 8px 10px;
+  }
+
+  /* Stepper lima langkah: lingkaran 36px terlalu besar untuk 390px. */
+  .status-stepper {
+    gap: 2px;
+  }
+
+  .status-stepper > div > div:first-child {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+
+  .status-stepper p {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIF LAYAR KECIL
+   Diukur pada 390px (iPhone 12/13/14) dan 360px (Android umum).
+   Tujuan: tidak ada scroll horizontal, area sentuh >=44px, teks tidak
+   terpotong, dan tabel bisa digeser sendiri tanpa menggeser halaman.
+   -------------------------------------------------------------------------- */
+
+/* Pelacak status pesanan: 5 langkah berjajar terlalu sempit di HP.
+   Di bawah 768px jadi 5 kolom rapat dengan label 2 baris, bukan 1 baris panjang. */
+.status-stepper {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .status-stepper {
+    gap: 2px;
+  }
+
+  .status-stepper > div > div:nth-child(2) {
+    font-size: 9px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .status-stepper > div > div:nth-child(3) {
+    display: none; /* keterangan tambahan disembunyikan, judul langkah sudah cukup */
+  }
+}
+
+/* Tabel: geser sendiri, jangan pernah melebarkan halaman.
+   min-width menjaga kolom tetap terbaca, bukan dipepetkan sampai tak terbaca. */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive > .table-custom {
+  min-width: 560px;
+}
+
+@media (max-width: 560px) {
+  .table-responsive > .table-custom {
+    min-width: 480px;
+    font-size: 11px;
+  }
+}
+
+/* Angka panjang (harga, invoice) tidak boleh memaksa lebar kolom */
+td code {
+  overflow-wrap: anywhere;
+}
